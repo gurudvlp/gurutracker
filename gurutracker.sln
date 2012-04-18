@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gurutracker", "gurumod\gurutracker.csproj", "{845AE3F5-BA34-448C-8FF9-20AAED742D01}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{845AE3F5-BA34-448C-8FF9-20AAED742D01}.Debug|x86.ActiveCfg = Debug|x86
+		{845AE3F5-BA34-448C-8FF9-20AAED742D01}.Debug|x86.Build.0 = Debug|x86
+		{845AE3F5-BA34-448C-8FF9-20AAED742D01}.Release|x86.ActiveCfg = Release|x86
+		{845AE3F5-BA34-448C-8FF9-20AAED742D01}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = gurumod\gurutracker.csproj
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
+		$1.DirectoryNamespaceAssociation = None
+		$1.ResourceNamePolicy = FileFormatDefault
+		$0.StandardHeader = $2
+		$2.Text = @\n ${FileName}\n \n Author:\n      ${AuthorName} <${AuthorEmail}>\n\n Copyright (c) ${Year} ${CopyrightHolder}\n\n This program is free software; you can redistribute it and/or modify\n it under the terms of the GNU General Public License as published by\n the Free Software Foundation; either version 2 of the License, or\n (at your option) any later version.\n\n This program is distributed in the hope that it will be useful,\n but WITHOUT ANY WARRANTY; without even the implied warranty of\n MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\n GNU General Public License for more details.\n \n You should have received a copy of the GNU General Public License\n along with this program; if not, write to the Free Software\n Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA\n
+		$2.IncludeInNewFiles = True
+		description = @Create sound synths using oscillators and mixers, and\neasily sequence songs using the tracker.
+		version = 0.12.04.12.2
+		outputpath = ..\.config\gurutracker\bin
+	EndGlobalSection
+EndGlobal

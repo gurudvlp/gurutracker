@@ -1,0 +1,28 @@
+<div name="sampler_generator" id="sampler_generator">
+		
+			<span class="sampler_generator_title">Generate Sound</span><br />
+			<form action="#">
+				<table border="0">
+				<tr>
+					<td>Type:</td>
+					<td>Sample Rate:</td>
+					<td>Length (sec):</td>
+					<td>Frequency:</td>
+					<td><input type="button" name="sampler_generator_go" id="sampler_generator_go" value="Generate" onclick="GenerateSample([SAMPLEID])"></td>
+				</tr>
+				<tr>
+					<td><select name="sampler_generator_type" id="sampler_generator_type">
+						<option value="sine"[GENSELTYPESINE]>Sine Wave</option>
+						<option value="square"[GENSELTYPESQUARE]>Square Wave</option>
+					</select>
+					</td>
+					<td><input type="text" name="sampler_generator_samplerate" id="sampler_generator_samplerate" value="[GENSAMPLERATE]">
+					</td>
+					<td><input type="text" name="sampler_generator_length" id="sampler_generator_length" value="3"></td>
+					<td><input type="text" name="sampler_generator_frequency" id="sampler_generator_frequency" value="[GENERATORFREQUENCY]"></td>
+					<td>&nbsp;</td>
+				</tr>
+			
+				</table>
+			</form>
+		</div>

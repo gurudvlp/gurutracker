@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{845AE3F5-BA34-448C-8FF9-20AAED742D01}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>gurumod</RootNamespace>
+    <AssemblyName>gurutracker</AssemblyName>
+    <Description>Music synthesizer and sequencing tool.</Description>
+    <ReleaseVersion>0.12.04.12.2</ReleaseVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <Externalconsole>true</Externalconsole>
+    <Commandlineparameters>-f /home/guru/gurutracker/Tracks/betateztz --webtemplatedir /home/guru/.config/gurutracker/Interfaces/Web/templates/</Commandlineparameters>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <Externalconsole>true</Externalconsole>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="OpenTK">
+      <HintPath>..\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="SdlDotNet">
+      <HintPath>..\SdlDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="Tao.Sdl">
+      <HintPath>..\Tao.Sdl.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Interfaces\Interface.cs" />
+    <Compile Include="Interfaces\WebInterface\BBCode.cs" />
+    <Compile Include="Interfaces\WebInterface\Categories.cs" />
+    <Compile Include="Interfaces\WebInterface\IncomingRequest.cs" />
+    <Compile Include="Interfaces\WebInterface\WebInterface.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Home.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Image.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\WebPage.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Admin\Admin.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Admin\EngineConfig.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Admin\PageCat.cs" />
+    <Compile Include="Interfaces\WebInterface\StatusCodes\301MovedPermanently.cs" />
+    <Compile Include="Interfaces\WebInterface\StatusCodes\404NotFound.cs" />
+    <Compile Include="Connections\Connections.cs" />
+    <Compile Include="Connections\Listeners.cs" />
+    <Compile Include="Connections\Multicast.cs" />
+    <Compile Include="Tracks\Patterns\Pattern.cs" />
+    <Compile Include="Tracks\Patterns\PatternChannel.cs" />
+    <Compile Include="Tracks\Patterns\PatternElement.cs" />
+    <Compile Include="Tracks\Samples\Sample.cs" />
+    <Compile Include="Tracks\Track.cs" />
+    <Compile Include="Player.cs" />
+    <Compile Include="Engine.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Sequencer.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\UpdatePattern.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Sampler.cs" />
+    <Compile Include="Interfaces\WebInterface\Player.cs" />
+    <Compile Include="Tracks\Samples\Generator.cs" />
+    <Compile Include="Logging.cs" />
+    <Compile Include="Install.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="Tracks\Machines\Machine.cs" />
+    <Compile Include="Tracks\Machines\MixerSettings.cs" />
+    <Compile Include="Tracks\Machines\Mixers\Mixer.cs" />
+    <Compile Include="Tracks\Machines\Mixers\InputData.cs" />
+    <Compile Include="Tracks\Machines\Mixers\Processor.cs" />
+    <Compile Include="Tracks\Machines\Generators\Oscilator.cs" />
+    <Compile Include="Tracks\Machines\Generators\Generator.cs" />
+    <Compile Include="Tracks\Machines\Generators\Osc.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Connections\" />
+    <Folder Include="Interfaces\" />
+    <Folder Include="Interfaces\WebInterface\" />
+    <Folder Include="Tracks\" />
+    <Folder Include="Tracks\Patterns\" />
+    <Folder Include="Tracks\Samples\" />
+    <Folder Include="Resources\" />
+    <Folder Include="Tracks\Machines\" />
+    <Folder Include="Tracks\Machines\Mixers\" />
+    <Folder Include="Tracks\Machines\Generators\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Bin.tar" />
+    <EmbeddedResource Include="Resources\Interfaces.tar" />
+    <EmbeddedResource Include="Resources\Samples.tar" />
+    <EmbeddedResource Include="Resources\version.txt" />
+    <EmbeddedResource Include="Resources\Tracks.tar" />
+  </ItemGroup>
+</Project>

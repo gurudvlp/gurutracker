@@ -1,0 +1,65 @@
+<li><div class="sampler_genmachine_mixera" id="sampler_genmachine_mixer[MIXERID]" name="sampler_genmachine_mixer[MIXERID]">
+			<span class="sampler_genmachine_mixer_title">Mixer [MIXERID]</span><br />
+			<table>
+				<tr>
+					<td>
+						<table>
+						<tr class="sampler_genmachine_mixer_inputrow">
+							<td>
+								<span class="sampler_genmachine_mixer_label">Input A:</span>
+							</td>
+							<td>
+								<select name="sampler_gm_mixer[MIXERID]_inputa" id="sampler_gm_mixer[MIXERID]_inputa">
+									[EACHINPUTAOPTION]
+								</select>
+							</td>
+						</tr>
+						<tr class="sampler_genmachine_mixer_inputrow">
+							<td>
+								<span class="sampler_genmachine_mixer_label">Input B:</span>
+							</td>
+							<td>
+								<select name="sampler_gm_mixer[MIXERID]_inputb" id="sampler_gm_mixer[MIXERID]_inputb">
+									[EACHINPUTBOPTION]
+								</select>
+							</td>
+						</tr>
+						</table>
+					</td>
+				
+					<td>
+						<span class="sampler_genmachine_mixer_label">Method:</span><br />
+						<select name="sampler_gm_mixer[MIXERID]_type" id="sampler_gm_mixer[MIXERID]_type">
+							<option value="add"[TYPEADDSELECTED]>Add (A + B)</option>
+							<option value="subtract"[TYPESUBTRACTSELECTED]>Subtract (A - B)</option>
+							<option value="multiply"[TYPEMULTIPLYSELECTED]>Multiply (A * B)</option>
+							<option value="divide"[TYPEDIVIDESELECTED]>Divide (A / B)</option>
+						</select>
+						
+					</td>
+				</tr>
+			
+					
+				<tr>
+					<td valign="top">
+						
+						<span class="sampler_genmachine_mixer_label">Gate Min:</span><br />
+						<select name="sampler_gm_mixer[MIXERID]_gateminsrc" id="sampler_gm_mixer[MIXERID]_gateminsrc">
+							[EACHMINGATESOURCE]
+						</select>
+						
+						<input type="text" value="[MIXERGATEMIN]" name="sampler_gm_mixer[MIXERID]_gatemin" id="sampler_gm_mixer[MIXERID]_gatemin" size="5">
+					</td>
+					<td valign="top">
+						<span class="sampler_genmachine_mixer_label">Gate Max:</span><br />
+						<select name="sampler_gm_mixer[MIXERID]_gatemaxsrc" id="sampler_gm_mixer[MIXERID]_gatemaxsrc">
+							[EACHMAXGATESOURCE]
+						</select>
+						<input type="text" value="[MIXERGATEMAX]" name="sampler_gm_mixer[MIXERID]_gatemax" id="sampler_gm_mixer[MIXERID]_gatemax" size="5">
+					</td>
+				</tr>
+			</table>
+			
+			<input type="button" name="sampler_gm_mixer[MIXERID]_update" id="sampler_gm_mixer[MIXERID]_update" value="Update" onclick="TweakSoundMixer([SAMPLEID], [MIXERID], '[MIXERID]')">
+		</div></li>
+		

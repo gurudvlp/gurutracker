@@ -1,0 +1,25 @@
+<li>
+		<div class="sampler_genmachine_osca" id="sampler_genmachine_osca">
+			<input type="checkbox" name="sampler_genmachine_useosc[OSCID]" id="sampler_genmachine_useosc[OSCID]"[GENMACOSC]/>Oscillator [OSCID]<br />
+			<table border="0">
+			<tr>
+				<td valign="top"><select name="sampler_genmachine_type[OSCID]" id="sampler_genmachine_type[OSCID]">
+					<option value="sine"[GENMACSELTYPESINE]>Sine Wave</option>
+					<option value="square"[GENMACSELTYPESQUARE]>Square Wave</option>
+					<option value="triangle"[GENMACSELTYPETRIANGLE]>Triangle Wave</option>
+					<option value="sawtooth"[GENMACSELTYPESAWTOOTH]>Sawtooth Wave</option>
+				</select></td>
+			
+				<td valign="top">
+				<input type="text" size="5" name="sampler_genmachine_frequency[OSCID]" id="sampler_genmachine_frequency[OSCID]" value="[GENERATORMACHINEFREQUENCY]">
+				</td>
+			
+				<td valign="top">
+				<input type="text" size="5" name="sampler_genmachine_amplitude[OSCID]" id="sampler_genmachine_amplitude[OSCID]" value="[GENMACHINEAMPLITUDE]"></td>
+			
+				<td valign="top"><input type="button" name="sampler_genmachine_go[OSCID]" id="sampler_genmachine_go[OSCID]" value="Generate" onclick="TweakSoundMachine([SAMPLEID], [OSCID])"></td>
+			</tr>	
+			</table>
+		</div>
+		</li>
+		

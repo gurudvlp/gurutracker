@@ -1,0 +1,22 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="gurumod/Engine.cs">
+    <Files>
+      <File FileName="gurumod/Tracks/Track.cs" Line="177" Column="53" />
+      <File FileName="gurumod/Tracks/Patterns/Pattern.cs" Line="113" Column="37" />
+      <File FileName="gurumod/Interfaces/WebInterface/Pages/Sampler.cs" Line="111" Column="54" />
+      <File FileName="gurumod/Tracks/Samples/Sample.cs" Line="60" Column="53" />
+      <File FileName="gurumod/Tracks/Patterns/PatternChannel.cs" Line="229" Column="31" />
+      <File FileName="gurumod/Tracks/Samples/Machine.cs" Line="232" Column="6" />
+      <File FileName="gurumod/Tracks/Samples/Oscilator.cs" Line="136" Column="92" />
+      <File FileName="gurumod/Tracks/Samples/MixerSettings.cs" Line="19" Column="54" />
+      <File FileName="gurumod/Engine.cs" Line="160" Column="71" />
+      <File FileName="gurumod/Interfaces/WebInterface/WebInterface.cs" Line="36" Column="59" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <AuthorInfo Name="Brian Murphy" Email="gurudvlp@gmail.com" Copyright="Brian Murphy" Company="Guru Digital Solutions" Trademark="" />
+</Properties>
