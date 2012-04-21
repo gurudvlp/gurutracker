@@ -55,7 +55,7 @@ namespace gurumod.Machines
 			
 		}
 		
-		public void Initialize()
+		public override void Initialize()
 		{
 			base.InputCount = 2;
 			base.Inputs = new InputData[base.InputCount];
@@ -65,7 +65,7 @@ namespace gurumod.Machines
 			}
 			
 			Inputs[0].SourceID = 0;
-			Inputs[1].SourceID = 1;
+			Inputs[1].SourceID = 0;
 			Inputs[0].SourceType = Machines.InputData.SourceTypeGenerator;
 			Inputs[1].SourceType = Machines.InputData.SourceTypeGenerator;
 		}
@@ -74,6 +74,17 @@ namespace gurumod.Machines
 		{
 			short[] SourceA = new short[1];//Signals[MxSettings.SourceAID];
 			short[] SourceB = new short[1];//Signals[MxSettings.SourceBID];
+			
+			if(!Signals.ContainsKey(Inputs[0].InputKey()))
+			{
+				Console.WriteLine("Signals does not have key {0}", Inputs[0].InputKey());
+				return null;
+			}
+			if(!Signals.ContainsKey(Inputs[1].InputKey()))
+			{
+				Console.WriteLine("Signals does not have key {0}", Inputs[1].InputKey());
+				return null;
+			}
 			
 			SourceA = Signals[Inputs[0].InputKey()];
 			SourceB = Signals[Inputs[1].InputKey()];

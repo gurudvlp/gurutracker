@@ -22,6 +22,7 @@
 // 
 using System;
 using System.Xml;
+using System.IO;
 using System.Xml.Serialization;
 using System.Collections;
 using System.Collections.Generic;
@@ -49,6 +50,30 @@ namespace gurumod.Machines
 		
 		public abstract short[] GetData(int frames, double frequency);
 		public abstract short[] GetData(int frames, int note, int octave);
+		
+		public virtual void Save(string trackpath, int sampleid, int generatorid)
+		{
+			try
+			{
+				string filename = trackpath + "Samples/Generators";//" + sampleid.ToString();
+				if(!Directory.Exists(filename)) { Directory.CreateDirectory(filename); }
+				filename = filename + "/" + sampleid.ToString();
+				if(!Directory.Exists(filename)) { Directory.CreateDirectory(filename); }
+				
+				filename = filename + "/" + generatorid.ToString() + ".xml";
+				
+				//XmlSerializer s = new XmlSerializer(typeof(Generator));
+				XmlSerializer s = new XmlSerializer(this.GetType());
+				TextWriter w = new StreamWriter(Engine.PFP(filename));
+				s.Serialize(w, this);
+				w.Close();
+			}
+			catch(Exception ex)
+			{
+				Console.WriteLine("There was an exception while saving the generator.");
+				Console.WriteLine(ex.Message);
+			}
+		}
 	}
 }
 

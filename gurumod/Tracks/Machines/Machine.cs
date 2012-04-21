@@ -18,11 +18,13 @@ namespace gurumod
 		[XmlElement()] public double Amplitude = 0.75;
 		[XmlElement()] public int WaveType = Generator.TypeSine;
 		[XmlElement()] public ALFormat Format = ALFormat.Mono16;
-		[XmlElement()] public Oscilator[] Oscs = new Oscilator[3];
-		[XmlElement()] public MixerSettings[] Mixers = new MixerSettings[2];
+		//[XmlElement()] public Oscilator[] Oscs = new Oscilator[3];
+		//[XmlElement()] public MixerSettings[] Mixers = new MixerSettings[2];
 		
 		[XmlIgnore()] public Machines.Generator[] Generators;
 		[XmlIgnore()] public Machines.Processor[] Processors;
+		[XmlElement("GeneratorTypes")] public string[] GeneratorTypes = new string[128];
+		[XmlElement("ProcessorTypes")] public string[] ProcessorTypes = new string[128];
 		
 		[XmlElement("MaxGenerators")] public int MaxGenerators = 32;
 		[XmlElement("MaxProcessors")] public int MaxProcessors = 32;
@@ -35,16 +37,7 @@ namespace gurumod
 		
 		public Machine ()
 		{
-			Oscs[0] = new Oscilator();
-			Oscs[0].Enabled = true;
-			Oscs[0].WaveType = Generator.TypeSine;
 			
-			Oscs[1] = new Oscilator();
-			Oscs[2] = new Oscilator();
-			
-			Mixers = new MixerSettings[2];
-			Mixers[0] = new MixerSettings();
-			Mixers[1] = new MixerSettings();
 			
 			Generators = new Machines.Generator[this.MaxGenerators];
 			Processors = new Machines.Processor[this.MaxProcessors];
@@ -66,7 +59,7 @@ namespace gurumod
 			//	We need to determine how long one eighth of a beat is so that
 			//	we can determine the number of frames in 1/8 beat
 			
-			if(Oscs == null)
+			/*if(Oscs == null)
 			{
 				Oscs = new Oscilator[3];
 				
@@ -91,6 +84,16 @@ namespace gurumod
 						Mixers[emx] = new MixerSettings();
 					}
 				}
+			}*/
+			
+			if(Generators == null)
+			{
+				InitGenerators();
+			}
+			
+			if(Processors == null)
+			{
+				InitProcessors();
 			}
 			
 			if(!Running)
@@ -143,11 +146,7 @@ namespace gurumod
 				
 			}
 			
-			//short[] oscone = Oscs[0].GetData(framecnt, (double)freq);
-			//short[] osctwo = Oscs[1].GetData(framecnt, (double)freq);
-			//short[] oscthr = Oscs[2].GetData(framecnt, (double)freq);
-			
-			//if(osctwo == null && oscthr == null) { return oscone; }
+		
 			
 			//
 			//	Now based on the mixers, we need to combine the oscillator
@@ -156,61 +155,101 @@ namespace gurumod
 			
 			short[] toret = null;// = new short[oscone.Length];
 			
-			//Signals = new short[Oscs.Length, framecnt];
+			
 			Signals = new Dictionary<string, short[]>();
-			for(int eosc = 0; eosc < Oscs.Length; eosc++)
+			
+			
+			Console.WriteLine("Adding signals from generators.");
+			for(int egen = 0; egen < Generators.Length; egen++)
 			{
-				Signals.Add(eosc.ToString(), Oscs[eosc].GetData(framecnt, note, octave));
-				//Signals[eosc] = Oscs[eosc].GetData(framecnt, note, octave);
+				if(Generators[egen] != null)
+				{
+					Signals.Add(egen.ToString(), Generators[egen].GetData(framecnt, note, octave));
+				}
 			}
-			//toret = MixAudio(Mixers[0]);
+			
+			//Console.WriteLine("Creating output from processor chain.");
 			toret = Process(0);
 			
-			//if(Mixers[0].SourceTypeA == MixerSettings.SourceTypeOscillator)
-			//{
-				
-				
-				/*toret = MixAudio(Oscs[Mixers[0].SourceAID].GetData(framecnt, note, octave),
-				                 Oscs[Mixers[0].SourceBID].GetData(framecnt, note, octave),
-				                 Mixers[0]);
-				*/
-			//	if(toret == null) { Console.WriteLine("Mixer settings found, but returning a null stream."); }
-			//}
-			//else
-			//{
-				//Console.WriteLine("No mixer settings were found.");
-			//}
 			
-			//short[] toret = new short[oscone.Length];
-			/*for(int i = 0; i < oscone.Length; i++)
-			{
-				toret[i] =(short)(oscone[i] + osctwo[i]);
-			}
-			*/
 			
 			return toret;
-			//if(WaveType == Generator.TypeSine) { return SineWave (framecnt, (double)freq); }
-			//if(WaveType == Generator.TypeSquare) { return SquareWave(framecnt, (double)freq); }
-			//return null;
+		
 		}
 		
-		
-		
-		/*public static short[] SineWave(double frequency, int seconds, int samplerate)
+		public void LoadGenerators(string trackpath, int sampleid)
 		{
-			short[] toret;
-	 
-			int frames = seconds * samplerate;
-			toret = new short[frames];
-			for (int i = 0; i < frames; i++)
-			{
-				toret[i] = (short)(short.MaxValue * Math.Sin((2 * Math.PI * frequency) / samplerate * i));
-			}
+			Console.WriteLine("Attempting to load generators");
+			if(!Directory.Exists(Engine.PFP(trackpath))) { return; }
+			if(!Directory.Exists(Engine.PFP(trackpath + "Samples/Generators/" + sampleid.ToString()))) { return; }
 			
-			return toret;
-		}*/
+			//GeneratorTypes = new string[128];
+			if(GeneratorTypes == null) { return; }
+			Generators = new Machines.Generator[GeneratorTypes.Length];
+			
+			for(int eg = 0; eg < Generators.Length; eg++)
+			{
+				if(File.Exists(Engine.PFP(trackpath + "Samples/Generators/" + sampleid.ToString() + "/" + eg.ToString() + ".xml"))
+				&& GeneratorTypes[eg] != null && GeneratorTypes[eg] != "")
+				{
+					//Machines.Processor inp;
+					//Type tt = Type.GetType(ProcessorTypes[eg]);
+					Type t = Type.GetType(GeneratorTypes[eg]);
+					XmlSerializer s = new XmlSerializer(t);
+					TextReader tr = new StreamReader(Engine.PFP(trackpath + "Samples/Generators/" + sampleid.ToString() + "/" + eg.ToString() + ".xml"));
+					//Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[eg] = new Sample();
+					//inp = new Machines.Processor();
+					//inp = (Machines.Processor)s.Deserialize(tr);
+					Console.WriteLine("Trying to spawn a generator.");
+					//Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[eg] = new gurumod.Machines.Mixer();
+					
+					//Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[eg] = (Machines.Processor)Activator.CreateInstance(t, new Object[]{s.Deserialize(tr)});
+					Engine.TheTrack.Samples[sampleid].WaveMachine.Generators[eg] = (Machines.Generator)Activator.CreateInstance(t, true);
+					Engine.TheTrack.Samples[sampleid].WaveMachine.Generators[eg] = (Machines.Generator)s.Deserialize(tr);
+					//Activator.CreateInstance()
+					
+					//Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[eg]
+				}
+			}
+		}
 		
-		public void InitOscillators()
+		public void LoadProcessors(string trackpath, int sampleid)
+		{
+			Console.WriteLine("Attempting to load processors");
+			if(!Directory.Exists(Engine.PFP(trackpath))) { return; }
+			if(!Directory.Exists(Engine.PFP(trackpath + "Samples/Processors/" + sampleid.ToString()))) { return; }
+			
+			//GeneratorTypes = new string[128];
+			if(ProcessorTypes == null) { return; }
+			Processors = new Machines.Processor[ProcessorTypes.Length];
+			
+			for(int eg = 0; eg < Processors.Length; eg++)
+			{
+				if(File.Exists(Engine.PFP(trackpath + "Samples/Processors/" + sampleid.ToString() + "/" + eg.ToString() + ".xml"))
+				&& ProcessorTypes[eg] != null && ProcessorTypes[eg] != "")
+				{
+					//Machines.Processor inp;
+					//Type tt = Type.GetType(ProcessorTypes[eg]);
+					Type t = Type.GetType(ProcessorTypes[eg]);
+					XmlSerializer s = new XmlSerializer(t);
+					TextReader tr = new StreamReader(Engine.PFP(trackpath + "Samples/Processors/" + sampleid.ToString() + "/" + eg.ToString() + ".xml"));
+					//Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[eg] = new Sample();
+					//inp = new Machines.Processor();
+					//inp = (Machines.Processor)s.Deserialize(tr);
+					Console.WriteLine("Trying to spawn a processor.");
+					//Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[eg] = new gurumod.Machines.Mixer();
+					
+					//Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[eg] = (Machines.Processor)Activator.CreateInstance(t, new Object[]{s.Deserialize(tr)});
+					Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[eg] = (Machines.Processor)Activator.CreateInstance(t, true);
+					Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[eg] = (Machines.Processor)s.Deserialize(tr);
+					//Activator.CreateInstance()
+					
+					//Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[eg]
+				}
+			}
+		}
+		
+		/*public void InitOscillators()
 		{
 			Oscs = new Oscilator[3];
 			Oscs[0] = new Oscilator();
@@ -232,10 +271,26 @@ namespace gurumod
 					Mixers[emx] = new MixerSettings();
 				}
 			}
+		}*/
+		
+		public void InitGenerators()
+		{
+			Generators = new Machines.Generator[1];
+			Generators[0] = new Machines.Osc();
+			Generators[0].Enabled = true;
+			
+		}
+		
+		public void InitProcessors()
+		{
+			Processors = new Machines.Processor[1];
+			Processors[0] = new Machines.Mixer();
+			Processors[0].Initialize();
+			//Processors[0].InitInputs();
 		}
 		
 		//public short[] MixAudio(short[] SourceA, short[] SourceB, MixerSettings MxSettings)
-		public short[] MixAudio(MixerSettings MxSettings)
+		/*public short[] MixAudio(MixerSettings MxSettings)
 		{
 			short[] SourceA = new short[1];//this.Signals[MxSettings.SourceAID];
 			short[] SourceB = new short[1];//this.Signals[MxSettings.SourceBID];
@@ -267,8 +322,8 @@ namespace gurumod
 			{
 				if(MxSettings.MixMethod == MixerSettings.MixMethodAdd)
 				{
-					toret[esamp] = (short)((SourceA[esamp] + SourceB[esamp])/* * this.Amplitude*/);
-					if(esamp > 0)
+					toret[esamp] = (short)((SourceA[esamp] + SourceB[esamp])/* * this.Amplitude*///);
+				/*	if(esamp > 0)
 					{
 						if(toret[esamp] < 20000 && toret[esamp] > -20000)
 						{
@@ -280,7 +335,7 @@ namespace gurumod
 				}
 				else if(MxSettings.MixMethod == MixerSettings.MixMethodSubtract)
 				{
-					//toret[esamp] = (short)((SourceA[esamp] - SourceB[esamp])/* * this.Amplitude*/);
+					//toret[esamp] = (short)((SourceA[esamp] - SourceB[esamp])/* * this.Amplitude*//*);
 					if(SourceA[esamp] > SourceB[esamp]) { toret[esamp] = (short)(SourceA[esamp] - SourceB[esamp]); }
 					else { toret[esamp] = (short)(SourceB[esamp] - SourceA[esamp]); }
 				}
@@ -305,7 +360,7 @@ namespace gurumod
 				}*/
 				
 				
-				
+				/*
 				try
 				{
 					//	Gate functions
@@ -342,23 +397,72 @@ namespace gurumod
 			
 			return toret;
 		}
-		
+		*/
+	
 		public short[] Process(int processorid)
 		{
-			for(int ein = 0; ein < Processors.Length; ein++)
+			Console.WriteLine("Processing id: {0}", processorid);
+			
+			try
 			{
-				if(Processors[processorid].Inputs[ein].SourceType == Machines.InputData.SourceTypeProcessor)
+				if(Processors == null)
 				{
+					Console.WriteLine("Processors is null!");
+					return null;
+				}
+				
+				if(Processors[processorid] == null)
+				{
+					Console.WriteLine("Processor {0} is null :(", processorid);
+					return null;
+				}
+				
+				if(Processors[processorid].Inputs == null)
+				{
+					Console.WriteLine("Processor {0} Inputs is null!", processorid);
+					Processors[processorid].Initialize();
+					return null;
+				}
+			}
+			catch(Exception ex)
+			{
+				Console.WriteLine("Exception during Process");
+				Console.WriteLine(ex.Message);
+				Console.WriteLine(ex.StackTrace);
+				Environment.Exit(0);
+			}
+			for(int ein = 0; ein < Processors[processorid].Inputs.Length; ein++)
+			{
+				Console.WriteLine("Processing {0} input {1}", processorid, ein);
+				if(Processors[processorid].Inputs[ein].SourceType == Machines.InputData.SourceTypeProcessor
+			    && Processors[processorid].Inputs[ein].SourceID > -1)
+				{
+					//Console.Write("yeah");
 					if(!Signals.ContainsKey("proc" + Processors[processorid].Inputs[ein].SourceID.ToString()))
 					{
-						int nproc = Processors[processorid].Inputs[ein].SourceID;
-						Signals.Add("proc" + nproc.ToString(), Process(nproc));
+						try
+						{
+							int nproc = Processors[processorid].Inputs[ein].SourceID;
+							
+							Console.WriteLine("Adding signal {0}", "proc" + nproc.ToString());
+							
+							Signals.Add("proc" + nproc.ToString(), Process(nproc));
+							
+						}
+						catch(Exception ex)
+						{
+							Console.WriteLine("Exception while processing a processor.");
+							Console.WriteLine(ex.Message);
+							Console.WriteLine(ex.StackTrace);
+							Environment.Exit(0);
+						}
 					}
 				}
 			}
 			
 			return Processors[processorid].Process(Signals);
 		}
+	
 	}
 }
 

@@ -273,6 +273,103 @@ namespace gurumod
 			{
 				Directory.CreateDirectory(TrackPath + "Samples/Audio");
 			}
+			if(!Directory.Exists(TrackPath + "Samples/Generators"))
+			{
+				Directory.CreateDirectory(TrackPath + "Samples/Generators");
+			}
+			if(!Directory.Exists(TrackPath + "Samples/Processors"))
+			{
+				Directory.CreateDirectory(TrackPath + "Samples/Processors");
+			}
+			
+			WaveMachine.ProcessorTypes = new string[WaveMachine.Processors.Length];
+			for(int epr = 0; epr < Engine.TheTrack.Samples[sampleid].WaveMachine.Processors.Length; epr++)
+			{
+				if(WaveMachine.Processors[epr] != null)
+				//if(WaveMachine.ProcessorTypes[epr] != null)
+				{
+					WaveMachine.ProcessorTypes[epr] = WaveMachine.Processors[epr].GetType().ToString();
+					if(!Directory.Exists(TrackPath + "Samples/Processors/" + sampleid.ToString()))
+					{
+						Directory.CreateDirectory(TrackPath + "Samples/Processors/" + sampleid.ToString());
+						
+					}
+					
+					WaveMachine.Processors[epr].Save(TrackPath, sampleid, epr);
+				}
+				else
+				{
+					WaveMachine.ProcessorTypes = new string[1];
+					WaveMachine.Processors = new gurumod.Machines.Processor[1];
+					WaveMachine.Processors[0] = new gurumod.Machines.Mixer();
+					WaveMachine.ProcessorTypes[0] = "gurumod.Machines.Mixer";
+				}
+			}
+			
+			WaveMachine.GeneratorTypes = new string[WaveMachine.Generators.Length];
+			for(int eg = 0; eg < WaveMachine.Generators.Length; eg++)
+			{
+				if(WaveMachine.Generators[eg] != null)
+				{
+					WaveMachine.GeneratorTypes[eg] = WaveMachine.Generators[eg].GetType().ToString();
+					if(!Directory.Exists(TrackPath + "Samples/Generators/" + sampleid.ToString()))
+					{
+						Directory.CreateDirectory(TrackPath + "Samples/Generators/" + sampleid.ToString());
+					}
+					
+					WaveMachine.Generators[eg].Save(TrackPath, sampleid, eg);
+				}
+				else
+				{
+					WaveMachine.GeneratorTypes[eg] = "";
+				}
+			}
+			/*if(WaveMachine.GeneratorTypes != null && eg < WaveMachine.GeneratorTypes.Length)
+			{
+				for(int eg = 0; eg < Engine.TheTrack.Samples[sampleid].WaveMachine.GeneratorTypes.Length; eg++)
+				{
+					/*tgentypes[eg]
+					else if(WaveMachine.GeneratorTypes == null)
+					{
+						WaveMachine.GeneratorTypes = new string[1];
+						WaveMachine.Generators = new gurumod.Machines.Generator[1];
+						WaveMachine.Generators[0] = new gurumod.Machines.Osc();
+						WaveMachine.GeneratorTypes[0] = "gurumod.Machines.Osc";
+					}*/
+					
+					/*if(Engine.TheTrack.Samples[sampleid].WaveMachine.Generators[eg] != null)
+					{
+						Directory.CreateDirectory(TrackPath + "Samples/Generators/" + eg.ToString());
+						Engine.TheTrack.Samples[sampleid].WaveMachine.Generators[eg].Save(TrackPath, sampleid, eg);
+						//Engine.TheTrack.Samples[sampleid].WaveMachine.GeneratorTypes[eg] = Engine.TheTrack.Samples[sampleid].WaveMachine.Generators[eg].GetType().ToString();
+						tgentypes[eg] = Engine.TheTrack.Samples[sampleid].WaveMachine.Generators[eg].GetType().ToString();
+					}
+				}
+			}*/
+			/*for(int eg = 0; eg < Engine.TheTrack.Samples[sampleid].WaveMachine.Generators.Length; eg++)
+			{
+				if(WaveMachine.GeneratorTypes != null && eg < WaveMachine.GeneratorTypes.Length)
+				{
+					
+					tgentypes[eg] = WaveMachine.GeneratorTypes[eg]; 
+				}
+				else if(WaveMachine.GeneratorTypes == null)
+				{
+					WaveMachine.GeneratorTypes = new string[1];
+					WaveMachine.Generators = new gurumod.Machines.Generator[1];
+					WaveMachine.Generators[0] = new gurumod.Machines.Osc();
+					WaveMachine.GeneratorTypes[0] = "gurumod.Machines.Osc";
+				}
+				
+				if(Engine.TheTrack.Samples[sampleid].WaveMachine.Generators[eg] != null)
+				{
+					Directory.CreateDirectory(TrackPath + "Samples/Generators/" + eg.ToString());
+					Engine.TheTrack.Samples[sampleid].WaveMachine.Generators[eg].Save(TrackPath, sampleid, eg);
+					//Engine.TheTrack.Samples[sampleid].WaveMachine.GeneratorTypes[eg] = Engine.TheTrack.Samples[sampleid].WaveMachine.Generators[eg].GetType().ToString();
+					tgentypes[eg] = Engine.TheTrack.Samples[sampleid].WaveMachine.Generators[eg].GetType().ToString();
+				}
+			}
+			*/
 			string filename = TrackPath + "Samples/Meta/" + sampleid.ToString() + ".xml";
 			
 			try
@@ -287,6 +384,9 @@ namespace gurumod
 				Console.WriteLine("There was an exception while saving the track's metadata.");
 				Console.WriteLine(ex.Message);
 			}
+			
+			
+			
 			
 		}
 		

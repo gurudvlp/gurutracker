@@ -576,6 +576,30 @@
 			//LoadPage("/sampler/details/" + args["sampleid"], "sampler_detailscell");
 		}
 		
+		function TweakOscillator(sampleid, oscid)
+		{
+			ec = oscid;
+			postvars = Array();
+			postvars["sampleid"] = sampleid;
+			//alert("hi");
+			tmp = document.getElementById("sampler_genmachine_type" + ec);
+			postvars["type"] = tmp.options[tmp.selectedIndex].value;
+			postvars["frequency"] = (document.getElementById("sampler_genmachine_frequency" + ec)).value;
+			postvars["amplitude"] = (document.getElementById("sampler_genmachine_amplitude" + ec)).value;
+			postvars["oscid"] = oscid;
+			
+			if((document.getElementById("sampler_genmachine_usegen" + ec)).checked == true)
+			{
+				postvars["oenabled"] = "true";
+			}
+			else
+			{
+				postvars["oenabled"] = "false";
+			}
+			//alert("test");
+			LoadPagePost("/sampler/tweakmachine", null, postvars);
+		}
+		
 		function TweakSoundMachine(sampleid, oscid)
 		{
 			ec = oscid;
@@ -603,30 +627,78 @@
 		function TweakSoundMixer(sampleid, mixerid, mixerlabel)
 		{
 			
-			ec = mixerlabel;
+			ec = mixerid;
 			
 			postvars = Array();
 			postvars["sampleid"] = sampleid;
 			postvars["mixerid"] = mixerid;
 			
-			postvars["gatemin"] = (document.getElementById("sampler_gm_mixer" + ec + "_gatemin")).value;
-			postvars["gatemax"] = (document.getElementById("sampler_gm_mixer" + ec + "_gatemax")).value;
+			//postvars["gatemin"] = (document.getElementById("sampler_gm_mixer" + ec + "_gatemin")).value;
+			//postvars["gatemax"] = (document.getElementById("sampler_gm_mixer" + ec + "_gatemax")).value;
 			
-			tmp = document.getElementById("sampler_gm_mixer" + ec + "_gateminsrc");
-			postvars["gateminsrc"] = tmp.options[tmp.selectedIndex].value;
-			tmp = document.getElementById("sampler_gm_mixer" + ec + "_gatemaxsrc");
-			postvars["gatemaxsrc"] = tmp.options[tmp.selectedIndex].value;
+			//tmp = document.getElementById("sampler_gm_mixer" + ec + "_gateminsrc");
+			//postvars["gateminsrc"] = tmp.options[tmp.selectedIndex].value;
+			//tmp = document.getElementById("sampler_gm_mixer" + ec + "_gatemaxsrc");
+			//postvars["gatemaxsrc"] = tmp.options[tmp.selectedIndex].value;
 			
-			tmp = document.getElementById("sampler_gm_mixer" + ec + "_inputa");
-			postvars["inputa"] = tmp.options[tmp.selectedIndex].value;
-			tmp = document.getElementById("sampler_gm_mixer" + ec + "_inputb");
-			postvars["inputb"] = tmp.options[tmp.selectedIndex].value;
-			tmp = document.getElementById("sampler_gm_mixer" + ec + "_type");
+			tmp = document.getElementById("sampler_gm_processor" + ec + "_input0");
+			postvars["input0"] = tmp.options[tmp.selectedIndex].value;
+			
+			tmp = document.getElementById("sampler_gm_processor" + ec + "_input1");
+			postvars["input1"] = tmp.options[tmp.selectedIndex].value;
+			
+			tmp = document.getElementById("sampler_gm_processor" + ec + "_type");
 			postvars["combmethod"] = tmp.options[tmp.selectedIndex].value;
 			
 			
 			
 			LoadPagePost("/sampler/tweakmachine", null, postvars);
+		}
+		
+		function TweakSoundGate(sampleid, mixerid, mixerlabel)
+		{
+			
+			ec = mixerid;
+			
+			postvars = Array();
+			postvars["sampleid"] = sampleid;
+			postvars["processorid"] = mixerid;
+			
+			postvars["gatemin"] = (document.getElementById("sampler_genmachine_processor" + ec + "_mingateman")).value;
+			postvars["gatemax"] = (document.getElementById("sampler_genmachine_processor" + ec + "_maxgateman")).value;
+			
+			tmp = document.getElementById("sampler_gm_processor" + ec + "_input0");
+			postvars["input0"] = tmp.options[tmp.selectedIndex].value;
+			
+			tmp = document.getElementById("sampler_gm_processor" + ec + "_input1");
+			postvars["input1"] = tmp.options[tmp.selectedIndex].value;
+			
+			tmp = document.getElementById("sampler_gm_processor" + ec + "_input2");
+			postvars["input2"] = tmp.options[tmp.selectedIndex].value;
+			
+			LoadPagePost("/sampler/tweakgate", null, postvars);
+			//alert("tweaked gate");
+		}
+		
+		function TweakWavePlayer(sampleid, mixerid, mixerlabel)
+		{
+			ec = mixerid;
+			
+			postvars = Array();
+			postvars["sampleid"] = sampleid;
+			postvars["generatorid"] = mixerid;
+			postvars["nfilename"] = (document.getElementById("sampler_genmachine_filename" + ec)).value;
+			
+			if((document.getElementById("sampler_genmachine_usegen" + ec)).checked == true)
+			{
+				postvars["oenabled"] = "true";
+			}
+			else
+			{
+				postvars["oenabled"] = "false";
+			}
+			
+			LoadPagePost("/sampler/tweakwaveplayer", null, postvars);
 		}
 		
 		function AddOscillator(sampleid)
@@ -654,6 +726,30 @@
 		function AddMixerHandler(args)
 		{
 			//nothin yet
+		}
+		
+		function AddGate(sampleid)
+		{
+			args = Array();
+			args["sampleid"] = sampleid;
+			LoadPageCallFunction("/sampler/addgate/" + sampleid, "AddGateHandler", args);
+		}
+		
+		function AddGateHandler(args)
+		{
+		
+		}
+		
+		function AddWavePlayer(sampleid)
+		{
+			args = Array();
+			args["sampleid"] = sampleid;
+			LoadPageCallFunction("/sampler/addwaveplayer/" + sampleid, "AddWavePlayerHandler", args);
+		}
+		
+		function AddWavePlayerHandler(args)
+		{
+		
 		}
 		
 		function ShowSampleImporter(sampleid)

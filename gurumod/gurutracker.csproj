@@ -22,7 +22,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <Externalconsole>true</Externalconsole>
-    <Commandlineparameters>-f /home/guru/gurutracker/Tracks/betateztz --webtemplatedir /home/guru/.config/gurutracker/Interfaces/Web/templates/</Commandlineparameters>
+    <Commandlineparameters>-f /home/guru/gurutracker/Tracks/betatezt2 --webtemplatedir /home/guru/Projects/gurutracker/Interfaces/Web/templates/</Commandlineparameters>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>none</DebugType>
@@ -89,6 +89,12 @@
     <Compile Include="Tracks\Machines\Generators\Oscilator.cs" />
     <Compile Include="Tracks\Machines\Generators\Generator.cs" />
     <Compile Include="Tracks\Machines\Generators\Osc.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Sampler\Processors\Mixer.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Sampler\Generators\Oscillator.cs" />
+    <Compile Include="Tracks\Machines\Mixers\Gate.cs" />
+    <Compile Include="Tracks\Machines\Generators\WavFile.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Sampler\Processors\Gate.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Sampler\Generators\WavPlayer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -102,6 +108,9 @@
     <Folder Include="Tracks\Machines\" />
     <Folder Include="Tracks\Machines\Mixers\" />
     <Folder Include="Tracks\Machines\Generators\" />
+    <Folder Include="Interfaces\WebInterface\Pages\Sampler\" />
+    <Folder Include="Interfaces\WebInterface\Pages\Sampler\Processors\" />
+    <Folder Include="Interfaces\WebInterface\Pages\Sampler\Generators\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Bin.tar" />

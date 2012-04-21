@@ -1,6 +1,7 @@
 
 using System;
 
+
 namespace gurumod.WebPages
 {
 	
@@ -16,6 +17,8 @@ namespace gurumod.WebPages
 		public string OscTemplate = "";
 		public string EachMixerTemplate = "";
 		public string EachGateSrcTemplate = "";
+		
+		public string ProcessorTemplatePath = "";
 		
 		public Sampler()
 		{
@@ -36,6 +39,9 @@ namespace gurumod.WebPages
 			OscTemplate = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/eachosc.html"));
 			EachMixerTemplate = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/eachmixer.html"));
 			EachGateSrcTemplate = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/eachmixer-eachgatesrc.html"));
+			
+			ProcessorTemplatePath = Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/processors/");
+			
 			base.OutgoingBuffer = "";
 			base.Template = "";
 			
@@ -75,15 +81,22 @@ namespace gurumod.WebPages
 							
 							if(Engine.TheTrack.Samples[smpid] != null)
 							{
-								Oscilator[] tmposc = new Oscilator[Engine.TheTrack.Samples[smpid].WaveMachine.Oscs.Length + 1];
-								for(int eogo = 0; eogo < Engine.TheTrack.Samples[smpid].WaveMachine.Oscs.Length; eogo++)
+								Machines.Generator[] tmposc = new gurumod.Machines.Generator[Engine.TheTrack.Samples[smpid].WaveMachine.Generators.Length + 1];
+								for(int eogo = 0; eogo < Engine.TheTrack.Samples[smpid].WaveMachine.Generators.Length; eogo++)
+								{
+									tmposc[eogo] = Engine.TheTrack.Samples[smpid].WaveMachine.Generators[eogo];
+								}
+								tmposc[tmposc.Length - 1] = new gurumod.Machines.Osc();
+								
+								//Oscilator[] tmposc = new Oscilator[Engine.TheTrack.Samples[smpid].WaveMachine.Oscs.Length + 1];
+								/*for(int eogo = 0; eogo < Engine.TheTrack.Samples[smpid].WaveMachine.Oscs.Length; eogo++)
 								{
 									tmposc[eogo] = Engine.TheTrack.Samples[smpid].WaveMachine.Oscs[eogo];
 								}
 								
-								tmposc[tmposc.Length - 1] = new Oscilator();
+								tmposc[tmposc.Length - 1] = new Oscilator();*/
 								
-								Engine.TheTrack.Samples[smpid].WaveMachine.Oscs = tmposc;
+								Engine.TheTrack.Samples[smpid].WaveMachine.Generators = tmposc;
 							}
 						}
 						
@@ -102,7 +115,18 @@ namespace gurumod.WebPages
 							
 							if(Engine.TheTrack.Samples[smpid] != null)
 							{
-								MixerSettings[] tmposc = new MixerSettings[Engine.TheTrack.Samples[smpid].WaveMachine.Mixers.Length + 1];
+								Machines.Processor[] tmppr = new gurumod.Machines.Processor[Engine.TheTrack.Samples[smpid].WaveMachine.Processors.Length + 1];
+								for(int eogo = 0; eogo < Engine.TheTrack.Samples[smpid].WaveMachine.Processors.Length; eogo++)
+								{
+									tmppr[eogo] = Engine.TheTrack.Samples[smpid].WaveMachine.Processors[eogo];
+								}
+								
+								tmppr[tmppr.Length - 1] = new gurumod.Machines.Mixer();
+								((Machines.Mixer)tmppr[tmppr.Length - 1]).Initialize();
+								
+								Engine.TheTrack.Samples[smpid].WaveMachine.Processors = tmppr;
+								
+								/*MixerSettings[] tmposc = new MixerSettings[Engine.TheTrack.Samples[smpid].WaveMachine.Mixers.Length + 1];
 								for(int eogo = 0; eogo < Engine.TheTrack.Samples[smpid].WaveMachine.Mixers.Length; eogo++)
 								{
 									tmposc[eogo] = Engine.TheTrack.Samples[smpid].WaveMachine.Mixers[eogo];
@@ -110,7 +134,67 @@ namespace gurumod.WebPages
 								
 								tmposc[tmposc.Length - 1] = new MixerSettings();
 								
-								Engine.TheTrack.Samples[smpid].WaveMachine.Mixers = tmposc;
+								Engine.TheTrack.Samples[smpid].WaveMachine.Mixers = tmposc;*/
+							}
+						}
+						
+						base.Template = "OK";
+					}
+					else if(base.RequestParts[1] == "addwaveplayer")
+					{
+						int smpid = 0;
+						Console.WriteLine("AddWavePlayer Called");
+						
+						if(Int32.TryParse(base.RequestParts[2], out smpid))
+						{
+							if(Engine.TheTrack.Samples[smpid] != null)
+							{
+								Machines.Generator[] tmppr = new gurumod.Machines.Generator[Engine.TheTrack.Samples[smpid].WaveMachine.Generators.Length + 1];
+								for(int eogo = 0; eogo < Engine.TheTrack.Samples[smpid].WaveMachine.Generators.Length; eogo++)
+								{
+									tmppr[eogo] = Engine.TheTrack.Samples[smpid].WaveMachine.Generators[eogo];
+								}
+								
+								tmppr[tmppr.Length - 1] = new gurumod.Machines.WavFile();
+								//((Machines.WavFile)tmppr[tmppr.Length - 1]).Initialize();
+								
+								Engine.TheTrack.Samples[smpid].WaveMachine.Generators = tmppr;
+							}
+						}
+					}
+					else if(base.RequestParts[1] == "addgate")
+					{
+						int smpid = 0;
+						Console.WriteLine("AddGate called");
+						
+						if(Int32.TryParse(base.RequestParts[2], out smpid))
+						{
+							//	The user is trying to add an oscillator, and we have the
+							//	sample id.  So if that sample exists, we need to create a enw
+							//	oscillator :)
+							
+							if(Engine.TheTrack.Samples[smpid] != null)
+							{
+								Machines.Processor[] tmppr = new gurumod.Machines.Processor[Engine.TheTrack.Samples[smpid].WaveMachine.Processors.Length + 1];
+								for(int eogo = 0; eogo < Engine.TheTrack.Samples[smpid].WaveMachine.Processors.Length; eogo++)
+								{
+									tmppr[eogo] = Engine.TheTrack.Samples[smpid].WaveMachine.Processors[eogo];
+								}
+								
+								tmppr[tmppr.Length - 1] = new gurumod.Machines.Gate();
+								((Machines.Gate)tmppr[tmppr.Length - 1]).Initialize();
+								
+								Engine.TheTrack.Samples[smpid].WaveMachine.Processors = tmppr;
+								
+								/*MixerSettings[] tmposc = new MixerSettings[Engine.TheTrack.Samples[smpid].WaveMachine.Mixers.Length + 1];
+								for(int eogo = 0; eogo < Engine.TheTrack.Samples[smpid].WaveMachine.Mixers.Length; eogo++)
+								{
+									tmposc[eogo] = Engine.TheTrack.Samples[smpid].WaveMachine.Mixers[eogo];
+								}
+								
+								tmposc[tmposc.Length - 1] = new MixerSettings();
+								
+								Engine.TheTrack.Samples[smpid].WaveMachine.Mixers = tmposc;*/
 							}
 						}
 						
@@ -289,6 +373,95 @@ namespace gurumod.WebPages
 							base.Template = "FAIL";
 						}
 					}
+					else if(base.RequestParts[1] == "tweakwaveplayer")
+					{
+						int sampleid = Int32.Parse(base.PostVars["SAMPLEID"]);
+						int generatorid = Int32.Parse(base.PostVars["GENERATORID"]);
+						string nfilename = base.PostVars["NFILENAME"];
+						
+						string oenabled = base.PostVars["OENABLED"];
+						if(oenabled.ToLower() == "false") { Engine.TheTrack.Samples[sampleid].WaveMachine.Generators[generatorid].Enabled = false; }
+						else { Engine.TheTrack.Samples[sampleid].WaveMachine.Generators[generatorid].Enabled = true; }
+						
+						((Machines.WavFile)Engine.TheTrack.Samples[sampleid].WaveMachine.Generators[generatorid]).Filename = nfilename;
+						((Machines.WavFile)Engine.TheTrack.Samples[sampleid].WaveMachine.Generators[generatorid]).LoadFile();
+						base.Template = "OK";
+					}
+					else if(base.RequestParts[1] == "tweakgate")
+					{
+						double mingateman = double.Parse(base.PostVars["GATEMIN"]);
+						double maxgateman = double.Parse(base.PostVars["GATEMAX"]);
+						int sampleid = Int32.Parse(base.PostVars["SAMPLEID"]);
+						int processorid = Int32.Parse(base.PostVars["PROCESSORID"]);
+						string inputa = base.PostVars["INPUT0"];
+						string inputb = base.PostVars["INPUT1"];
+						string inputc = base.PostVars["INPUT2"];
+						int inputaid = 0;
+						int inputbid = 0;
+						int inputcid = 0;
+						int inputatype = 0;
+						int inputbtype = 0;
+						int inputctype = 0;
+						//string oenabled = base.PostVars["OENABLED"];
+						
+						//Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[processorid]
+						((Machines.Gate)Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[processorid]).MinGateManual = mingateman;
+						((Machines.Gate)Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[processorid]).MaxGateManual = maxgateman;
+						
+						//if(oenabled.ToLower() == "false") { Engine.TheTrack.Samples[sampleid].WaveMachine}
+						
+						if(inputa.IndexOf("gen") == 0)
+						{
+							inputaid = Int32.Parse(inputa.Replace("gen", ""));
+							inputatype = Machines.InputData.SourceTypeGenerator;
+						}
+						else if(inputa.IndexOf("proc") == 0)
+						{
+							inputaid = Int32.Parse(inputa.Replace("proc", ""));
+							inputatype = Machines.InputData.SourceTypeProcessor;
+						}
+						else if(inputa == "-1")
+						{
+							inputaid = -1;
+						}
+						
+						if(inputb.IndexOf("gen") == 0)
+						{
+							inputbid = Int32.Parse(inputb.Replace("gen", ""));
+							inputbtype = Machines.InputData.SourceTypeGenerator;
+						}
+						else if(inputb.IndexOf("proc") == 0)
+						{
+							inputbid = Int32.Parse(inputb.Replace("proc", ""));
+							inputbtype = Machines.InputData.SourceTypeProcessor;
+						}
+						else if(inputb == "-1")
+						{
+							inputbid = -1;
+						}
+						
+						if(inputc.IndexOf("gen") == 0)
+						{
+							inputcid = Int32.Parse(inputc.Replace("gen", ""));
+							inputctype = Machines.InputData.SourceTypeGenerator;
+						}
+						else if(inputc.IndexOf("proc") == 0)
+						{
+							inputcid = Int32.Parse(inputc.Replace("proc", ""));
+							inputctype = Machines.InputData.SourceTypeProcessor;
+						}
+						else if(inputc == "-1")
+						{
+							inputcid = -1;
+						}
+						
+						Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[processorid].Inputs[0].SourceID = inputaid;
+						Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[processorid].Inputs[0].SourceType = inputatype;
+						Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[processorid].Inputs[1].SourceID = inputbid;
+						Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[processorid].Inputs[1].SourceType = inputbtype;
+						Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[processorid].Inputs[2].SourceID = inputcid;
+						Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[processorid].Inputs[2].SourceType = inputctype;
+					}
 					else if(base.RequestParts[1] == "tweakmachine")
 					{
 						Console.WriteLine("A user is tweaking a sound machine");
@@ -306,198 +479,56 @@ namespace gurumod.WebPages
 									double.TryParse(base.PostVars["AMPLITUDE"], out useamp);
 								}
 								
-								if(base.PostVars["TYPE"] == "silence")
+								string wavetype = base.PostVars["TYPE"];
+								int oscid = Int32.Parse(base.PostVars["OSCID"]);
+								
+								string enabled = "";
+								if(base.PostVars.ContainsKey("OENABLED"))
 								{
-									base.Template = "FAIL";
+									enabled = base.PostVars["OENABLED"].ToLower();
 								}
-								else if(base.PostVars["TYPE"] == "sine")
+								
+								double frequency = double.Parse(base.PostVars["FREQUENCY"]);
+								int samplerate = 44100; //Int32.Parse(base.PostVars["SAMPLERATE"]);
+								
+								
+								Engine.TheTrack.Samples[sid].UseWaveGenerator = false;
+								Engine.TheTrack.Samples[sid].UseWaveMachine = true;
+								Engine.TheTrack.Samples[sid].WaveMachine.Generators[oscid].Frequency = frequency;
+								Engine.TheTrack.Samples[sid].WaveMachine.Generators[oscid].SampleRate = samplerate;
+								Engine.TheTrack.Samples[sid].WaveMachine.Generators[oscid].Format = OpenTK.Audio.OpenAL.ALFormat.Mono16;
+								
+								Engine.TheTrack.Samples[sid].WaveMachine.Generators[oscid].Amplitude = useamp;
+								
+								
+								int tyid = 0;
+								if(wavetype == "sine") { tyid = Generator.TypeSine; }
+								else if(wavetype == "square") { tyid = Generator.TypeSquare; }
+								else if(wavetype == "sawtooth") { tyid = Generator.TypeSawtooth; }
+								else if(wavetype == "triangle") { tyid = Generator.TypeTriangle; }
+								
+								((Machines.Osc)Engine.TheTrack.Samples[sid].WaveMachine.Generators[oscid]).WaveType = tyid;
+								
+								if(enabled == "true")
 								{
-									if(base.PostVars.ContainsKey("OSCID"))
-									{
-										Console.WriteLine("Type set as SINE");
-										int oscid = Int32.Parse(base.PostVars["OSCID"]);
-										string enabled = "";
-										if(base.PostVars.ContainsKey("OENABLED"))
-										{
-											enabled = base.PostVars["OENABLED"].ToLower();
-										}
-										
-										double frequency = double.Parse(base.PostVars["FREQUENCY"]);
-										int samplerate = 44100; //Int32.Parse(base.PostVars["SAMPLERATE"]);
-										//int length = Int32.Parse(base.PostVars["LENGTHZ"]);
-										//string filename = base.PostVars["FILENAME"];
-										
-										/*Engine.TheTrack.Samples[sid].UseWaveGenerator = true;
-										Engine.TheTrack.Samples[sid].WaveGenerator.Frequency = frequency;
-										Engine.TheTrack.Samples[sid].WaveGenerator.SampleRate = samplerate;
-										Engine.TheTrack.Samples[sid].WaveGenerator.Length = length;
-										Engine.TheTrack.Samples[sid].WaveGenerator.Format = OpenTK.Audio.OpenAL.ALFormat.Mono16;
-										Engine.TheTrack.Samples[sid].WaveGenerator.WaveType = Generator.TypeSine;
-										Engine.TheTrack.Samples[sid].Loaded = false;
-										*/
-										
-										Engine.TheTrack.Samples[sid].UseWaveGenerator = false;
-										Engine.TheTrack.Samples[sid].UseWaveMachine = true;
-										Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].Frequency = frequency;
-										Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].SampleRate = samplerate;
-										Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].Format = OpenTK.Audio.OpenAL.ALFormat.Mono16;
-										Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].WaveType = Generator.TypeSine;
-										Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].Amplitude = useamp;
-										if(enabled == "true")
-										{
-											Console.WriteLine("Setting oscillator {0} to enabled.", oscid);
-											Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].Enabled = true;
-										}
-										else if(enabled == "false")
-										{
-											Console.WriteLine("Setting oscillator {0} to disabled.", oscid);
-											Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].Enabled = false;
-										}
-										//Engine.TheTrack.Samples[sid].Loaded = true;
-										
-										//Engine.TheTrack.Samples[sid].ImportSample(Sample.SineWave(frequency, length, samplerate), OpenTK.Audio.OpenAL.ALFormat.Mono16, samplerate);
-										Engine.TheTrack.Samples[sid].Filename = "";
-										
-										base.Template = "OK";
-									}
-									else
-									{
-										base.Template = "FAIL";
-									}
+									Console.WriteLine("Setting oscillator {0} to enabled.", oscid);
+									//Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].Enabled = true;
+									Engine.TheTrack.Samples[sid].WaveMachine.Generators[oscid].Enabled = true;
 								}
-								else if(base.PostVars["TYPE"] == "square")
+								else if(enabled == "false")
 								{
-									if(PostVars.ContainsKey("OSCID"))
-									{
-										Console.WriteLine("Type set as SQUARE");
-										
-										double frequency = double.Parse(base.PostVars["FREQUENCY"]);
-										int samplerate = 44100; //Int32.Parse(base.PostVars["SAMPLERATE"]);
-										
-										string enabled = "";
-										if(base.PostVars.ContainsKey("OENABLED"))
-										{
-											enabled = base.PostVars["OENABLED"].ToLower();
-										}
-										//int length = Int32.Parse(base.PostVars["LENGTHZ"]);
-										
-										/*Engine.TheTrack.Samples[sid].UseWaveGenerator = true;
-										Engine.TheTrack.Samples[sid].WaveGenerator.Frequency = frequency;
-										Engine.TheTrack.Samples[sid].WaveGenerator.SampleRate = samplerate;
-										Engine.TheTrack.Samples[sid].WaveGenerator.Length = length;
-										Engine.TheTrack.Samples[sid].WaveGenerator.Format = OpenTK.Audio.OpenAL.ALFormat.Mono16;
-										Engine.TheTrack.Samples[sid].WaveGenerator.WaveType = Generator.TypeSquare;
-										Engine.TheTrack.Samples[sid].Loaded = false;
-										*/
-										int oscid = Int32.Parse(base.PostVars["OSCID"]);
-										
-										Engine.TheTrack.Samples[sid].UseWaveGenerator = false;
-										Engine.TheTrack.Samples[sid].UseWaveMachine = true;
-										Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].Frequency = frequency;
-										Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].SampleRate = samplerate;
-										Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].Format = OpenTK.Audio.OpenAL.ALFormat.Mono16;
-										Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].WaveType = Generator.TypeSquare;
-										Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].Amplitude = useamp;
-										
-										if(enabled == "true")
-										{
-											Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].Enabled = true;
-										}
-										else if(enabled == "false")
-										{
-											Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].Enabled = false;
-										}
-										//Engine.TheTrack.Samples[sid].ImportSample(Sample.SineWave(frequency, length, samplerate), OpenTK.Audio.OpenAL.ALFormat.Mono16, samplerate);
-										Engine.TheTrack.Samples[sid].Filename = "";
-										base.Template = "OK";
-									}
-									else
-									{
-										base.Template = "FAIL";
-									}
+									Console.WriteLine("Setting oscillator {0} to disabled.", oscid);
+									//Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].Enabled = false;
+									Engine.TheTrack.Samples[sid].WaveMachine.Generators[oscid].Enabled = false;
 								}
-								else if(base.PostVars["TYPE"] == "triangle")
-								{
-									if(PostVars.ContainsKey("OSCID"))
-									{
-										Console.WriteLine("Type set as TRIANGLE");
-										double frequency = double.Parse(base.PostVars["FREQUENCY"]);
-										int samplerate = 44100; //Int32.Parse(base.PostVars["SAMPLERATE"]);
-										
-										string enabled = "";
-										if(base.PostVars.ContainsKey("OENABLED"))
-										{
-											enabled = base.PostVars["OENABLED"].ToLower();
-										}
-									
-										int oscid = Int32.Parse(base.PostVars["OSCID"]);
-										
-										Engine.TheTrack.Samples[sid].UseWaveGenerator = false;
-										Engine.TheTrack.Samples[sid].UseWaveMachine = true;
-										Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].Frequency = frequency;
-										Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].SampleRate = samplerate;
-										Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].Format = OpenTK.Audio.OpenAL.ALFormat.Mono16;
-										Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].WaveType = Generator.TypeTriangle;
-										Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].Amplitude = useamp;
-										
-										if(enabled == "true")
-										{
-											Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].Enabled = true;
-										}
-										else if(enabled == "false")
-										{
-											Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].Enabled = false;
-										}
-										//Engine.TheTrack.Samples[sid].ImportSample(Sample.SineWave(frequency, length, samplerate), OpenTK.Audio.OpenAL.ALFormat.Mono16, samplerate);
-										Engine.TheTrack.Samples[sid].Filename = "";
-										base.Template = "OK";
-									}
-									else
-									{
-										base.Template = "FAIL";
-									}
-								}
-								else if(base.PostVars["TYPE"] == "sawtooth")
-								{
-									if(PostVars.ContainsKey("OSCID"))
-									{
-										Console.WriteLine("Type set as SAWTOOTH");
-										double frequency = double.Parse(base.PostVars["FREQUENCY"]);
-										int samplerate = 44100; //Int32.Parse(base.PostVars["SAMPLERATE"]);
-										
-										string enabled = "";
-										if(base.PostVars.ContainsKey("OENABLED"))
-										{
-											enabled = base.PostVars["OENABLED"].ToLower();
-										}
-									
-										int oscid = Int32.Parse(base.PostVars["OSCID"]);
-										
-										Engine.TheTrack.Samples[sid].UseWaveGenerator = false;
-										Engine.TheTrack.Samples[sid].UseWaveMachine = true;
-										Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].Frequency = frequency;
-										Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].SampleRate = samplerate;
-										Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].Format = OpenTK.Audio.OpenAL.ALFormat.Mono16;
-										Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].WaveType = Generator.TypeSawtooth;
-										Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].Amplitude = useamp;
-										
-										if(enabled == "true")
-										{
-											Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].Enabled = true;
-										}
-										else if(enabled == "false")
-										{
-											Engine.TheTrack.Samples[sid].WaveMachine.Oscs[oscid].Enabled = false;
-										}
-										//Engine.TheTrack.Samples[sid].ImportSample(Sample.SineWave(frequency, length, samplerate), OpenTK.Audio.OpenAL.ALFormat.Mono16, samplerate);
-										Engine.TheTrack.Samples[sid].Filename = "";
-										base.Template = "OK";
-									}
-									else
-									{
-										base.Template = "FAIL";
-									}
-								}
+								//Engine.TheTrack.Samples[sid].Loaded = true;
+								
+								//Engine.TheTrack.Samples[sid].ImportSample(Sample.SineWave(frequency, length, samplerate), OpenTK.Audio.OpenAL.ALFormat.Mono16, samplerate);
+								Engine.TheTrack.Samples[sid].Filename = "";
+								
+								base.Template = "OK";
+								
+								
 							}
 							else
 							{
@@ -509,53 +540,57 @@ namespace gurumod.WebPages
 								{
 									Console.WriteLine("TweakMachine: Tweaking mixer");
 									int mixerid = Int32.Parse(base.PostVars["MIXERID"]);
-									string stinputa = base.PostVars["INPUTA"];
-									string stinputb = base.PostVars["INPUTB"];
+									//string[] stinputs = new string[]
+									string stinputa = base.PostVars["INPUT0"];
+									string stinputb = base.PostVars["INPUT1"];
 									int inputtypea = MixerSettings.SourceTypeOscillator;
 									int inputtypeb = MixerSettings.SourceTypeOscillator;
 									int inputa = 0;//Int32.Parse(base.PostVars["INPUTA"]);
 									int inputb = 1;//Int32.Parse(base.PostVars["INPUTB"]);
 									
 									Console.WriteLine("stInputA,B {0} {1}", stinputa, stinputb);
-									if(stinputa.IndexOf("osc") == 0)
+									if(stinputa.IndexOf("gen") == 0)
 									{
-										Console.WriteLine("InputA is an oscillator");
-										stinputa = stinputa.Replace("osc", "");
+										Console.WriteLine("InputA is a generator (oscillator)");
+										stinputa = stinputa.Replace("gen", "");
 										inputa = Int32.Parse(stinputa);
-										inputtypea = MixerSettings.SourceTypeOscillator;
+										inputtypea = Machines.InputData.SourceTypeGenerator;
 									}
-									else if(stinputa.IndexOf("mix") == 0)
+									else if(stinputa.IndexOf("proc") == 0)
 									{
-										Console.WriteLine("InputA is a mixer");
-										stinputa = stinputa.Replace("mix", "");
+										Console.WriteLine("InputA is a processor");
+										stinputa = stinputa.Replace("proc", "");
 										inputa = Int32.Parse(stinputa);
-										inputtypea = MixerSettings.SourceTypeMixer;
+										inputtypea = Machines.InputData.SourceTypeProcessor;
 									}
 									
-									if(stinputb.IndexOf("osc") == 0)
+									if(stinputb.IndexOf("gen") == 0)
 									{
-										Console.WriteLine("InputB is an oscillator");
-										stinputb = stinputb.Replace("osc", "");
+										Console.WriteLine("InputB is a generator (oscillator)");
+										stinputb = stinputb.Replace("gen", "");
 										inputb = Int32.Parse(stinputb);
-										inputtypeb = MixerSettings.SourceTypeOscillator;
+										inputtypeb = Machines.InputData.SourceTypeGenerator;
 									}
-									else if(stinputb.IndexOf("mix") == 0)
+									else if(stinputb.IndexOf("proc") == 0)
 									{
-										Console.WriteLine("InputB is a mixer");
-										stinputb = stinputb.Replace("mix", "");
+										Console.WriteLine("InputB is a processor");
+										stinputb = stinputb.Replace("proc", "");
 										inputb = Int32.Parse(stinputb);
-										inputtypeb = MixerSettings.SourceTypeMixer;
+										inputtypeb = Machines.InputData.SourceTypeProcessor;
 									}
 									
 									string outmethod = base.PostVars["COMBMETHOD"];
 									int sampleid = Int32.Parse(base.PostVars["SAMPLEID"]);
-									double gatemin = double.Parse(base.PostVars["GATEMIN"]);
-									double gatemax = double.Parse(base.PostVars["GATEMAX"]);
-									int gateminsrc = Int32.Parse(base.PostVars["GATEMINSRC"]);
-									int gatemaxsrc = Int32.Parse(base.PostVars["GATEMAXSRC"]);
 									
-									if(Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers == null) { Engine.TheTrack.Samples[sampleid].WaveMachine.InitMixers(); }
-									Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers[mixerid].SourceAID = inputa;
+									
+									if(Engine.TheTrack.Samples[sampleid].WaveMachine.Processors == null) { Engine.TheTrack.Samples[sampleid].WaveMachine.InitProcessors(); }
+									
+									Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[mixerid].Inputs[0].SourceID = inputa;
+									Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[mixerid].Inputs[1].SourceID = inputb;
+									Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[mixerid].Inputs[0].SourceType = inputtypea;
+									Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[mixerid].Inputs[1].SourceType = inputtypeb;
+									
+									/*Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers[mixerid].SourceAID = inputa;
 									Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers[mixerid].SourceBID = inputb;
 									Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers[mixerid].SourceTypeA = inputtypea;
 									Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers[mixerid].SourceTypeB = inputtypeb;
@@ -563,8 +598,15 @@ namespace gurumod.WebPages
 									Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers[mixerid].GateMin = gatemin;
 									Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers[mixerid].MaxGateControlSource = gatemaxsrc;
 									Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers[mixerid].MinGateControlSource = gateminsrc;
+									*/
 									
-									if(outmethod == "add")
+									Console.WriteLine("outmethod {0}", outmethod);
+									if(outmethod == "add") { ((Machines.Mixer)Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[mixerid]).CombineMethod = Machines.Mixer.CombineMethodAdd; }
+									else if(outmethod == "subtract") { ((Machines.Mixer)Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[mixerid]).CombineMethod = Machines.Mixer.CombineMethodSubtract; }
+									else if(outmethod == "multiply") { ((Machines.Mixer)Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[mixerid]).CombineMethod = Machines.Mixer.CombineMethodMultiply; }
+									else if(outmethod == "divide") { ((Machines.Mixer)Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[mixerid]).CombineMethod = Machines.Mixer.CombineMethodDivide; }
+									
+									/*if(outmethod == "add")
 									{
 										Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers[mixerid].MixMethod = MixerSettings.MixMethodAdd;
 									}
@@ -579,7 +621,7 @@ namespace gurumod.WebPages
 									else if(outmethod == "divide")
 									{
 										Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers[mixerid].MixMethod = MixerSettings.MixMethodDivide;
-									}
+									}*/
 									
 									base.Template = "OK";
 								}
@@ -724,10 +766,15 @@ namespace gurumod.WebPages
 		{
 			string toret = MachineTemplate;
 			
-			if(Engine.TheTrack.Samples[sampleid].WaveMachine.Oscs == null)
+			if(Engine.TheTrack.Samples[sampleid].WaveMachine.Generators == null)
+			{
+				Engine.TheTrack.Samples[sampleid].WaveMachine.InitGenerators();
+			}
+			
+			/*if(Engine.TheTrack.Samples[sampleid].WaveMachine.Oscs == null)
 			{
 				Engine.TheTrack.Samples[sampleid].WaveMachine.InitOscillators();
-			}
+			}*/
 			
 			/*for(int em = 0; em < Engine.TheTrack.Samples[sampleid].WaveMachine.Oscs.Length; em++)
 			{
@@ -735,15 +782,18 @@ namespace gurumod.WebPages
 			
 			}*/
 			
-			toret = toret.Replace("[EACHOSC]", BuildOscillators(sampleid));
-			toret = toret.Replace("[EACHMIXER]", BuildMixers(sampleid));
+			//toret = toret.Replace("[EACHOSC]", BuildOscillators(sampleid));
+			toret = toret.Replace("[EACHGENERATOR]", BuildSoundGenerators(sampleid));
+			
+			toret = toret.Replace("[EACHPROCESSOR]", BuildProcessors(sampleid));
+			//toret = toret.Replace("[EACHMIXER]", BuildMixers(sampleid));
 			
 			toret = toret.Replace("[SAMPLEID]", sampleid.ToString());
 			
 			return toret;
 		}
 		
-		public string BuildOscillator(int sampleid, int oscid)
+		/*public string BuildOscillator(int sampleid, int oscid)
 		{
 			string toret = this.OscTemplate;
 			
@@ -822,9 +872,63 @@ namespace gurumod.WebPages
 			}
 			
 			return toret;
+		}*/
+		
+		public string BuildSoundGenerators(int sampleid)
+		{
+			string toret = "";
+			
+			if(Engine.TheTrack.Samples == null) { return toret; }
+			if(Engine.TheTrack.Samples[sampleid] == null) { return toret; }
+			if(Engine.TheTrack.Samples[sampleid].WaveMachine == null) { return toret; }
+			if(Engine.TheTrack.Samples[sampleid].WaveMachine.Generators == null) { Engine.TheTrack.Samples[sampleid].WaveMachine.InitGenerators(); }
+			
+			for(int emix = 0; emix < Engine.TheTrack.Samples[sampleid].WaveMachine.Generators.Length; emix++)
+			{
+				if(Engine.TheTrack.Samples[sampleid].WaveMachine.Generators[emix] != null)
+				{
+					string ptype = Engine.TheTrack.Samples[sampleid].WaveMachine.Generators[emix].GetType().ToString();
+					
+					WebPage procpage = new WebPages.Samples.Generators.Oscillator();
+					
+					if(ptype.ToLower() == "gurumod.machines.osc")
+					{
+						procpage = new gurumod.WebPages.Samples.Generators.Oscillator();
+						((gurumod.WebPages.Samples.Generators.Oscillator)procpage).SampleID = sampleid;
+						((gurumod.WebPages.Samples.Generators.Oscillator)procpage).GeneratorID = emix;
+					}
+					else if(ptype.ToLower() == "gurumod.machines.wavfile")
+					{
+						procpage = new gurumod.WebPages.Samples.Generators.WavPlayer();
+						((gurumod.WebPages.Samples.Generators.WavPlayer)procpage).SampleID = sampleid;
+						((gurumod.WebPages.Samples.Generators.WavPlayer)procpage).GeneratorID = emix;
+					}
+					
+					procpage.InHeaders = base.InHeaders;
+					procpage.RequestParts = base.RequestParts;
+					procpage.PostVars = base.PostVars;
+					
+					procpage.Run();
+					procpage.TakeTurn();
+					toret = toret + procpage.OutgoingBuffer;
+				}
+				
+				//WebPage procpage;
+				//gurumod.WebPages.Samples.Generators.Oscillator procpage = new gurumod.WebPages.Samples.Generators.Oscillator();
+				/*procpage.InHeaders = base.InHeaders;
+				procpage.RequestParts = base.RequestParts;
+				procpage.PostVars = base.PostVars;
+				procpage.SampleID = sampleid;
+				procpage.GeneratorID = egen;
+				procpage.Run();
+				procpage.TakeTurn();
+				toret = toret + procpage.OutgoingBuffer;*/
+			}
+			
+			return toret;
 		}
 		
-		public string BuildMixers(int sampleid)
+		/*public string BuildMixers(int sampleid)
 		{
 			string toret = "";
 			
@@ -839,68 +943,91 @@ namespace gurumod.WebPages
 			}
 			
 			return toret;
+		}*/
+		
+		public string BuildProcessors(int sampleid)
+		{
+			string toret = "";
+			
+			if(Engine.TheTrack.Samples == null) { return ""; }
+			if(Engine.TheTrack.Samples[sampleid] == null) { return ""; }
+			if(Engine.TheTrack.Samples[sampleid].WaveMachine == null) { return ""; }
+			if(Engine.TheTrack.Samples[sampleid].WaveMachine.Processors == null) { Engine.TheTrack.Samples[sampleid].WaveMachine.InitProcessors(); }
+		
+			for(int emix = 0; emix < Engine.TheTrack.Samples[sampleid].WaveMachine.Processors.Length; emix++)
+			{
+				//Console.WriteLine("BuildProcessors: Sample {0}, Type {1}", sampleid, Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[emix].GetType().ToString());
+				//toret = toret + BuildProcessor(sampleid, emix);
+				
+				if(Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[emix] != null)
+				{
+					string ptype = Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[emix].GetType().ToString();
+					
+					WebPage procpage = new WebPages.Samples.Processors.Mixer();
+					
+					if(ptype.ToLower() == "gurumod.machines.mixer")
+					{
+						procpage = new gurumod.WebPages.Samples.Processors.Mixer();
+						((gurumod.WebPages.Samples.Processors.Mixer)procpage).SampleID = sampleid;
+						((gurumod.WebPages.Samples.Processors.Mixer)procpage).ProcessorID = emix;
+					}
+					else if(ptype.ToLower() == "gurumod.machines.gate")
+					{
+						procpage = new gurumod.WebPages.Samples.Processors.Gate();
+						((gurumod.WebPages.Samples.Processors.Gate)procpage).SampleID = sampleid;
+						((gurumod.WebPages.Samples.Processors.Gate)procpage).ProcessorID = emix;
+					}
+					
+					procpage.InHeaders = base.InHeaders;
+					procpage.RequestParts = base.RequestParts;
+					procpage.PostVars = base.PostVars;
+					
+					procpage.Run();
+					procpage.TakeTurn();
+					toret = toret + procpage.OutgoingBuffer;
+				}
+			}
+			
+			return toret;
 		}
 		
-		public string BuildMixer(int sampleid, int mixerid)
+		/*public string BuildProcessor(int sampleid, int processorid)
 		{
-			string toret = EachMixerTemplate;
+			if(Engine.TheTrack.Samples[sampleid].WaveMachine.Processors == null)
+			{
+				Console.WriteLine("Processors is null :(");
+				return "";
+			}
+			if(Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[processorid] == null)
+			{
+				Console.WriteLine("Processor {0} is null", processorid);
+				return "";
+			}
+			
+			if(Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[processorid].GetType().ToString().ToLower() == "gurumod.machines.mixer")
+			{
+				return BuildMixer(sampleid, processorid);
+				
+			}
+			
+			return "";
+		}*/
+		
+		/*public string BuildMixer(int sampleid, int mixerid)
+		{
+			string toret = System.IO.File.ReadAllText(Engine.PFP(ProcessorTemplatePath + "gurumod.machines.mixer.html"));
 			string mn = "MIXER" + mixerid.ToString();
 			
 			if(Engine.TheTrack.Samples == null) { return ""; }
 			if(Engine.TheTrack.Samples[sampleid] == null) { return ""; }
 			if(Engine.TheTrack.Samples[sampleid].WaveMachine == null) { return ""; }
-			if(Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers == null) { Engine.TheTrack.Samples[sampleid].WaveMachine.InitMixers(); }
+			if(Engine.TheTrack.Samples[sampleid].WaveMachine.Processors == null) { Engine.TheTrack.Samples[sampleid].WaveMachine.InitProcessors(); }
 		
-			if(Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers[mixerid] == null) { return ""; }
+			if(Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[mixerid] == null) { return ""; }
 			
-			toret = toret.Replace("[MIXERID]", mixerid.ToString());
+			toret = toret.Replace("[PROCESSORID]", mixerid.ToString());
 			toret = toret.Replace("[SAMPLEID]", sampleid.ToString());
-			toret = toret.Replace("[MIXERGATEMIN]", Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers[mixerid].GateMin.ToString());
-			toret = toret.Replace("[MIXERGATEMAX]", Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers[mixerid].GateMax.ToString());
 			
-			toret = toret.Replace("[EACHMINGATESOURCE]", BuildGateSourceOptions(sampleid, mixerid, Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers[mixerid].MinGateControlSource));
-			toret = toret.Replace("[EACHMAXGATESOURCE]", BuildGateSourceOptions(sampleid, mixerid, Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers[mixerid].MaxGateControlSource));
-			
-			toret = toret.Replace("[EACHINPUTAOPTION]", BuildInputOptions(sampleid, mixerid, Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers[mixerid].SourceAID, Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers[mixerid].SourceTypeA));
-			toret = toret.Replace("[EACHINPUTBOPTION]", BuildInputOptions(sampleid, mixerid, Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers[mixerid].SourceBID, Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers[mixerid].SourceTypeB));
-			//[INAOSC0SELECTED]
-			//	Temporarty Mixer A testing code
-			/*try
-			{
-				for(int eosc = 0; eosc < Engine.TheTrack.Samples[sampleid].WaveMachine.Oscs.Length; eosc++)
-				{
-					/* cuttenpasta from the BuildMacine method originally.  leaving commented for debugging
-					 * 
-					 * if(Engine.TheTrack.Samples == null) { Console.WriteLine("Sample set is null!"); }
-					if(Engine.TheTrack.Samples[sampleid] == null) { Console.WriteLine("Sample {0} is null.", sampleid); }
-					if(Engine.TheTrack.Samples[sampleid].WaveMachine == null) { Console.WriteLine("The wave machine for sample {0} is null!", sampleid); }
-					//*//*
-					if(Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers == null) { Engine.TheTrack.Samples[sampleid].WaveMachine.InitMixers(); }
-					
-					if(Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers[mixerid].SourceAID == eosc)
-					{
-						toret = toret.Replace("[INAOSC" + eosc.ToString() + "SELECTED]", " selected");
-					}
-					else
-					{
-						toret = toret.Replace("[INAOSC0SELECTED]", "");
-					}
-					
-					if(Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers[mixerid].SourceBID == eosc)
-					{
-						toret = toret.Replace("[INBOSC" + eosc.ToString() + "SELECTED]", " selected");
-					}
-					else
-					{
-						toret = toret.Replace("[INBOSC0SELECTED]", "");
-					}
-				}
-			}
-			catch(Exception ex)
-			{
-				Console.WriteLine("Exception while formating mixer html");
-				Console.WriteLine(ex.Message);
-			}*/
 			
 			if(Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers[mixerid].MixMethod == MixerSettings.MixMethodAdd)
 			{
@@ -932,9 +1059,9 @@ namespace gurumod.WebPages
 			}
 			
 			return toret;
-		}
+		}*/
 		
-		public string BuildGateSourceOptions(int sampleid, int mixerid, int iselected)
+		/*public string BuildGateSourceOptions(int sampleid, int mixerid, int iselected)
 		{
 			string toret = "";
 			bool mansel = false;
@@ -960,9 +1087,11 @@ namespace gurumod.WebPages
 			toret = toret.Replace("[VALUE]", optionvalue);
 			toret = toret.Replace("[NAME]", name);
 			return toret;
-		}
+		}*/
+
+	
 		
-		public string BuildInputOptions(int sampleid, int mixerid, int iselected, int SourceType)
+		/*public string BuildInputOptions(int sampleid, int mixerid, int iselected, int SourceType)
 		{
 			string toret = "";
 			bool mansel = false;
@@ -995,6 +1124,6 @@ namespace gurumod.WebPages
 			toret = toret.Replace("[VALUE]", optionvalue);
 			toret = toret.Replace("[NAME]", name);
 			return toret;
-		}
+		}*/
 	}
 }

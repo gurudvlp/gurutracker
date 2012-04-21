@@ -428,6 +428,26 @@ namespace gurumod
 					{
 						Engine.TheTrack.Samples[esample] = new Sample();
 						Sample.UnserializeSample(Engine.PFP(trackpath + "Samples/Meta/" + esample.ToString() + ".xml"), esample);
+						Engine.TheTrack.Samples[esample].WaveMachine.InitGenerators();
+						Engine.TheTrack.Samples[esample].WaveMachine.InitProcessors();
+						
+						if(Directory.Exists(Engine.PFP(trackpath + "Samples/Generators/" + esample.ToString())))
+						{
+							Engine.TheTrack.Samples[esample].WaveMachine.LoadGenerators(trackpath, esample);
+						}
+						
+						if(Directory.Exists(Engine.PFP(trackpath + "Samples/Processors/" + esample.ToString())))
+						{
+							Engine.TheTrack.Samples[esample].WaveMachine.LoadProcessors(trackpath, esample);
+						}
+						
+						if(Engine.TheTrack.Samples[esample].WaveMachine.Processors == null)
+						{
+							Engine.TheTrack.Samples[esample].WaveMachine.Processors = new Machines.Processor[1];
+							Engine.TheTrack.Samples[esample].WaveMachine.Processors[0] = new Machines.Mixer();
+							Engine.TheTrack.Samples[esample].WaveMachine.ProcessorTypes = new string[1];
+							Engine.TheTrack.Samples[esample].WaveMachine.ProcessorTypes[0] = Engine.TheTrack.Samples[esample].WaveMachine.Processors[0].GetType().ToString();
+						}
 						//if(File.Exists(Engine.PFP()))
 					}
 				}
@@ -444,6 +464,8 @@ namespace gurumod
 						}
 					}
 				}
+				
+				
 				
 				/*Console.WriteLine("-1");
 				XmlSerializer s = new XmlSerializer(typeof(Track));

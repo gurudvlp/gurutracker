@@ -110,7 +110,7 @@ namespace gurumod
 		//	The part that makes gurutracker go.
 		
 		[XmlIgnore()] public static string EngineName = "gurutracker";
-		[XmlIgnore()] public static string EngineVersion = "v0.12.0413";
+		[XmlIgnore()] public static string EngineVersion = "v0.12.0418";
 		//[XmlIgnore()] public static string SharedPath = "/usr/share/" + Engine.EngineName + "/";
 		//[XmlIgnore()] public static string ConfigPath = "/home/" + Environment.UserName + "/.gurutracker/";
 		//[XmlIgnore()] public static string TracksPath = "/home/" + Environment.UserName + "/gurutracker/Tracks/";

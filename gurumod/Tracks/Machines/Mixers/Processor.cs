@@ -25,6 +25,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 namespace gurumod.Machines
 {
@@ -46,7 +47,44 @@ namespace gurumod.Machines
 		{
 		}
 		
+		public virtual void InitInputs()
+		{
+			Inputs = new InputData[InputCount];
+			for(int ein = 0; ein < InputCount; ein++)
+			{
+				Inputs[ein] = new InputData();
+			}
+		}
+		
 		public abstract short[] Process(Dictionary<string, short[]> Signals);
+		public abstract void Initialize();
+		
+		public virtual void Save(string trackpath, int sampleid, int processorid)
+		{
+			Console.WriteLine("Saving Processor {0} on sample {1}", processorid, sampleid);
+			
+			try
+			{
+				string filename = trackpath + "Samples/Processors"; ///" + sampleid.ToString();
+				if(!Directory.Exists(filename)) { Directory.CreateDirectory(filename); }
+				filename = filename + "/" + sampleid.ToString();
+				
+				if(!Directory.Exists(filename)) { Directory.CreateDirectory(filename); }
+				
+				filename = filename + "/" + processorid.ToString() + ".xml";
+				Type mytype = this.GetType();
+				//XmlSerializer s = new XmlSerializer(typeof(Processor));
+				XmlSerializer s = new XmlSerializer(mytype);
+				TextWriter w = new StreamWriter(Engine.PFP(filename));
+				s.Serialize(w, this);
+				w.Close();
+			}
+			catch(Exception ex)
+			{
+				Console.WriteLine("There was an exception while saving the processor.");
+				Console.WriteLine(ex.Message);
+			}
+		}
 	}
 }
 
