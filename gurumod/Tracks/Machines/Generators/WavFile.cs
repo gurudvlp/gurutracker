@@ -55,7 +55,10 @@ namespace gurumod.Machines
 			{
 				this.LoadFile();
 				
-				if(AudioData == null) { return null; }
+				if(AudioData == null)
+				{
+					Console.WriteLine("Attempted to load AudioData from WavFile, but it's still null.");
+					return null; }
 			}
 			
 			short[] toret = new short[frames];

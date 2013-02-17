@@ -77,12 +77,13 @@ namespace gurumod.Machines
 			
 			if(!Signals.ContainsKey(Inputs[0].InputKey()))
 			{
-				Console.WriteLine("Signals does not have key {0}", Inputs[0].InputKey());
+				Console.WriteLine("Signals does not have key {0}. Count: {1}", Inputs[0].InputKey(), Signals.Count);
+				
 				return null;
 			}
 			if(!Signals.ContainsKey(Inputs[1].InputKey()))
 			{
-				Console.WriteLine("Signals does not have key {0}", Inputs[1].InputKey());
+				Console.WriteLine("Signals does not have key {0}. Count: {1}", Inputs[1].InputKey(), Signals.Count);
 				return null;
 			}
 			
