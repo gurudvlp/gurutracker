@@ -183,7 +183,7 @@ namespace gurumod
 			//Console.WriteLine("WebInterface taking turn");
 			if(PageObject == null)
 			{
-				Console.WriteLine("Starting web interface turn");
+				//Console.WriteLine("Starting web interface turn");
 				
 				//Console.WriteLine("btEngine: WebInterface: Initializing Web Interface.");
 				if(!WebInterface.CategoriesInitialized)
@@ -198,12 +198,12 @@ namespace gurumod
 					CategoriesInitialized = true;
 				}
 				
-				if(WaitingOnContent == false) { Console.WriteLine("Collecting headers..."); CollectHeaders(); }
+				if(WaitingOnContent == false) { /*Console.WriteLine("Collecting headers...");*/ CollectHeaders(); }
 	
 				if(RemainingContentLength > 0) { Console.WriteLine("Collecting content..."); CollectContent(); }
 				else 
 				{
-					Console.WriteLine("Parsing headers");
+					//Console.WriteLine("Parsing headers");
 					if(IncomingHTTPRequest.Headers != null) { ParseHeaders(); }
 					
 				}
@@ -211,7 +211,7 @@ namespace gurumod
 			else
 			{
 				//	The page object has already been initialized, so we are waiting for output.
-				Console.WriteLine("page Object taking turn...");
+				//Console.WriteLine("page Object taking turn...");
 				PageObject.TakeTurn();
 				
 				if(PageObject.UseAsciiOutput)

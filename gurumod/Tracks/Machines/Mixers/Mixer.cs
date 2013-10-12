@@ -59,8 +59,9 @@ namespace gurumod.Machines
 		
 		public override void Initialize()
 		{
-			base.InputCount = 2;
-			base.Inputs = new InputData[base.InputCount];
+			Console.WriteLine("Initializing Mixer Inputs");
+			InputCount = 2;
+			Inputs = new InputData[InputCount];
 			for(int ein = 0; ein < InputCount; ein++)
 			{
 				Inputs[ein] = new InputData();

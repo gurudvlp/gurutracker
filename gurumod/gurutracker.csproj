@@ -99,6 +99,16 @@
     <Compile Include="Interfaces\WebInterface\Pages\Templates.cs" />
     <Compile Include="Tracks\Machines\Mixers\Reverb.cs" />
     <Compile Include="Tracks\Machines\Mixers\Envelope.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Sampler\SampleData.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Sampler\Actions\AddOsc.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Sampler\Actions\AddMixer.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Sampler\Actions\AddWavePlayer.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Sampler\Actions\AddReverb.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Sampler\Actions\AddGate.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Sampler\Actions\TweakWavePlayer.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Sampler\Actions\TweakReverb.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Sampler\Actions\TweakGate.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Sampler\Actions\TweakMachine.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -115,6 +125,7 @@
     <Folder Include="Interfaces\WebInterface\Pages\Sampler\" />
     <Folder Include="Interfaces\WebInterface\Pages\Sampler\Processors\" />
     <Folder Include="Interfaces\WebInterface\Pages\Sampler\Generators\" />
+    <Folder Include="Interfaces\WebInterface\Pages\Sampler\Actions\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Bin.tar" />
