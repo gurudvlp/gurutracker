@@ -101,6 +101,10 @@ namespace gurumod.WebPages
 					{
 						return this.RunSubPage(new WebPages.Actions.AddGate());
 					}
+					else if(base.RequestParts[1] == "addenvelope")
+					{
+						return this.RunSubPage(new WebPages.Actions.AddEnvelope());
+					}
 					else
 					{
 						base.Template = "FAIL";
@@ -123,7 +127,7 @@ namespace gurumod.WebPages
 					{
 						//base.Template = BuildMachine(sampid);
 
-						if(Engine.TheTrack.Samples[sampid].WaveMachine.Generators == null
+						/*if(Engine.TheTrack.Samples[sampid].WaveMachine.Generators == null
 						|| Engine.TheTrack.Samples[sampid].WaveMachine.Generators[0] == null)
 						{
 							Engine.TheTrack.Samples[sampid].WaveMachine.InitGenerators();
@@ -133,9 +137,45 @@ namespace gurumod.WebPages
 						|| Engine.TheTrack.Samples[sampid].WaveMachine.Processors[0] == null)
 						{
 							Engine.TheTrack.Samples[sampid].WaveMachine.InitProcessors();
-						}
+						}*/
 						Engine.TheTrack.Samples[sampid].UseWaveMachine = true;
 						Engine.TheTrack.Samples[sampid].UseWaveGenerator = false;
+
+						if(Engine.TheTrack.Samples[sampid].WaveMachine == null)
+						{
+							Console.WriteLine("/sampler/genmachine - Machine is null");
+						}
+						else
+						{
+							if(Engine.TheTrack.Samples[sampid].WaveMachine.Processors == null)
+							{
+								Console.WriteLine("Machine Processors are null");
+							}
+							else
+							{
+								Console.WriteLine("Machine has {0} Processors", Engine.TheTrack.Samples[sampid].WaveMachine.Processors.Length);
+
+								for(int ep = 0; ep < Engine.TheTrack.Samples[sampid].WaveMachine.Processors.Length; ep++)
+								{
+									if(Engine.TheTrack.Samples[sampid].WaveMachine.Processors[ep] == null)
+									{
+										Console.WriteLine("\tProcessors[{0}] is null", ep);
+									}
+									else
+									{
+										Engine.TheTrack.Samples[sampid].WaveMachine.Processors[ep].InitInputs();
+										if(Engine.TheTrack.Samples[sampid].WaveMachine.Processors[ep].Inputs == null)
+										{
+											Console.WriteLine("\tProcessors[{0}].Inputs is null", ep);
+										}
+										else
+										{
+											Console.WriteLine("\tProcessors[{0}].Inputs is not null", ep);
+										}
+									}
+								}
+							}
+						}
 					}
 					else if(base.RequestParts[1] == "import" && sampid > -1)
 					{
@@ -305,6 +345,10 @@ namespace gurumod.WebPages
 					else if(base.RequestParts[1] == "tweakmachine")
 					{
 						return this.RunSubPage(new WebPages.Actions.TweakMachine());
+					}
+					else if(base.RequestParts[1] == "tweakenvelope")
+					{
+						return this.RunSubPage(new WebPages.Actions.TweakEnvelope());
 					}
 					else
 					{

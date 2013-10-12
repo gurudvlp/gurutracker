@@ -61,6 +61,9 @@ namespace gurumod.Machines
 		{
 			//if(note > -1 && octave > -1) { Console.WriteLine("Machine: GetData note {0} octave {1}", note, octave); }
 			if(!Enabled) { return null; }
+
+			if(note < 0) { Console.WriteLine("Osc.GetData() note < 0 {0}", note); }
+			if(octave < 0) { Console.WriteLine("Osc.GetData() octave < 0 {0}", octave); }
 			double freq = this.Frequency;
 
 			if(Engine.Configuration == null) { Console.WriteLine("Configuration is null"); }

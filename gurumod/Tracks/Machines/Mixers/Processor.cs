@@ -41,6 +41,7 @@ namespace gurumod.Machines
 		//		3 - Gate Control High
 		
 		[XmlIgnore()] public static int MaxInputs = 32;
+		[XmlIgnore()] public bool IsNoteNew = false;
 		
 		
 		public Processor ()

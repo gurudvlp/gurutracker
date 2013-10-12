@@ -109,6 +109,8 @@
     <Compile Include="Interfaces\WebInterface\Pages\Sampler\Actions\TweakReverb.cs" />
     <Compile Include="Interfaces\WebInterface\Pages\Sampler\Actions\TweakGate.cs" />
     <Compile Include="Interfaces\WebInterface\Pages\Sampler\Actions\TweakMachine.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Sampler\Actions\AddEnvelope.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Sampler\Actions\TweakEnvelope.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

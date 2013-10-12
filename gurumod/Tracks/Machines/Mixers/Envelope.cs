@@ -33,21 +33,22 @@ namespace gurumod.Machines
 	{
 		// input[0]: audio in
 
-		[XmlElement("Attack")] public double Attack = 0.1;
+		[XmlElement("Attack")] public double Attack = 100;
 		[XmlElement("AttackAmp")] public double AttackAmp = 1;
-		[XmlElement("Decay")] public double Decay = 0.2;
+		[XmlElement("Decay")] public double Decay = 200;
 		[XmlElement("DecayAmp")] public double DecayAmp = 0.7;
-		[XmlElement("Sustain")] public double Sustain = 10.0;
-		[XmlElement("Release")] public double Release = 0.5;
+		[XmlElement("Sustain")] public double Sustain = 500.0;
+		[XmlElement("Release")] public double Release = 50;
 
 		[XmlIgnore()] public double CurrentAmp = 0;
 		[XmlIgnore()] public int CurrentStep = 0;
-		[XmlIgnore()] public long TimeIntoStep = 0;
+		[XmlIgnore()] public double TimeIntoStep = 0;
+		[XmlIgnore()] public int FramesIntoStep = 0;
 		
 		public Envelope ()
 		{
 		}
-		
+
 		public override void Initialize ()
 		{
 			Inputs = new InputData[1];
@@ -78,9 +79,100 @@ namespace gurumod.Machines
 			short[] toret = Signals[Inputs[0].InputKey()];
 			if(toret == null) { return null; }
 			
+			if(this.IsNoteNew)
+			{
+				this.CurrentStep = 1;
+				this.TimeIntoStep = 0;
+				this.CurrentAmp = 0;
+			}
 
+			if(this.CurrentStep == 0) { return null; }
+
+			for(int es = 0; es < toret.Length; es++)
+			{
+				if(this.CurrentStep == 0)
+				{
+					toret[es] = 0;
+				}
+
+				if(this.CurrentStep == 1)
+				{
+					//	Attack..  build up to max amplitude
+					int fts = FramesPerTime(Attack);
+					if(FramesIntoStep > fts)
+					{
+						FramesIntoStep = 0;
+						this.CurrentStep++;
+					}
+					else
+					{
+						double prog = FramesIntoStep / fts;
+						prog = prog * AttackAmp;
+						toret[es] = (short)(toret[es] * prog);
+					}
+				}
+
+				if(this.CurrentStep == 2)
+				{
+					//	Decay.. build back to plateau
+					int fts = FramesPerTime(Decay);
+					if(FramesIntoStep > fts)
+					{
+						FramesIntoStep = 0;
+						this.CurrentStep++;
+					}
+					else
+					{
+						double prog = FramesIntoStep / fts;
+						prog = Math.Abs(AttackAmp - DecayAmp) * prog;
+						if(AttackAmp < DecayAmp) { prog = prog + AttackAmp; }
+						else { prog = prog + DecayAmp; }
+						toret[es] = (short)(toret[es] * prog);
+					}
+				}
+
+				if(this.CurrentStep == 3)
+				{
+					//	Sustain..  keep the same volume until release
+					int fts = FramesPerTime(Sustain);
+					if(FramesIntoStep > fts)
+					{
+						FramesIntoStep = 0;
+						this.CurrentStep++;
+					}
+					else
+					{
+						toret[es] = (short)(toret[es] * DecayAmp);
+					}
+				}
+
+				if(this.CurrentStep == 4)
+				{
+					//	Release..  go back to silence
+					int fts = FramesPerTime(Release);
+					if(FramesIntoStep > fts)
+					{
+						this.CurrentStep = 0;
+						FramesIntoStep = 0;
+					}
+					else
+					{
+						double prog = FramesIntoStep / fts;
+						toret[es] = (short)(toret[es] * (DecayAmp - (prog * DecayAmp)));
+					}
+				}
+
+				FramesIntoStep++;
+			}
 			
 			return toret;
+		}
+
+		public int FramesPerTime(double millitime)
+		{
+			// 44100:1000 = x:millitime
+			double xx = (44100 * millitime) / 1000;
+			return (int)Math.Floor(xx);
 		}
 	}
 }

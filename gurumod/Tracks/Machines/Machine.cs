@@ -28,8 +28,37 @@ namespace gurumod
 		
 		[XmlElement("MaxGenerators")] public int MaxGenerators = 32;
 		[XmlElement("MaxProcessors")] public int MaxProcessors = 32;
-		
-		[XmlIgnore()] public int LastNote = -2;
+
+		[XmlIgnore()] private int _lastnote = -2;
+		[XmlIgnore()] private bool _newnote = false;
+		[XmlIgnore()] public int LastNote 
+		{
+			get
+			{
+				return _lastnote;
+			}
+			set
+			{
+				_newnote = true;
+				_lastnote = value;
+			}
+		}
+
+		[XmlIgnore()] public bool IsNoteNew
+		{
+			get
+			{
+				if(_newnote) { _newnote = false; return true; }
+				return false;
+			}
+			set
+			{
+				_newnote = value;
+			}
+		}
+
+
+			//= -2;
 		[XmlIgnore()] public int LastOctave = 5;
 		[XmlIgnore()] public bool Running = false;
 		//[XmlIgnore()] public short[,] Signals;
@@ -118,6 +147,8 @@ namespace gurumod
 			if(octave == 4) { freq = 0.5f + (freq * 0.5f); }
 			if(octave == 5) { freq =  1.0f + freq; }
 			if(octave == 6) { freq =  2.0f + (freq * 2.0f); }
+
+			//float freq = (float)Engine.Configuration.NoteFreq[octave][note];
 			
 			//
 			//	Each Row is 1/8 beat
@@ -169,6 +200,11 @@ namespace gurumod
 			}
 			
 			Console.WriteLine("Creating output from processor chain.");
+			bool newnote = this.IsNoteNew;
+			for(int ep = 0; ep < this.Processors.Length; ep++)
+			{
+				if(this.Processors[ep] != null) { this.Processors[ep].IsNoteNew = newnote; }
+			}
 			toret = Process(0);
 			
 			

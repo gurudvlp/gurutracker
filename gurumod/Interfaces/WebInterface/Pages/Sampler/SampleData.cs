@@ -140,7 +140,8 @@ namespace gurumod.WebPages
 						int prtype = 0;
 						if(proctype.ToLower() == "gurumod.machines.mixer") { prtype = 0; }
 						else if( proctype.ToLower() == "gurumod.machines.gate") { prtype = 1; }
-						else { prtype = 2; }
+						else if( proctype.ToLower () == "gurumod.machines.reverb") { prtype = 2; }
+						else { prtype = 3; }
 
 						prbld = "\"proctype\":\""+prtype.ToString() + "\", ";
 						string inputs = "";
@@ -202,6 +203,22 @@ namespace gurumod.WebPages
 							double maxg = ((gurumod.Machines.Gate)Engine.TheTrack.Samples[es].WaveMachine.Processors[ep]).MaxGateManual;
 							infos = "\"mingatemanual\":\""+ming.ToString()+"\", " +
 								"\"maxgatemanual\":\""+maxg.ToString() + "\"";
+						}
+						else if(prtype == 3)
+						{
+							double attack = ((gurumod.Machines.Envelope)Engine.TheTrack.Samples[es].WaveMachine.Processors[ep]).Attack;
+							double decay = ((gurumod.Machines.Envelope)Engine.TheTrack.Samples[es].WaveMachine.Processors[ep]).Decay;
+							double sustain = ((gurumod.Machines.Envelope)Engine.TheTrack.Samples[es].WaveMachine.Processors[ep]).Sustain;
+							double release = ((gurumod.Machines.Envelope)Engine.TheTrack.Samples[es].WaveMachine.Processors[ep]).Release;
+							double attackamp = ((gurumod.Machines.Envelope)Engine.TheTrack.Samples[es].WaveMachine.Processors[ep]).AttackAmp;
+							double decayamp = ((gurumod.Machines.Envelope)Engine.TheTrack.Samples[es].WaveMachine.Processors[ep]).DecayAmp;
+
+							infos = "\"attack\":\""+attack.ToString()+"\", "+
+									"\"decay\":\""+decay.ToString()+"\", "+
+									"\"sustain\":\""+sustain.ToString()+"\", "+
+									"\"release\":\""+release.ToString()+"\", "+
+									"\"attackamp\":\""+attackamp.ToString()+"\", "+
+									"\"decayamp\":\""+decayamp.ToString()+"\"";
 						}
 
 						prbld = prbld + "\"details\": [ {"+infos+"} ]";
