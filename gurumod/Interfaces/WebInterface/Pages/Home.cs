@@ -14,13 +14,26 @@ namespace gurumod.WebPages
 		
 		public override bool Run ()
 		{
-			base.Template = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "index.html"));
+			base.Template = System.IO.File.ReadAllText (Engine.PFP (Engine.Configuration.WebTemplateDir + "index.html"));
 			
-			
-			
-			base.Template = base.Template.Replace("[FRAMEWORK_CONTENT]", Engine.EngineName + " " + Engine.EngineVersion);
-			base.OutgoingBuffer = base.Template;
-			
+			if (base.RequestParts.Length > 1) {
+				if (base.RequestParts [1].ToLower () == "track.js") 
+				{
+					string toret = System.IO.File.ReadAllText (Engine.PFP (Engine.Configuration.WebTemplateDir + "track.js"));
+					base.OutgoingBuffer = toret;
+					base.ContentType = "application/javascript";
+				} 
+				else
+				{
+					base.OutgoingBuffer = "Unknown action";
+				}
+			}
+			else
+			{
+				base.Template = base.Template.Replace ("[FRAMEWORK_CONTENT]", Engine.EngineName + " " + Engine.EngineVersion);
+				base.OutgoingBuffer = base.Template;
+			}
+
 			return true;
 		}
 

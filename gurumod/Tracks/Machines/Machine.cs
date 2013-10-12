@@ -168,7 +168,7 @@ namespace gurumod
 				}
 			}
 			
-			//Console.WriteLine("Creating output from processor chain.");
+			Console.WriteLine("Creating output from processor chain.");
 			toret = Process(0);
 			
 			
@@ -461,6 +461,26 @@ namespace gurumod
 			}
 			
 			return Processors[processorid].Process(Signals);
+		}
+
+		public int NextGeneratorID()
+		{
+			for(int eg = 0; eg < this.Generators.Length; eg++)
+			{
+				if(this.Generators[eg] == null) { return eg; }
+			}
+
+			return -1;
+		}
+
+		public int NextProcessorID()
+		{
+			for(int eg = 0; eg < this.Processors.Length; eg++)
+			{
+				if(this.Processors[eg] == null) { return eg; }
+			}
+
+			return -1;
 		}
 	
 	}

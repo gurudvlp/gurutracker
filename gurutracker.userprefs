@@ -1,55 +1,8 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="gurumod/Engine.cs">
-    <Files>
-      <File FileName="gurumod/Engine.cs" Line="491" Column="75" />
-      <File FileName="gurumod/Tracks/Track.cs" Line="1" Column="1" />
-      <File FileName="gurumod/Tracks/Samples/Sample.cs" Line="1" Column="1" />
-      <File FileName="gurumod/Tracks/Machines/Machine.cs" Line="1" Column="1" />
-      <File FileName="gurumod/Tracks/Machines/Mixers/Processor.cs" Line="1" Column="1" />
-      <File FileName="gurumod/Interfaces/WebInterface/Pages/Sampler.cs" Line="379" Column="23" />
-      <File FileName="gurumod/Tracks/Machines/Generators/Osc.cs" Line="1" Column="1" />
-      <File FileName="gurumod/Interfaces/WebInterface/Pages/Sampler/Processors/Mixer.cs" Line="1" Column="1" />
-      <File FileName="gurumod/Tracks/Machines/Generators/WavFile.cs" Line="1" Column="1" />
-      <File FileName="gurumod/Tracks/Machines/Generators/Generator.cs" Line="1" Column="1" />
-      <File FileName="gurumod/Interfaces/WebInterface/Pages/Sampler/Generators/WavPlayer.cs" Line="1" Column="1" />
-      <File FileName="gurumod/Interfaces/WebInterface/Pages/Sampler/Generators/Oscillator.cs" Line="1" Column="1" />
-      <File FileName="gurumod/Tracks/Machines/Mixers/Gate.cs" Line="1" Column="1" />
-      <File FileName="gurumod/Config.cs" Line="90" Column="3" />
-    </Files>
-    <Pads>
-      <Pad Id="ProjectPad">
-        <State expanded="True">
-          <Node name="gurutracker" expanded="True">
-            <Node name="Interfaces" expanded="True">
-              <Node name="WebInterface" expanded="True">
-                <Node name="Pages" expanded="True">
-                  <Node name="Sampler" expanded="True">
-                    <Node name="Generators" expanded="True" />
-                    <Node name="Processors" expanded="True" />
-                  </Node>
-                </Node>
-              </Node>
-            </Node>
-            <Node name="Tracks" expanded="True">
-              <Node name="Machines" expanded="True">
-                <Node name="Generators" expanded="True" />
-                <Node name="Mixers" expanded="True" />
-              </Node>
-              <Node name="Samples" expanded="True" />
-            </Node>
-            <Node name="Engine.cs" selected="True" />
-          </Node>
-        </State>
-      </Pad>
-      <Pad Id="ClassPad">
-        <State expanded="True" selected="True" />
-      </Pad>
-    </Pads>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <AuthorInfo Name="Brian Murphy" Email="gurudvlp@gmail.com" Copyright="Brian Murphy" Company="Guru Digital Solutions" Trademark="" />
 </Properties>

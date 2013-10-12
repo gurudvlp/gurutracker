@@ -11,10 +11,10 @@ namespace gurumod
 	public class Generator
 	{
 		[XmlIgnore()] public static int TypeSine = 0;
-		[XmlIgnore()] public static int TypeSilence = 1;
-		[XmlIgnore()] public static int TypeSquare = 2;
-		[XmlIgnore()] public static int TypeTriangle = 3;
-		[XmlIgnore()] public static int TypeSawtooth = 4;
+		[XmlIgnore()] public static int TypeSilence = 4;
+		[XmlIgnore()] public static int TypeSquare = 1;
+		[XmlIgnore()] public static int TypeTriangle = 2;
+		[XmlIgnore()] public static int TypeSawtooth = 3;
 		
 		[XmlElement("Type")] public int WaveType = 0;
 		[XmlElement("Frequency")] public double Frequency = 440;

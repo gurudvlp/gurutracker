@@ -40,10 +40,15 @@ namespace gurumod.Machines
 		[XmlIgnore()] public int FramesIntoSample = 0;
 		[XmlElement("Amplitude")] public double Amplitude = 0.75;
 		[XmlElement("SampleRate")] public int SampleRate = 44100;
+		[XmlElement("GeneratorType")] public int GeneratorType = 0;
 		[XmlElement("Format")] public ALFormat Format = ALFormat.Mono16;
-		
+
+		[XmlIgnore()] public static int GeneratorTypeOscillator = 0;
+		[XmlIgnore()] public static int GeneratorTypeWavePlayer = 1;
 		[XmlIgnore()] public int LastNote = 0;
 		[XmlIgnore()] public int LastOctave = 5;
+
+
 		public Generator ()
 		{
 		}
@@ -73,6 +78,11 @@ namespace gurumod.Machines
 				Console.WriteLine("There was an exception while saving the generator.");
 				Console.WriteLine(ex.Message);
 			}
+		}
+
+		public virtual Dictionary<string, string> Details()
+		{
+			return new Dictionary<string, string>();
 		}
 	}
 }

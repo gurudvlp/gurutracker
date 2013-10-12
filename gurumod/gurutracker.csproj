@@ -10,7 +10,7 @@
     <RootNamespace>gurumod</RootNamespace>
     <AssemblyName>gurutracker</AssemblyName>
     <Description>Music synthesizer and sequencing tool.</Description>
-    <ReleaseVersion>0.12.04.12.2</ReleaseVersion>
+    <ReleaseVersion>0.13.1011</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -95,6 +95,10 @@
     <Compile Include="Tracks\Machines\Generators\WavFile.cs" />
     <Compile Include="Interfaces\WebInterface\Pages\Sampler\Processors\Gate.cs" />
     <Compile Include="Interfaces\WebInterface\Pages\Sampler\Generators\WavPlayer.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Scripts.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Templates.cs" />
+    <Compile Include="Tracks\Machines\Mixers\Reverb.cs" />
+    <Compile Include="Tracks\Machines\Mixers\Envelope.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

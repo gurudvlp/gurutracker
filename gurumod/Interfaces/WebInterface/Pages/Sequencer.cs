@@ -19,7 +19,61 @@ namespace gurumod.WebPages
 		
 		public override bool Run ()
 		{
-			TerminateOnSend = false;
+			if(base.RequestParts.Length == 1)
+			{
+				TerminateOnSend = false;
+			}
+			else
+			{
+				if(base.RequestParts[1].ToLower() == "patterndata")
+				{
+					string toret = "FAIL Unknown reason";
+					if(Engine.TheTrack == null) { toret = "FAIL Track data is null"; }
+					else if(Engine.TheTrack.Patterns == null) { toret = "FAIL Pattern data is null"; }
+					else
+					{
+						toret = "";
+						for(int ep = 0; ep < Engine.TheTrack.Patterns.Length; ep++)
+						{
+							if(Engine.TheTrack.Patterns[ep] != null)
+							{
+								string chnll = "";
+								for(int ec = 0; ec < Engine.TheTrack.Patterns[ep].ChannelCount; ec++)
+								{
+									string rowret = "";
+									for(int er = 0; er < Engine.TheTrack.Patterns[ep].Channels[ec].Elements.Length; er++)
+									{
+										string trow = "";
+										trow = "{ \"octave\":\""+Engine.TheTrack.Patterns[ep].Channels[ec].Elements[er].Octave.ToString()+"\", " +
+												" \"note\":\""+Engine.TheTrack.Patterns[ep].Channels[ec].Elements[er].Note.ToString()+"\", " +
+												" \"sampleid\":\""+Engine.TheTrack.Patterns[ep].Channels[ec].Elements[er].SampleID.ToString()+"\", " +
+												" \"volume\":\""+Engine.TheTrack.Patterns[ep].Channels[ec].Elements[er].Volume.ToString()+"\", " +
+												" \"effect\":\""+Engine.TheTrack.Patterns[ep].Channels[ec].Elements[er].SpecialControl.ToString()+"\" },\n";
+
+										rowret = rowret + trow;
+									}
+
+									if(rowret.Length > 2 && rowret.Substring(rowret.Length - 2) == ",\n") { rowret = rowret.Substring(0, rowret.Length - 2); }
+									chnll = chnll + "{ \"rows\":[ "+rowret+" ] },\n";
+								}
+
+								if(chnll.Length > 2 && chnll.Substring(chnll.Length - 2) == ",\n") { chnll = chnll.Substring(0, chnll.Length - 2); }
+
+								toret = toret + "{\"id\":\""+ep.ToString()+"\", \"length\":\""+Engine.TheTrack.Patterns[ep].RowCount.ToString()+"\", \"channels\":[ " + chnll + "] },\n";
+
+							}
+						}
+					}
+
+					if(toret.Length > 2 && toret.Substring(toret.Length - 2) == ",\n") { toret = toret.Substring(0, toret.Length - 2); }
+					toret = "{ \"patterns\": [\n" + toret + "\n]}";
+					base.OutgoingBuffer = toret;
+				}
+				else
+				{
+					base.OutgoingBuffer = "FAIL Unknown action '" + base.RequestParts[1] + "'";
+				}
+			}
 			
 			return true;
 		}

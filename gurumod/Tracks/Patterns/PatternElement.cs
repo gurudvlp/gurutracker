@@ -49,12 +49,17 @@ namespace gurumod
 				{
 					return "C-" + Octave.ToString();
 				}
-				else if(Note == 1) { return "D-" + Octave.ToString(); }
-				else if(Note == 2) { return "E-" + Octave.ToString(); }
-				else if(Note == 3) { return "F-" + Octave.ToString(); }
-				else if(Note == 4) { return "G-" + Octave.ToString(); }
-				else if(Note == 5) { return "A-" + Octave.ToString(); }
-				else if(Note == 6) { return "B-" + Octave.ToString(); }
+				else if(Note == 1) { return "C#" + Octave.ToString(); }
+				else if(Note == 2) { return "D-" + Octave.ToString(); }
+				else if(Note == 3) { return "D#" + Octave.ToString(); }
+				else if(Note == 4) { return "E-" + Octave.ToString(); }
+				else if(Note == 5) { return "F-" + Octave.ToString(); }
+				else if(Note == 6) { return "F#" + Octave.ToString(); }
+				else if(Note == 7) { return "G-" + Octave.ToString(); }
+				else if(Note == 8) { return "G#" + Octave.ToString(); }
+				else if(Note == 9) { return "A-" + Octave.ToString(); }
+				else if(Note == 10) { return "A#" + Octave.ToString(); }
+				else if(Note == 11) { return "B-" + Octave.ToString(); }
 				else if(Note == -1) { return "---"; }
 				else if(Note == -2) { return "==="; }
 				else

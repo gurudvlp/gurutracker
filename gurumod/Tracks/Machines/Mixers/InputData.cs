@@ -31,6 +31,7 @@ namespace gurumod.Machines
 	{
 		[XmlElement("SourceID")] public int SourceID = -1;
 		[XmlElement("SourceType")] public int SourceType = MixerSettings.SourceTypeOscillator;
+		[XmlElement("Amplitude")] public double Amplitude = 1.0;
 		
 		[XmlIgnore()] public static int SourceTypeGenerator = 0;
 		[XmlIgnore()] public static int SourceTypeProcessor = 1;

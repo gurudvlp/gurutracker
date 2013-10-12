@@ -26,6 +26,8 @@ using OpenTK.Audio;
 using OpenTK.Audio.OpenAL;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace gurumod.Machines
 {
@@ -40,6 +42,7 @@ namespace gurumod.Machines
 		
 		public WavFile ()
 		{
+			base.GeneratorType = gurumod.Machines.Generator.GeneratorTypeWavePlayer;
 		}
 		
 		
@@ -64,12 +67,46 @@ namespace gurumod.Machines
 			short[] toret = new short[frames];
 			
 			int cframe = base.FramesIntoSample;
-			for(int eafr = 0; eafr < frames; eafr += 2)
+			try
 			{
-				toret[eafr] = AudioData[cframe];
-				toret[eafr + 1] = AudioData[cframe];
-				cframe++;
-				if(cframe >= AudioData.Length) { cframe = 0; }
+				for(int eafr = 0; eafr < frames; eafr += 2)
+				{
+					if(cframe >= AudioData.Length) { cframe = 0; }
+					try { toret[eafr] = AudioData[cframe]; }
+					catch(Exception blah)
+					{
+						Console.WriteLine("Exception in WavFile.GetData -- copying audiodata");
+						Console.WriteLine("eafr: {0}", eafr);
+						Console.WriteLine("cframe: {0}", cframe);
+						Console.WriteLine("AD Len: {0}", AudioData.Length);
+						Console.WriteLine("tr Len: {0}", toret.Length);
+						Environment.Exit(0);
+					}
+
+					try { if(toret.Length > eafr + 1) { toret[eafr + 1] = AudioData[cframe]; } }
+					catch(Exception blah)
+					{
+						Console.WriteLine("Exception in WavFile.GetData -- copying audiodata (2)");
+						Console.WriteLine("eafr: {0}", eafr);
+						Console.WriteLine("cframe: {0}", cframe);
+						Console.WriteLine("AD Len: {0}", AudioData.Length);
+						Console.WriteLine("tr Len: {0}", toret.Length);
+						Environment.Exit(0);
+					}
+					cframe++;
+
+				}
+			}
+			catch(Exception ex)
+			{
+				Console.WriteLine("Exception in WavFile.GetData.");
+				Console.WriteLine(ex.Message);
+				Console.WriteLine("--------------------------------------------");
+				Console.WriteLine("cframe: {0}", cframe);
+				Console.WriteLine("frames: {0}", frames);
+				Console.WriteLine("AudioDataLen: {0}", AudioData.Length);
+
+				Environment.Exit(0);
 			}
 			/*for(int eafr = 0; eafr < frames; eafr++)
 			{
@@ -99,19 +136,37 @@ namespace gurumod.Machines
 			//if(note > -1 && octave > -1) { Console.WriteLine("Machine: GetData note {0} octave {1}", note, octave); }
 			if(!Enabled) { return null; }
 			double freq = this.Frequency;
+
+			double nf = Engine.Configuration.NoteFreq[octave][note];
+
+
+
+			double nmul = this.Frequency / Engine.Configuration.NoteFreq[4][9];
 			
-			if(note < 0) { note = LastNote; } else { LastNote = note; }
+			/*if(note < 0) { note = LastNote; } else { LastNote = note; }
 			if(octave < 0) { octave = LastOctave; } else { LastOctave = octave; }
 			
 			if(octave == 4) { freq = freq / 2; }
 			else if(octave == 6) { freq = freq * 2; }
 			
-			double noteoff = (double)((double)(freq / 7) * (double)note);
+			double noteoff = (double)((double)(freq / 7) * (double)note);*/
 			
 			//Console.WriteLine("Getting wave data: note {0} octave {1} freq {2} noteoff {3}", note, octave, freq, noteoff);
 			//freq = freq + noteoff;
 			
-			return GetData(frames, freq + noteoff);
+			//return GetData(frames, freq + noteoff);
+			return GetData(frames, nf * nmul);
+		}
+
+		public override Dictionary<string, string> Details()
+		{
+			Dictionary<string, string> toret = new Dictionary<string, string>();
+			toret.Add("filename", this.Filename);
+			toret.Add("samplerate", this.SampleRate.ToString());
+			toret.Add("bitrate", this.BitRate.ToString());
+			toret.Add("channels", this.Channels.ToString());
+
+			return toret;
 		}
 		
 		public void LoadFile()

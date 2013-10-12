@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Sample xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Name>unnamed</Name>
+  <Artist />
+  <Year>2012</Year>
+  <ID>0</ID>
+  <Filename />
+  <WaveGenerator>
+    <Type>0</Type>
+    <Frequency>440</Frequency>
+    <SampleRate>44100</SampleRate>
+    <Length>3</Length>
+    <ALFormat>Mono16</ALFormat>
+  </WaveGenerator>
+  <UseWaveGenerator>false</UseWaveGenerator>
+  <WaveMachine>
+    <SampleRate>44100</SampleRate>
+    <Frequency>440</Frequency>
+    <Amplitude>0.75</Amplitude>
+    <WaveType>0</WaveType>
+    <Format>Mono16</Format>
+    <GeneratorTypes>gurumod.Machines.Osc</GeneratorTypes>
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <GeneratorTypes />
+    <ProcessorTypes>gurumod.Machines.Mixer</ProcessorTypes>
+    <MaxGenerators>32</MaxGenerators>
+    <MaxProcessors>32</MaxProcessors>
+  </WaveMachine>
+  <UseWaveMachine>false</UseWaveMachine>
+</Sample>

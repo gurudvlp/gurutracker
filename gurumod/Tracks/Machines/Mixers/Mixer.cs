@@ -49,6 +49,8 @@ namespace gurumod.Machines
 		//		1 - Audio Input B
 		
 		//[XmlIgnore()] public static int MaxInputs = 32;
+
+	
 		
 		public Mixer ()
 		{
@@ -94,10 +96,16 @@ namespace gurumod.Machines
 			
 			if(SourceA == null) { return SourceB; }
 			if(SourceB == null) { return SourceA; }
+
+			double SourceAAmp = Inputs[0].Amplitude;
+			double SourceBAmp = Inputs[1].Amplitude;
 			
 			short[] toret = new short[SourceA.Length];
 			for(int esamp = 0; esamp < SourceA.Length; esamp++)
 			{
+				SourceA[esamp] = (short)(Math.Round(SourceA[esamp] * SourceAAmp));
+				SourceB[esamp] = (short)(Math.Round(SourceB[esamp] * SourceBAmp));
+
 				if(CombineMethod == CombineMethodAdd)
 				{
 					toret[esamp] = (short)((SourceA[esamp] + SourceB[esamp])/* * this.Amplitude*/);

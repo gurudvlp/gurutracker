@@ -21,6 +21,8 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using OpenTK.Audio;
 using OpenTK.Audio.OpenAL;
 using System.Xml;
@@ -60,8 +62,19 @@ namespace gurumod.Machines
 			//if(note > -1 && octave > -1) { Console.WriteLine("Machine: GetData note {0} octave {1}", note, octave); }
 			if(!Enabled) { return null; }
 			double freq = this.Frequency;
-			
-			if(note < 0) { note = LastNote; } else { LastNote = note; }
+
+			if(Engine.Configuration == null) { Console.WriteLine("Configuration is null"); }
+			if(Engine.Configuration.NoteFreq == null) { Console.WriteLine("NoteFreq is null"); }
+			if(Engine.Configuration.NoteFreq[octave] == null) { Console.WriteLine("NoteFreq[octave] is null"); }
+
+
+			double nf = Engine.Configuration.NoteFreq[octave][note];
+
+
+
+			double nmul = this.Frequency / Engine.Configuration.NoteFreq[4][9];
+
+			/*if(note < 0) { note = LastNote; } else { LastNote = note; }
 			if(octave < 0) { octave = LastOctave; } else { LastOctave = octave; }
 			
 			if(octave == 4) { freq = freq / 2; }
@@ -72,7 +85,8 @@ namespace gurumod.Machines
 			//Console.WriteLine("Getting wave data: note {0} octave {1} freq {2} noteoff {3}", note, octave, freq, noteoff);
 			//freq = freq + noteoff;
 			
-			return GetData(frames, freq + noteoff);
+			return GetData(frames, freq + noteoff);*/
+			return GetData(frames, nf * nmul);
 		}
 		
 		public short[] SineWave(int frames, double frequency)

@@ -1,5 +1,7 @@
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 
 namespace gurumod.WebPages
@@ -27,25 +29,189 @@ namespace gurumod.WebPages
 		
 		public override bool Run ()
 		{
-			TerminateOnSend = false;
-			
-			SamplesTemplate = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/samplelist.html"));
-			EachSampleTemplate = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/eachsample.html"));
-			SamplerTemplate = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/main.html"));
-			DetailsTemplate = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/details.html"));
-			GeneratorTemplate = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/generator.html"));
-			ImportTemplate = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/importfile.html"));
-			MachineTemplate = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/genmachine.html"));
-			OscTemplate = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/eachosc.html"));
-			EachMixerTemplate = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/eachmixer.html"));
-			EachGateSrcTemplate = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/eachmixer-eachgatesrc.html"));
-			
-			ProcessorTemplatePath = Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/processors/");
-			
-			base.OutgoingBuffer = "";
-			base.Template = "";
-			
-			return true;
+			if(base.RequestParts.Length > 1 && base.RequestParts[1].ToLower() == "sampledata")
+			{
+				string toret = "";
+
+				for(int es = 0; es < Engine.TheTrack.Samples.Length; es++)
+				{
+					string trw = "{ \"id\":\"" + Engine.TheTrack.Samples[es].ID.ToString() + "\", " +
+									"\"title\":\"" + Engine.TheTrack.Samples[es].Name + "\", " +
+							"\"type\":\"";
+
+					int sampletype = 0;
+					if(Engine.TheTrack.Samples[es].UseWaveGenerator) { trw = trw + "1"; sampletype = 1; }
+					else if(Engine.TheTrack.Samples[es].UseWaveMachine) { trw = trw + "2"; sampletype = 2; }
+					else { trw = trw + "0"; }
+
+					trw = trw + "\", \"info\": [ {";
+
+					string infod = "";
+					if(sampletype == 0)
+					{
+						infod = "\"filename\":\"" + Engine.TheTrack.Samples[es].Filename + "\", ";
+
+						if(Engine.TheTrack.Samples[es].SoundData != null)
+						{
+							infod = infod + "\"length\":\"" + (((float)Engine.TheTrack.Samples[es].SoundData.Length) / Engine.TheTrack.Samples[es].sample_rate).ToString() + "\", ";
+						}
+						else
+						{
+							infod = infod + "\"length\":\"0\", ";
+						}
+
+						infod = infod + "\"channels\":\""+Engine.TheTrack.Samples[es].channels.ToString()+"\", " +
+										"\"bitrate\":\""+Engine.TheTrack.Samples[es].BitRate.ToString()+"\", " +
+								"\"samplerate\":\""+Engine.TheTrack.Samples[es].sample_rate.ToString() + "\"";
+					}
+					else if(sampletype == 1)
+					{
+						infod = "\"wavetype\":\""+Engine.TheTrack.Samples[es].WaveGenerator.WaveType.ToString() + "\", " +
+								"\"samplerate\":\""+Engine.TheTrack.Samples[es].WaveGenerator.SampleRate.ToString() + "\", " +
+								"\"length\":\""+Engine.TheTrack.Samples[es].WaveGenerator.Length.ToString()+"\", " +
+								"\"frequency\":\""+Engine.TheTrack.Samples[es].WaveGenerator.Frequency.ToString() + "\"";
+
+					}
+					else if(sampletype == 2)
+					{
+						string oscret = "";
+						for(int eo = 0; eo < Engine.TheTrack.Samples[es].WaveMachine.Generators.Length; eo++)
+						{
+							if(Engine.TheTrack.Samples[es].WaveMachine.Generators[eo] != null)
+							{
+								string tosc = "";
+								int gentype = Engine.TheTrack.Samples[es].WaveMachine.Generators[eo].GeneratorType;
+
+								if(Engine.TheTrack.Samples[es].WaveMachine.Generators[eo].Enabled)
+								{
+									tosc = tosc + "\"enabled\":\"1\", ";
+								}
+								else
+								{
+									tosc = tosc + "\"enabled\":\"0\", ";
+								}
+								tosc = tosc + "\"generatortype\":\""+Engine.TheTrack.Samples[es].WaveMachine.Generators[eo].GeneratorType.ToString()+"\", ";
+
+								if(gentype == gurumod.Machines.Generator.GeneratorTypeOscillator)
+								{
+									tosc = tosc + "\"wavetype\":\"" + ((gurumod.Machines.Osc)Engine.TheTrack.Samples[es].WaveMachine.Generators[eo]).WaveType.ToString() + "\", ";
+								}
+
+									tosc = tosc + "\"frequency\":\""+Engine.TheTrack.Samples[es].WaveMachine.Generators[eo].Frequency.ToString()+"\", " +
+										"\"amplitude\":\""+Engine.TheTrack.Samples[es].WaveMachine.Generators[eo].Amplitude.ToString() + "\"";
+
+
+								Dictionary<string, string> moredet = Engine.TheTrack.Samples[es].WaveMachine.Generators[eo].Details();
+								if(moredet.Count > 0)
+								{
+									tosc = tosc + ", \"details\": [ { ";
+									foreach(KeyValuePair<string, string> kvp in moredet)
+									{
+										tosc = tosc + "\""+kvp.Key+"\":\""+kvp.Value+"\", ";
+									}
+									if(tosc.Length > 2 && tosc.Substring(tosc.Length - 2) == ", ") { tosc = tosc.Substring(0, tosc.Length - 2); }
+									tosc = tosc + "} ]";
+								}
+								else
+								{
+									tosc = tosc + ", \"details\": [ ]";
+								}
+
+								oscret = oscret + "{ "+tosc+" },\n";
+							}
+						}
+						if(oscret.Length > 2 && oscret.Substring(oscret.Length - 2) == ",\n") { oscret = oscret.Substring(0, oscret.Length - 2); }
+
+
+						string proret = "";
+						for(int ep = 0; ep < Engine.TheTrack.Samples[es].WaveMachine.Processors.Length; ep++)
+						{
+							string prbld = "";
+							string proctype = Engine.TheTrack.Samples[es].WaveMachine.Processors[ep].GetType().ToString();
+
+							int prtype = 0;
+							if(proctype.ToLower() == "gurumod.machines.mixer") { prtype = 0; }
+							else if( proctype.ToLower() == "gurumod.machines.gate") { prtype = 1; }
+							else { prtype = 2; }
+
+							prbld = "\"proctype\":\""+prtype.ToString() + "\", ";
+							string inputs = "";
+
+							for(int emix = 0; emix < Engine.TheTrack.Samples[es].WaveMachine.Processors[ep].Inputs.Length; emix++)
+							{
+								int inpttype = Engine.TheTrack.Samples[es].WaveMachine.Processors[ep].Inputs[emix].SourceType;
+								int inptid = Engine.TheTrack.Samples[es].WaveMachine.Processors[ep].Inputs[emix].SourceID;
+								double inptamp = Engine.TheTrack.Samples[es].WaveMachine.Processors[ep].Inputs[emix].Amplitude;
+
+
+								string tdata = "{ \"sourcetype\":\""+inpttype.ToString() +"\", \"sourceid\":\""+inptid.ToString()+"\", \"amplitude\":\""+inptamp.ToString()+"\" },\n";
+								inputs = inputs + tdata;
+							}
+							if(inputs.Length > 2 && inputs.Substring(inputs.Length - 2) == ",\n") { inputs = inputs.Substring(0, inputs.Length - 2); }
+
+							prbld = prbld + " \"inputs\":[" + inputs + "], ";
+
+							string infos = "";
+							if(prtype == 0)
+							{
+								//	mixer
+								int inptcmd = ((gurumod.Machines.Mixer)Engine.TheTrack.Samples[es].WaveMachine.Processors[ep]).CombineMethod;
+								infos = "\"method\":\""+inptcmd.ToString()+"\"";
+							}
+							else if(prtype == 1)
+							{
+								//	gate
+								double ming = ((gurumod.Machines.Gate)Engine.TheTrack.Samples[es].WaveMachine.Processors[ep]).MinGateManual;
+								double maxg = ((gurumod.Machines.Gate)Engine.TheTrack.Samples[es].WaveMachine.Processors[ep]).MaxGateManual;
+								infos = "\"mingatemanual\":\""+ming.ToString()+"\", " +
+									"\"maxgatemanual\":\""+maxg.ToString() + "\"";
+							}
+
+							prbld = prbld + "\"details\": [ {"+infos+"} ]";
+							proret = proret + "{ " + prbld + " },\n";
+						}
+						if(proret.Length > 2 && proret.Substring(proret.Length - 2) == ",\n") { proret = proret.Substring(0, proret.Length - 2); }
+
+						infod = "\"oscillators\": \n[" + oscret + "], \n" +
+							"\"processors\": \n[" + proret + "]\n";
+
+
+						//infod = "\"sampletype\":\"special\"";
+					}
+
+					
+					trw = trw + infod + "} ] },\n";
+					toret = toret + trw;
+				}
+
+				if(toret.Length > 2 && toret.Substring(toret.Length - 2) == ",\n") { toret = toret.Substring(0, toret.Length - 2); }
+				toret = "{\"samples\":[\n" + toret + "\n] }";
+				base.OutgoingBuffer = toret;
+
+				return true;
+			}
+			else
+			{
+				TerminateOnSend = false;
+				
+				SamplesTemplate = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/samplelist.html"));
+				EachSampleTemplate = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/eachsample.html"));
+				SamplerTemplate = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/main.html"));
+				DetailsTemplate = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/details.html"));
+				GeneratorTemplate = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/generator.html"));
+				ImportTemplate = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/importfile.html"));
+				MachineTemplate = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/genmachine.html"));
+				OscTemplate = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/eachosc.html"));
+				EachMixerTemplate = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/eachmixer.html"));
+				EachGateSrcTemplate = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/eachmixer-eachgatesrc.html"));
+				
+				ProcessorTemplatePath = Engine.PFP(Engine.Configuration.WebTemplateDir + "sampler/processors/");
+				
+				base.OutgoingBuffer = "";
+				base.Template = "";
+				
+				return true;
+			}
 		}
 		
 		public override bool TakeTurn()
@@ -81,7 +247,7 @@ namespace gurumod.WebPages
 							
 							if(Engine.TheTrack.Samples[smpid] != null)
 							{
-								Machines.Generator[] tmposc = new gurumod.Machines.Generator[Engine.TheTrack.Samples[smpid].WaveMachine.Generators.Length + 1];
+								/*Machines.Generator[] tmposc = new gurumod.Machines.Generator[Engine.TheTrack.Samples[smpid].WaveMachine.Generators.Length + 1];
 								for(int eogo = 0; eogo < Engine.TheTrack.Samples[smpid].WaveMachine.Generators.Length; eogo++)
 								{
 									tmposc[eogo] = Engine.TheTrack.Samples[smpid].WaveMachine.Generators[eogo];
@@ -89,14 +255,18 @@ namespace gurumod.WebPages
 								tmposc[tmposc.Length - 1] = new gurumod.Machines.Osc();
 								
 								//Oscilator[] tmposc = new Oscilator[Engine.TheTrack.Samples[smpid].WaveMachine.Oscs.Length + 1];
-								/*for(int eogo = 0; eogo < Engine.TheTrack.Samples[smpid].WaveMachine.Oscs.Length; eogo++)
+								///*for(int eogo = 0; eogo < Engine.TheTrack.Samples[smpid].WaveMachine.Oscs.Length; eogo++)
 								{
 									tmposc[eogo] = Engine.TheTrack.Samples[smpid].WaveMachine.Oscs[eogo];
 								}
 								
 								tmposc[tmposc.Length - 1] = new Oscilator();*/
-								
-								Engine.TheTrack.Samples[smpid].WaveMachine.Generators = tmposc;
+								// uncomment this too Engine.TheTrack.Samples[smpid].WaveMachine.Generators = tmposc;
+
+								//	Test to see wtf why oscillators are all adding to the end ...
+								int nextoscid = Engine.TheTrack.Samples[smpid].WaveMachine.NextGeneratorID();
+								Engine.TheTrack.Samples[smpid].WaveMachine.Generators[nextoscid] = new gurumod.Machines.Osc();
+
 							}
 						}
 						
@@ -149,7 +319,7 @@ namespace gurumod.WebPages
 						{
 							if(Engine.TheTrack.Samples[smpid] != null)
 							{
-								Machines.Generator[] tmppr = new gurumod.Machines.Generator[Engine.TheTrack.Samples[smpid].WaveMachine.Generators.Length + 1];
+							/*	Machines.Generator[] tmppr = new gurumod.Machines.Generator[Engine.TheTrack.Samples[smpid].WaveMachine.Generators.Length + 1];
 								for(int eogo = 0; eogo < Engine.TheTrack.Samples[smpid].WaveMachine.Generators.Length; eogo++)
 								{
 									tmppr[eogo] = Engine.TheTrack.Samples[smpid].WaveMachine.Generators[eogo];
@@ -158,7 +328,37 @@ namespace gurumod.WebPages
 								tmppr[tmppr.Length - 1] = new gurumod.Machines.WavFile();
 								//((Machines.WavFile)tmppr[tmppr.Length - 1]).Initialize();
 								
-								Engine.TheTrack.Samples[smpid].WaveMachine.Generators = tmppr;
+								Engine.TheTrack.Samples[smpid].WaveMachine.Generators = tmppr;*/
+
+								////	test of wth it adds thigns to the end for
+								int nextoscid = Engine.TheTrack.Samples[smpid].WaveMachine.NextGeneratorID();
+								Engine.TheTrack.Samples[smpid].WaveMachine.Generators[nextoscid] = new gurumod.Machines.WavFile();
+
+							}
+						}
+					}
+					else if(base.RequestParts[1] == "addreverb")
+					{
+						int smpid = 0;
+						Console.WriteLine("AddReverb Called");
+						
+						if(Int32.TryParse(base.RequestParts[2], out smpid))
+						{
+							if(Engine.TheTrack.Samples[smpid] != null)
+							{
+								//int nextoscid = Engine.TheTrack.Samples[smpid].WaveMachine.NextProcessorID();
+								//Engine.TheTrack.Samples[smpid].WaveMachine.Processors[nextoscid] = new gurumod.Machines.Reverb();
+
+								Machines.Processor[] tmppr = new gurumod.Machines.Processor[Engine.TheTrack.Samples[smpid].WaveMachine.Processors.Length + 1];
+								for(int eogo = 0; eogo < Engine.TheTrack.Samples[smpid].WaveMachine.Processors.Length; eogo++)
+								{
+									tmppr[eogo] = Engine.TheTrack.Samples[smpid].WaveMachine.Processors[eogo];
+								}
+								
+								tmppr[tmppr.Length - 1] = new gurumod.Machines.Reverb();
+								((Machines.Reverb)tmppr[tmppr.Length - 1]).Initialize();
+								
+								Engine.TheTrack.Samples[smpid].WaveMachine.Processors = tmppr;
 							}
 						}
 					}
@@ -387,10 +587,42 @@ namespace gurumod.WebPages
 						((Machines.WavFile)Engine.TheTrack.Samples[sampleid].WaveMachine.Generators[generatorid]).LoadFile();
 						base.Template = "OK";
 					}
+					else if(base.RequestParts[1] == "tweakreverb")
+					{
+						int sampleid = Int32.Parse(base.PostVars["SAMPLEID"]);
+						int processorid = Int32.Parse(base.PostVars["PROCESSORID"]);
+						string inputa = base.PostVars["INPUT0"];
+						int inputaid = 0;
+						int inputatype = 0;
+
+						if(inputa.IndexOf("gen") == 0)
+						{
+							inputaid = Int32.Parse(inputa.Replace("gen", ""));
+							inputatype = Machines.InputData.SourceTypeGenerator;
+						}
+						else if(inputa.IndexOf("proc") == 0)
+						{
+							inputaid = Int32.Parse(inputa.Replace("proc", ""));
+							inputatype = Machines.InputData.SourceTypeProcessor;
+						}
+						else if(inputa == "-1")
+						{
+							inputaid = -1;
+						}
+
+						Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[processorid].Inputs[0].SourceID = inputaid;
+						Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[processorid].Inputs[0].SourceType = inputatype;
+
+						Logging.Log.Write("TweakReverb: new input sid "+inputaid.ToString()+" :: type "+inputatype.ToString());;
+					}
 					else if(base.RequestParts[1] == "tweakgate")
 					{
-						double mingateman = double.Parse(base.PostVars["GATEMIN"]);
-						double maxgateman = double.Parse(base.PostVars["GATEMAX"]);
+						double mingateman = 0.5;
+						Double.TryParse(base.PostVars["GATEMIN"], out mingateman);
+						//double.Parse(base.PostVars["GATEMIN"]);
+						double maxgateman = 1.0;
+						Double.TryParse(base.PostVars["GATEMAX"], out maxgateman);
+						//double.Parse(base.PostVars["GATEMAX"]);
 						int sampleid = Int32.Parse(base.PostVars["SAMPLEID"]);
 						int processorid = Int32.Parse(base.PostVars["PROCESSORID"]);
 						string inputa = base.PostVars["INPUT0"];
@@ -502,10 +734,10 @@ namespace gurumod.WebPages
 								
 								
 								int tyid = 0;
-								if(wavetype == "sine") { tyid = Generator.TypeSine; }
-								else if(wavetype == "square") { tyid = Generator.TypeSquare; }
-								else if(wavetype == "sawtooth") { tyid = Generator.TypeSawtooth; }
-								else if(wavetype == "triangle") { tyid = Generator.TypeTriangle; }
+								if(wavetype == "sine") { tyid = Generator.TypeSine; Console.WriteLine("Osc Wave Type: Sine"); }
+								else if(wavetype == "square") { tyid = Generator.TypeSquare; Console.WriteLine("Osc Wave Type: Square");}
+								else if(wavetype == "sawtooth") { tyid = Generator.TypeSawtooth; Console.WriteLine("Osc Wave Type: Sawtooth");}
+								else if(wavetype == "triangle") { tyid = Generator.TypeTriangle; Console.WriteLine("Osc Wave Type: Triangle");}
 								
 								((Machines.Osc)Engine.TheTrack.Samples[sid].WaveMachine.Generators[oscid]).WaveType = tyid;
 								
@@ -543,10 +775,23 @@ namespace gurumod.WebPages
 									//string[] stinputs = new string[]
 									string stinputa = base.PostVars["INPUT0"];
 									string stinputb = base.PostVars["INPUT1"];
+									string stinputaamp = "1.0";
+									string stinputbamp = "1.0";
+									double inputaamp = 1.0;
+									double inputbamp = 1.0;
 									int inputtypea = MixerSettings.SourceTypeOscillator;
 									int inputtypeb = MixerSettings.SourceTypeOscillator;
 									int inputa = 0;//Int32.Parse(base.PostVars["INPUTA"]);
 									int inputb = 1;//Int32.Parse(base.PostVars["INPUTB"]);
+
+									if(base.PostVars.ContainsKey("INPUT0AMP"))
+									{
+										stinputaamp = base.PostVars["INPUT0AMP"];
+									}
+									if(base.PostVars.ContainsKey("INPUT1AMP"))
+									{
+										stinputbamp = base.PostVars["INPUT1AMP"];
+									}
 									
 									Console.WriteLine("stInputA,B {0} {1}", stinputa, stinputb);
 									if(stinputa.IndexOf("gen") == 0)
@@ -582,13 +827,17 @@ namespace gurumod.WebPages
 									string outmethod = base.PostVars["COMBMETHOD"];
 									int sampleid = Int32.Parse(base.PostVars["SAMPLEID"]);
 									
-									
+									Double.TryParse(stinputaamp, out inputaamp);
+									Double.TryParse(stinputbamp, out inputbamp);
+
 									if(Engine.TheTrack.Samples[sampleid].WaveMachine.Processors == null) { Engine.TheTrack.Samples[sampleid].WaveMachine.InitProcessors(); }
 									
 									Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[mixerid].Inputs[0].SourceID = inputa;
 									Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[mixerid].Inputs[1].SourceID = inputb;
 									Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[mixerid].Inputs[0].SourceType = inputtypea;
 									Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[mixerid].Inputs[1].SourceType = inputtypeb;
+									Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[mixerid].Inputs[0].Amplitude = inputaamp;
+									Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[mixerid].Inputs[1].Amplitude = inputbamp;
 									
 									/*Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers[mixerid].SourceAID = inputa;
 									Engine.TheTrack.Samples[sampleid].WaveMachine.Mixers[mixerid].SourceBID = inputb;

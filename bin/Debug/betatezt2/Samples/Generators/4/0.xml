@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Osc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Enabled>false</Enabled>
+  <Frequency>440</Frequency>
+  <Amplitude>0.75</Amplitude>
+  <SampleRate>44100</SampleRate>
+  <Format>Mono16</Format>
+  <WaveType>0</WaveType>
+</Osc>
