@@ -144,6 +144,69 @@ namespace gurumod
 				
 			}
 		}
+
+		public string GTString()
+		{
+			//		rrrr...ccc...onnvvvsssiiiii...
+			//			r: 4 digit number of rows in pattern
+			//			c: 3 digit channel number/id
+			//			o: 1 digit octave
+			//			n: 2 digit note
+			//			v: 3 digit volume
+			//			s: 3 digitl special value
+			//			i: 5 digit sample id
+			string tout = this.RowCount.ToString("D4");
+
+			for(int echan = 0; echan < this.Channels.Length; echan++)
+			{
+
+
+				//Console.WriteLine(tout);
+				//	Environment.Exit(0);
+			}
+			Console.WriteLine("Length of tout: {0}", tout.Length);
+
+			return tout;
+		}
+
+		public string ChannelGTString(int channel)
+		{
+			string tout = channel.ToString("D3");
+
+
+			for(int erow = 0; erow < this.RowCount; erow++)
+			{
+				if(this.Channels[channel].Elements[erow] != null)
+				{
+
+					string octave = this.Channels[channel].Elements[erow].Octave.ToString();
+					string note = this.Channels[channel].Elements[erow].Note.ToString("D2");
+					string volume = this.Channels[channel].Elements[erow].Volume.ToString("D3");
+					string special = this.Channels[channel].Elements[erow].SpecialControl.ToString("D3");
+					string sampleid = this.Channels[channel].Elements[erow].SampleID.ToString("D5");
+					string telement = "";
+
+					if(octave.Length > 1) { octave = octave.Substring(octave.Length - 1); }
+					if(note.Length > 2) { note = "-" + note.Substring(note.Length - 1); }
+					if(volume.Length > 3) { volume = "-" + volume.Substring(volume.Length - 2); }
+					if(special.Length > 3) { special = "-" + special.Substring(special.Length - 2); }
+					if(sampleid.Length > 5) { sampleid = "-" + sampleid.Substring(sampleid.Length - 4); }
+
+					Console.WriteLine("Channel {0} Row {1}\t {2}{3}{4}{5}{6}", channel, erow, octave, note, volume, special, sampleid);
+
+					telement = octave + note + volume + special + sampleid;
+					tout = tout + telement;
+				}
+				else
+				{
+					tout = tout + "5-1-01-01-0001";
+				}
+				//Console.WriteLine("octave {0}\nnote {1}\nvolume {2}\nspecial {3}\nsid {4}\n{5}\n\n", octave, note, volume, special, sampleid, telement);
+
+			}
+
+			return tout;
+		}
 		
 		public static void Load(int patternid, string TrackPath)
 		{

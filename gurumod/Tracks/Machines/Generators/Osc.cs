@@ -21,6 +21,8 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // 
 using System;
+using System.Text;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using OpenTK.Audio;
@@ -38,6 +40,25 @@ namespace gurumod.Machines
 		
 		public Osc ()
 		{
+		}
+
+		public override byte[] GTString ()
+		{
+			//	For generator type 0 (oscillator)
+			//		w
+			//			w: 1 digit wave type
+			MemoryStream ms = new MemoryStream();
+			StreamWriter wr = new StreamWriter(ms);
+
+			ms.Write(base.GTString (), 0, base.GTString().Length);
+			string toret = "";
+
+
+
+			toret = toret + WaveType.ToString();
+			wr.Write(toret);
+
+			return ms.ToArray();
 		}
 		
 		public override short[] GetData(int frames, double frequency)

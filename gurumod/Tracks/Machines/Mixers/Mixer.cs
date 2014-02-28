@@ -56,6 +56,35 @@ namespace gurumod.Machines
 		{
 			
 		}
+
+		public override string GTString ()
+		{
+			//	For each input of the processor:
+				//		iiitttaaaa
+				//			i: 3 digit source id
+				//			t: 3 digit source type
+				//			a: 4 digit amplitude (x.xx)
+			string toret;
+
+			toret = this.Inputs.Length.ToString("D3") + Processor.ProcTypeMixer.ToString("D3");
+
+
+			for(int ein = 0; ein < this.Inputs.Length; ein++)
+			{
+				string sid = this.Inputs[ein].SourceID.ToString("D3");
+				string stype = this.Inputs[ein].SourceType.ToString("D3");
+				string amp = this.Inputs[ein].Amplitude.ToString("0.00");
+
+				toret = toret + sid + stype + amp;
+			}
+
+			//	For mixers
+				//		m
+				//			m: 1 digit combine method
+
+			toret = toret + this.CombineMethod.ToString();
+			return toret;
+		}
 		
 		public override void Initialize()
 		{

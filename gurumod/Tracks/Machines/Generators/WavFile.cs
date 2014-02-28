@@ -44,7 +44,64 @@ namespace gurumod.Machines
 		{
 			base.GeneratorType = gurumod.Machines.Generator.GeneratorTypeWavePlayer;
 		}
-		
+
+	
+
+		public override byte[] GTString()
+		{
+			//	For generator type 1 (wave player)
+			//		cssssssbbbbbbbbbblllllllllllllllllllf<chr 0>
+			//			c: 1 digit channel count
+			//			s: 6 digit sample rate
+			//			b: 10 digit bit rate
+			//			l: 19 digit length of audio data
+			//			f: filename
+			//		list of 2-byte shorts of audio data
+
+			MemoryStream ms = new MemoryStream();
+			StreamWriter wr = new StreamWriter(ms);
+
+			ms.Write( base.GTString (), 0, base.GTString().Length);
+			string toret = "";
+
+			string channels = this.Channels.ToString();
+			string samplerate = this.SampleRate.ToString("D6");
+			string bitrate = this.BitRate.ToString("D10");
+			string audiolen = this.AudioData.Length.ToString("D19");
+
+			toret = toret + channels + samplerate + bitrate + audiolen;
+			wr.Write(toret);
+
+			if(this.AudioData == null || this.AudioData.Length == 0) { return ms.ToArray(); }
+
+
+			byte[] audiobytes = new byte[this.AudioData.Length * 2];
+
+			for(int eaud = 0; eaud < this.AudioData.Length; eaud++)
+			{
+				byte b1 = new byte();
+				byte b2 = new byte();
+
+				this.FromShort(this.AudioData[eaud], out b1, out b2);
+				audiobytes[eaud * 2] = b1;
+				audiobytes[(eaud * 2) + 1] = b2;
+			}
+
+			ms.Write(audiobytes, 0, audiobytes.Length);
+
+			return ms.ToArray();
+		}
+
+		public short ToShort(short byte1, short byte2)
+		{
+		    return (short)((byte2 << 8) + byte1);
+		}
+
+		public void FromShort(short number, out byte byte1, out byte byte2)
+		{
+		    byte2 = (byte)(number >> 8);
+		    byte1 = (byte)(number & 255);
+		}
 		
 		//
 		//	When getting data (ie GetData), the number

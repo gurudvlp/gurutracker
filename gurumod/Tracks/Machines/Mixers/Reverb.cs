@@ -48,6 +48,40 @@ namespace gurumod.Machines
 		public Reverb ()
 		{
 		}
+
+		public override string GTString ()
+		{
+			//	For each input of the processor:
+				//		iiitttaaaa
+				//			i: 3 digit source id
+				//			t: 3 digit source type
+				//			a: 4 digit amplitude (x.xx)
+			string toret;
+
+			toret = this.Inputs.Length.ToString("D3") + Processor.ProcTypeReverb.ToString("D3");
+
+
+			for(int ein = 0; ein < this.Inputs.Length; ein++)
+			{
+				string sid = this.Inputs[ein].SourceID.ToString("D3");
+				string stype = this.Inputs[ein].SourceType.ToString("D3");
+				string amp = this.Inputs[ein].Amplitude.ToString("0.00");
+
+				toret = toret + sid + stype + amp;
+			}
+
+			//	For reverb
+				//		wwwwwwwwwwdddddddddd
+				//			w: 10 digit delay
+				//			d: 10 digit decay
+
+			string delay = this.Delay.ToString("0000000.00");
+			string decay = this.Decay.ToString("0000000.00");
+
+			toret = toret + delay + decay;
+
+			return toret;
+		}
 		
 		public override void Initialize ()
 		{

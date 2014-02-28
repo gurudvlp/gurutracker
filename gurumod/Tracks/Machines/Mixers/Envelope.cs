@@ -49,6 +49,48 @@ namespace gurumod.Machines
 		{
 		}
 
+		public override string GTString ()
+		{
+			//	For each input of the processor:
+				//		iiitttaaaa
+				//			i: 3 digit source id
+				//			t: 3 digit source type
+				//			a: 4 digit amplitude (x.xx)
+			string toret;
+
+			toret = this.Inputs.Length.ToString("D3") + Processor.ProcTypeEnvelope.ToString("D3");
+
+
+			for(int ein = 0; ein < this.Inputs.Length; ein++)
+			{
+				string sid = this.Inputs[ein].SourceID.ToString("D3");
+				string stype = this.Inputs[ein].SourceType.ToString("D3");
+				string amp = this.Inputs[ein].Amplitude.ToString("0.00");
+
+				toret = toret + sid + stype + amp;
+			}
+
+			//	For envelopes:
+				//		aaaaaaaaaabbbbddddddddddeeeessssssssssrrrrrrrrrr
+				//			a: 10 digit attack
+				//			b: 4 digit attack amplitude (x.xx)
+				//			d: 10 digit decay
+				//			e: 4 digit decay amplitude (x.xx)
+				//			s: 10 digit sustain
+				//			r: 10 digit release
+
+			string attack = this.Attack.ToString("0000000.00");
+			string attamp = this.AttackAmp.ToString("0.00");
+			string decay = this.Decay.ToString("0000000.00");
+			string decamp = this.DecayAmp.ToString("0.00");
+			string sustain = this.Sustain.ToString("0000000.00");
+			string release = this.Release.ToString("0000000.00");
+
+			toret = toret + attack + attamp + decay + decamp + sustain + release;
+
+			return toret;
+		}
+
 		public override void Initialize ()
 		{
 			Inputs = new InputData[1];

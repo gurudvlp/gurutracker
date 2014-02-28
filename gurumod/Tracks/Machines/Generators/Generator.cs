@@ -80,6 +80,31 @@ namespace gurumod.Machines
 			}
 		}
 
+		public virtual byte[] GTString()
+		{
+			//	For each generator:
+			//		tessssssfffffaaaa
+			//			t: 1 digit generator type
+			//			e: 1 digit enabled (0 or 1)
+			//			s: 6 digit sample rate
+			//			f: 5 digit frequency
+			//			a: 4 digit amplitude (x.xx)
+
+			MemoryStream ms = new MemoryStream();
+			StreamWriter wr = new StreamWriter(ms);
+
+			string toret = "";
+			string gentype = this.GeneratorType.ToString();
+			string enabled = "0"; if(this.Enabled) { enabled = "1"; }
+			string samplerate = this.SampleRate.ToString("D6");
+			string frequency = this.Frequency.ToString("0000.0");
+			string amp = this.Amplitude.ToString("0.00");
+
+			wr.Write(gentype + enabled + samplerate + frequency + amp);
+			return ms.ToArray();
+		}
+
+
 		public virtual Dictionary<string, string> Details()
 		{
 			return new Dictionary<string, string>();

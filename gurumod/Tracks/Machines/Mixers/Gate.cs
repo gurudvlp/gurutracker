@@ -67,6 +67,40 @@ namespace gurumod.Machines
 				Inputs[ein].SourceType = Machines.InputData.SourceTypeGenerator;
 			}
 		}
+
+		public override string GTString ()
+		{
+			//	For each input of the processor:
+				//		iiitttaaaa
+				//			i: 3 digit source id
+				//			t: 3 digit source type
+				//			a: 4 digit amplitude (x.xx)
+			string toret;
+
+			toret = this.Inputs.Length.ToString("D3") + Processor.ProcTypeGate.ToString("D3");
+
+
+			for(int ein = 0; ein < this.Inputs.Length; ein++)
+			{
+				string sid = this.Inputs[ein].SourceID.ToString("D3");
+				string stype = this.Inputs[ein].SourceType.ToString("D3");
+				string amp = this.Inputs[ein].Amplitude.ToString("0.00");
+
+				toret = toret + sid + stype + amp;
+			}
+
+
+			//	For gates
+				//		llllllllllhhhhhhhhhh
+				//			l: 10 digit MinGateManual
+				//			h: 10 digit MaxGateManual
+
+			string minman = this.MinGateManual.ToString("0.00000000");
+			string maxman = this.MaxGateManual.ToString("0.00000000");
+
+			toret = toret + minman + maxman;
+			return toret;
+		}
 		
 		public override short[] Process (Dictionary<string, short[]> Signals)
 		{

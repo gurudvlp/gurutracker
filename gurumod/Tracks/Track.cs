@@ -75,6 +75,7 @@ namespace gurumod
 		[XmlElement("WebSite")] public string WebSite = "";
 		[XmlElement("Email")] public string Email = "";
 		[XmlElement("Comments")] public string Comments = "";
+		[XmlElement("GTVersion")] public string GTVersion = "0001";
 		
 		[XmlIgnore()] public long LastTurn = 0;
 		[XmlIgnore()] public int CurrentPattern = 0;
@@ -202,6 +203,8 @@ namespace gurumod
 					}
 				}
 			}
+
+
 		}
 		
 		public void EnablePlayer()
@@ -335,6 +338,9 @@ namespace gurumod
 					
 				}
 			}*/
+		
+		
+			this.SaveAsGT();
 		}
 		
 		public void SaveMetaData(string TrackName)
@@ -378,6 +384,204 @@ namespace gurumod
 				}
 			}
 		}
+
+		public bool SaveAsGT()
+		{
+			//	Save the Track in the native format.
+			//
+			//	First a header needs to be generated, followed by the other elements of the track.
+			//	The format will be:
+			//		gt-0001-pppppssssscccyyyytttllll
+			//			p: 5 digit number of patterns
+			//			s: 5 digit number of samples
+			//			c: 3 digit number of channels
+			//			y: 4 digit year
+			//			t: 3 digit tempo
+			//			l: 4 digit default pattern length
+			//	Followed by:
+			//		author<chr 0>title<chr 0>genre<chr 0>website<chr 0>email<chr 0>comments<chr 0>
+			//		m
+			//			m: muted channels.  repeats for however many channels there are, and is either 0 or 1
+			//		ppppp...<chr 0>
+			//			p: 5 digit pattern id, looped for pattern sequence
+			//
+			//	So from that, we have the header information.  Next comes the pattern information.
+			//		rrrr...ccc...onnvvvsssiiiii...
+			//			r: 4 digit number of rows in pattern
+			//			c: 3 digit channel number/id
+			//			o: 1 digit octave
+			//			n: 2 digit note
+			//			v: 3 digit volume
+			//			s: 3 digitl special value
+			//			i: 5 digit sample id
+			//
+			//	Now for sample data.  It gets a little more tricky.
+			//		iiiiiyyyybbbbbbbbbbbbbbbbbbbcppppppppppssssssssssgmddddddddddddddddddd
+			//			i: 5 digit sample id
+			//			y: 4 digit year
+			//			b: 19 digit bit rate
+			//			c: 1 digit number of channels
+			//			p: 10 digit bits per sample
+			//			s: 10 digit sample rate
+			//			g: 1 digit for using a wave generator (0 or 1)
+			//			m: 1 digit for using a wave machine (0 or 1)
+			//			d: 19 digit length of sound data
+			//		n<chr 0>a<chr 0>f<chr 0>
+			//			n: name of sample
+			//			a: artist
+			//			f: filename of sample
+			//		sounddata as bytes
+			//
+			//	If the wave generator flag is 1, then:
+			//		tfffffssssssllll
+			//			t: sound type
+			//			f: 5 digit frequency
+			//			s: 6 digit sample rate
+			//			l: 4 digit length in seconds
+			//
+			//	If the wave machine flag is 1, then:
+			//		ssssssfffffgggppp
+			//			s: 6 digit sample rate
+			//			f: 5 digit frequency
+			//			g: 3 digit number of generators
+			//			p: 3 digit number of processors
+			//	For each generator:
+			//		tessssssfffffaaaa
+			//			t: 1 digit generator type
+			//			e: 1 digit enabled (0 or 1)
+			//			s: 6 digit sample rate
+			//			f: 5 digit frequency
+			//			a: 4 digit amplitude (x.xx)
+			//	For generator type 0 (oscillator)
+			//		w
+			//			w: 1 digit wave type
+			//	For generator type 1 (wave player)
+			//		cssssssbbbbbbbbbblllllllllllllllllllf<chr 0>
+			//			c: 1 digit channel count
+			//			s: 6 digit sample rate
+			//			b: 10 digit bit rate
+			//			l: 19 digit length of audio data
+			//			f: filename
+			//		list of 2-byte shorts of audio data
+			//	For each processor:
+			//		nnniiittt
+			//			n: 3 digit processor id
+			//			i: 3 digit number of inputs
+			//			t: 3 digit processor type
+			//	For each input of the processor:
+			//		iiitttaaaa
+			//			i: 3 digit source id
+			//			t: 3 digit source type
+			//			a: 4 digit amplitude (x.xx)
+			//	For mixers
+			//		m
+			//			m: 1 digit combine method
+			//	For envelopes:
+			//		aaaaaaaaaabbbbddddddddddeeeessssssssssrrrrrrrrrr
+			//			a: 10 digit attack
+			//			b: 4 digit attack amplitude (x.xx)
+			//			d: 10 digit decay
+			//			e: 4 digit decay amplitude (x.xx)
+			//			s: 10 digit sustain
+			//			r: 10 digit release
+			//	For gates
+			//		llllllllllhhhhhhhhhh
+			//			l: 10 digit MinGateManual
+			//			h: 10 digit MaxGateManual
+			//	For reverb
+			//		wwwwwwwwwwdddddddddd
+			//			w: 10 digit delay
+			//			d: 10 digit decay
+
+			MemoryStream gtstream = new MemoryStream();
+			StreamWriter gtwriter = new StreamWriter(gtstream);
+
+			gtwriter.AutoFlush = true;
+
+			string tout = "gt-" + this.GTVersion + "-";
+			int rpats = 0;
+			for(int ep = 0; ep < this.Patterns.Length; ep++)
+			{
+				if(this.Patterns[ep] != null) { rpats++; }
+			}
+			string numpatterns = rpats.ToString("D5");
+			int rsamps = 0;
+			for(int es = 0; es < this.Samples.Length; es++)
+			{
+				if(this.Samples[es] != null) { rsamps++; }
+			}
+			string numsamples = rsamps.ToString("D5");
+			string numchannels = this.ChannelCount.ToString("D3");
+			string year = this.Year.ToString("D4");
+			string tempo = this.Tempo.ToString("D3");
+			string defpatrows = this.DefaultPatternLength.ToString("D4");
+
+			tout = tout + numpatterns + numsamples + numchannels + year + tempo + defpatrows;
+			tout = tout + this.Author + "\0";
+			tout = tout + this.Title + "\0";
+			tout = tout + this.Genre + "\0";
+			tout = tout + this.WebSite + "\0";
+			tout = tout + this.Email + "\0";
+			tout = tout + this.Comments + "\0";
+
+			for(int ech = 0; ech < this.ChannelCount; ech++)
+			{
+				if(this.ChannelMuted.Length > ech)
+				{
+
+					if(this.ChannelMuted[ech]) { tout = tout + "1"; }
+					else { tout = tout + "0"; }
+
+				}
+				else
+				{
+					//	For some reason the ChannelMuted array isn't as large as the
+					//	number of channels that exist.
+					tout = tout + "0";
+				}
+			}
+
+			//	Determine pattern sequence <<<<<< DO THIS !!!!!!
+			tout = tout + "00000\0";
+			gtwriter.Write(tout);
+
+			for(int epat = 0; epat < this.Patterns.Length; epat++)
+			{
+				if(this.Patterns[epat] != null)
+				{
+					gtwriter.Write(this.Patterns[epat].RowCount.ToString("D4"));
+					if(this.Patterns[epat] != null)
+					{
+						for(int ech = 0; ech < ChannelCount; ech++)
+						{
+							string tmpcol = this.Patterns[epat].ChannelGTString(ech);
+							gtwriter.Write(tmpcol);
+
+							File.WriteAllText("/tmp/gtcol"+ech.ToString()+".txt", tmpcol);
+							//gtwriter.Write(this.Patterns[epat].GTString());
+						}
+					}
+				}
+			}
+
+			//gtwriter.Write(tout);
+
+			for(int esam = 0; esam < this.Samples.Length; esam++)
+			{
+				if(this.Samples[esam] != null)
+				{
+					gtstream.Write(this.Samples[esam].GTString(), 0, this.Samples[esam].GTString().Length);
+					//break;
+				}
+
+			}
+
+
+
+			File.WriteAllBytes("/tmp/test.gt", gtstream.ToArray());
+
+			return true;
+		}
 		
 		public Stream Serialize()
 		{
@@ -397,9 +601,43 @@ namespace gurumod
 			
 			return toret;
 		}
+
+		public static bool LoadGT(string filename)
+		{
+			if(!File.Exists(filename)) { return false; }
+
+			FileStream lf = File.OpenRead(filename);
+			BinaryReader reader = new BinaryReader(lf);
+
+			reader.BaseStream.Position = 0;
+			byte[] rbuf = reader.ReadBytes (8);
+
+			if(rbuf.Length < 8) { Console.WriteLine("File is too small to be valid."); return false; }
+			string headtag = Encoding.UTF8.GetString(rbuf);
+
+			if(headtag.Substring(0, 3) != "gt-" || headtag.Substring(7) != "-")
+			{
+				Console.WriteLine("File had an invalid header.");
+				return false;
+			}
+
+			string version = headtag.Substring(3, 4);
+			if(version != "0001") { Console.WriteLine("Version mismatch."); return false; }
+
+			if(Serializers.LoadGT_0001.Load(reader) == null)
+			{
+				Console.WriteLine("Track deserializer returned null.");
+				return false;
+			}
+			return true;
+		}
+
+
 		
 		public static void Load(string trackpath)
 		{
+			Track.LoadGT("/tmp/test.gt");
+
 			Console.WriteLine("Loading track {0}", trackpath);
 			if(!trackpath.EndsWith("/")) { trackpath = trackpath + "/"; }
 			if(!File.Exists(Engine.PFP(trackpath + "track.xml")))

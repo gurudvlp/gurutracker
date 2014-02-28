@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
@@ -28,6 +29,8 @@ namespace gurumod
 		
 		[XmlElement("MaxGenerators")] public int MaxGenerators = 32;
 		[XmlElement("MaxProcessors")] public int MaxProcessors = 32;
+
+		[XmlIgnore()] public static ASCIIEncoding encoder = new ASCIIEncoding();
 
 		[XmlIgnore()] private int _lastnote = -2;
 		[XmlIgnore()] private bool _newnote = false;
@@ -73,6 +76,107 @@ namespace gurumod
 			
 			Generators[0] = new Machines.Osc();
 			Processors[0] = new Machines.Mixer();
+		}
+
+		public byte[] GTString()
+		{
+			//	If the wave machine flag is 1, then:
+			//		ssssssfffffgggppp
+			//			s: 6 digit sample rate
+			//			f: 5 digit frequency
+			//			g: 3 digit number of generators
+			//			p: 3 digit number of processors
+				//	For each generator:
+				//		tessssssfffffaaaa
+				//			t: 1 digit generator type
+				//			e: 1 digit enabled (0 or 1)
+				//			s: 6 digit sample rate
+				//			f: 5 digit frequency
+				//			a: 4 digit amplitude (x.xx)
+				//	For generator type 0 (oscillator)
+				//		w
+				//			w: 1 digit wave type
+				//	For generator type 1 (wave player)
+				//		cssssssbbbbbbbbbblllllllllllllllllllf<chr 0>
+				//			c: 1 digit channel count
+				//			s: 6 digit sample rate
+				//			b: 10 digit bit rate
+				//			l: 19 digit length of audio data
+				//			f: filename
+				//		list of 2-byte shorts of audio data
+			//	For each processor:
+			//		nnniiittt
+			//			n: 3 digit processor id
+			//			i: 3 digit number of inputs
+			//			t: 3 digit processor type
+				//	For each input of the processor:
+				//		iiitttaaaa
+				//			i: 3 digit source id
+				//			t: 3 digit source type
+				//			a: 4 digit amplitude (x.xx)
+				//	For mixers
+				//		m
+				//			m: 1 digit combine method
+				//	For envelopes:
+				//		aaaaaaaaaabbbbddddddddddeeeessssssssssrrrrrrrrrr
+				//			a: 10 digit attack
+				//			b: 4 digit attack amplitude (x.xx)
+				//			d: 10 digit decay
+				//			e: 4 digit decay amplitude (x.xx)
+				//			s: 10 digit sustain
+				//			r: 10 digit release
+				//	For gates
+				//		llllllllllhhhhhhhhhh
+				//			l: 10 digit MinGateManual
+				//			h: 10 digit MaxGateManual
+				//	For reverb
+				//		wwwwwwwwwwdddddddddd
+				//			w: 10 digit delay
+				//			d: 10 digit decay
+
+			string samplerate = this.SampleRate.ToString("D6");
+			string frequency = this.Frequency.ToString("0000.0");
+			string nogens = this.Generators.Length.ToString("D3");
+			string noprocs = this.Processors.Length.ToString("D3");
+
+			MemoryStream genstream = new MemoryStream();
+			StreamWriter gw = new StreamWriter(genstream);
+
+			for(int egen = 0; egen < this.Generators.Length; egen++)
+			{
+				if(this.Generators[egen] != null)
+				{
+					byte[] gendata = this.Generators[egen].GTString();
+					byte[] genbytes = this.Generators[egen].GTString();
+
+					genstream.Write(gendata, 0, gendata.Length);
+					if(genbytes != null) { genstream.Write(genbytes, 0, genbytes.Length); }
+				}
+				else
+				{
+					nogens = (Int32.Parse(nogens) - 1).ToString("D3");
+				}
+			}
+
+			MemoryStream procstream = new MemoryStream();
+			StreamWriter pw = new StreamWriter(procstream);
+
+			for(int eproc = 0; eproc < this.Processors.Length; eproc++)
+			{
+				string procid = eproc.ToString("D3");
+				string procdata = this.Processors[eproc].GTString();
+
+				pw.Write(procid + procdata);
+			}
+
+			MemoryStream gtstream = new MemoryStream();
+			StreamWriter gtwr = new StreamWriter(gtstream);
+
+			gtwr.Write(samplerate + frequency + nogens + noprocs);
+			gtstream.Write (genstream.ToArray(), 0, genstream.ToArray().Length);
+			gtstream.Write(procstream.ToArray(), 0, procstream.ToArray().Length);
+
+			return gtstream.ToArray();
 		}
 		
 		public short[] GetSignal(PatternElement element)
@@ -143,7 +247,7 @@ namespace gurumod
 			if(!Running) { Console.WriteLine("Machine: Not running, so exiting."); return null; }
 			//Console.WriteLine("Machine: Running, and now parsing data for audio output. Note: {0}", note);
 			
-			float freq = ((1f / 7f) * note);
+			float freq = ((1f / 12f) * note);
 			if(octave == 4) { freq = 0.5f + (freq * 0.5f); }
 			if(octave == 5) { freq =  1.0f + freq; }
 			if(octave == 6) { freq =  2.0f + (freq * 2.0f); }
@@ -518,7 +622,8 @@ namespace gurumod
 
 			return -1;
 		}
-	
+
+
 	}
 }
 

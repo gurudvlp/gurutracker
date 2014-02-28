@@ -390,7 +390,145 @@ namespace gurumod
 			
 		}
 		
-		
+		public byte[] GTString()
+		{
+
+
+			//	Now for sample data.  It gets a little more tricky.
+			//		iiiiiyyyybbbbbbbbbbbbbbbbbbbcppppppppppssssssssssgmddddddddddddddddddd
+			//			i: 5 digit sample id
+			//			y: 4 digit year
+			//			b: 19 digit bit rate
+			//			c: 1 digit number of channels
+			//			p: 10 digit bits per sample
+			//			s: 10 digit sample rate
+			//			g: 1 digit for using a wave generator (0 or 1)
+			//			m: 1 digit for using a wave machine (0 or 1)
+			//			d: 19 digit length of sound data
+			//		n<chr 0>a<chr 0>f<chr 0>
+			//			n: name of sample
+			//			a: artist
+			//			f: filename of sample
+			//		sounddata as bytes
+			//
+			//	If the wave generator flag is 1, then:
+			//		tfffffssssssllll
+			//			t: sound type
+			//			f: 5 digit frequency
+			//			s: 6 digit sample rate
+			//			l: 4 digit length in seconds
+			//
+			//	If the wave machine flag is 1, then:
+			//		ssssssfffffgggppp
+			//			s: 6 digit sample rate
+			//			f: 5 digit frequency
+			//			g: 3 digit number of generators
+			//			p: 3 digit number of processors
+			//	For each generator:
+			//		tessssssfffffaaaa
+			//			t: 1 digit generator type
+			//			e: 1 digit enabled (0 or 1)
+			//			s: 6 digit sample rate
+			//			f: 5 digit frequency
+			//			a: 4 digit amplitude (x.xx)
+			//	For generator type 0 (oscillator)
+			//		w
+			//			w: 1 digit wave type
+			//	For generator type 1 (wave player)
+			//		cssssssbbbbbbbbbblllllllllllllllllllf<chr 0>
+			//			c: 1 digit channel count
+			//			s: 6 digit sample rate
+			//			b: 10 digit bit rate
+			//			l: 19 digit length of audio data
+			//			f: filename
+			//		list of 2-byte shorts of audio data
+			//	For each processor:
+			//		nnniiittt
+			//			n: 3 digit processor id
+			//			i: 3 digit number of inputs
+			//			t: 3 digit processor type
+			//	For each input of the processor:
+			//		iiitttaaaa
+			//			i: 3 digit source id
+			//			t: 3 digit source type
+			//			a: 4 digit amplitude (x.xx)
+			//	For mixers
+			//		m
+			//			m: 1 digit combine method
+			//	For envelopes:
+			//		aaaaaaaaaabbbbddddddddddeeeessssssssssrrrrrrrrrr
+			//			a: 10 digit attack
+			//			b: 4 digit attack amplitude (x.xx)
+			//			d: 10 digit decay
+			//			e: 4 digit decay amplitude (x.xx)
+			//			s: 10 digit sustain
+			//			r: 10 digit release
+			//	For gates
+			//		llllllllllhhhhhhhhhh
+			//			l: 10 digit MinGateManual
+			//			h: 10 digit MaxGateManual
+			//	For reverb
+			//		wwwwwwwwwwdddddddddd
+			//			w: 10 digit delay
+			//			d: 10 digit decay
+
+
+			byte[] toret;
+			string tout = "";
+
+			//	Now for sample data.  It gets a little more tricky.
+			//		iiiiiyyyybbbbbbbbbbbbbbbbbbbcppppppppppssssssssssgmddddddddddddddddddd
+			//			i: 5 digit sample id
+			//			y: 4 digit year
+			//			b: 19 digit bit rate
+			//			c: 1 digit number of channels
+			//			p: 10 digit bits per sample
+			//			s: 10 digit sample rate
+			//			g: 1 digit for using a wave generator (0 or 1)
+			//			m: 1 digit for using a wave machine (0 or 1)
+			//			d: 19 digit length of sound data
+			//		n<chr 0>a<chr 0>f<chr 0>
+			//			n: name of sample
+			//			a: artist
+			//			f: filename of sample
+			//		sounddata as bytes
+
+			MemoryStream sampstr = new MemoryStream();
+			StreamWriter sampwr = new StreamWriter(sampstr);
+
+			string sampleid = this.ID.ToString("D5");
+			string year = this.Year.ToString("D4");
+			string brate = this.BitRate.ToString("D19");
+			string channels = this.channels.ToString();
+			string bitspersample = this.bits_per_sample.ToString("D10");
+			string samplerate = this.sample_rate.ToString("D10");
+			string wavegenerator = "0"; if(this.UseWaveGenerator) { wavegenerator = "1"; }
+			string wavemachine = "0"; if(this.UseWaveMachine) { wavemachine = "1"; }
+			string datalength = "0";
+			if(this.SoundData != null) { datalength = this.SoundData.Length.ToString("D19"); }
+			else { datalength = (0).ToString("D19"); }
+
+			tout = sampleid + year + brate + channels + bitspersample + samplerate + wavegenerator + wavemachine + datalength;
+			tout = tout + this.Name + "\0" + this.Artist + "\0" + this.Filename + "\0";
+
+			//	Sound data plugged in here
+
+			string wavegenout = "";
+			if(this.UseWaveGenerator) { wavegenout = WaveGenerator.GTString(); }
+
+			byte[] wavemachout = new byte[0];
+			if(this.UseWaveMachine) { wavemachout = WaveMachine.GTString(); }
+
+			sampwr.Write(tout);
+			if(this.SoundData != null) { sampstr.Write(this.SoundData, 0, this.SoundData.Length); }
+			sampwr.Write(wavegenout);
+			if(this.UseWaveMachine) { sampwr.Write(wavemachout); }
+
+			//sampstr.Flush();
+			//Console.WriteLine("SampleStream for gt is {0} bytes", sampstr.ToArray ().Length);
+			return sampstr.ToArray();
+
+		}
 	}
 }
 

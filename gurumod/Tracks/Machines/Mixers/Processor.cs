@@ -34,6 +34,8 @@ namespace gurumod.Machines
 	{
 		[XmlElement("Inputs")] public InputData[] Inputs;
 		[XmlElement("InputCount")] public int InputCount = 4;
+
+		[XmlElement("ProcessorType")] public int ProcessorType = 0;
 		//	The inputs in this class:
 		//		0 - Audio Input A
 		//		1 - Audio Input B
@@ -42,7 +44,11 @@ namespace gurumod.Machines
 		
 		[XmlIgnore()] public static int MaxInputs = 32;
 		[XmlIgnore()] public bool IsNoteNew = false;
-		
+
+		[XmlIgnore()] public static int ProcTypeMixer = 0;
+		[XmlIgnore()] public static int ProcTypeGate = 1;
+		[XmlIgnore()] public static int ProcTypeEnvelope = 2;
+		[XmlIgnore()] public static int ProcTypeReverb = 3;
 		
 		public Processor ()
 		{
@@ -59,7 +65,9 @@ namespace gurumod.Machines
 		
 		public abstract short[] Process(Dictionary<string, short[]> Signals);
 		public abstract void Initialize();
-		
+
+		public abstract string GTString();
+
 		public virtual void Save(string trackpath, int sampleid, int processorid)
 		{
 			Console.WriteLine("Saving Processor {0} on sample {1}", processorid, sampleid);

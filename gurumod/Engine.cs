@@ -382,6 +382,9 @@ namespace gurumod
 					Console.WriteLine("And..");
 					Track.Load(Engine.CommandFlags["-f"]);
 					Console.WriteLine("Finally...");
+					Console.WriteLine("A test of saving the .gt format...");
+
+					//TheTrack.SaveAsGT();
 				}
 				else
 				{

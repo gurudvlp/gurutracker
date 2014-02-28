@@ -25,7 +25,26 @@ namespace gurumod
 		public Generator ()
 		{
 		}
-		
+
+		public string GTString()
+		{
+			//	If the wave generator flag is 1, then:
+			//		tfffffssssssllll
+			//			t: sound type
+			//			f: 5 digit frequency
+			//			s: 6 digit sample rate
+			//			l: 4 digit length in seconds
+			string toret = "";
+			string wavetype = this.WaveType.ToString();
+			string frequency = this.Frequency.ToString("D5");
+			string samplerate = this.SampleRate.ToString("D6");
+			string len = this.Length.ToString("D4");
+
+			toret = wavetype + frequency + samplerate + len;
+
+			return toret;
+
+		}
 		
 		
 		public short[] Generate()
