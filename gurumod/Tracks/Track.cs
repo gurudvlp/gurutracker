@@ -624,7 +624,8 @@ namespace gurumod
 			string version = headtag.Substring(3, 4);
 			if(version != "0001") { Console.WriteLine("Version mismatch."); return false; }
 
-			if(Serializers.LoadGT_0001.Load(reader) == null)
+			Engine.TheTrack = Serializers.LoadGT_0001.Load(reader);
+			if(Engine.TheTrack == null)
 			{
 				Console.WriteLine("Track deserializer returned null.");
 				return false;
@@ -638,8 +639,10 @@ namespace gurumod
 		{
 			Track.LoadGT("/tmp/test.gt");
 
+			Environment.Exit(0);
+
 			Console.WriteLine("Loading track {0}", trackpath);
-			if(!trackpath.EndsWith("/")) { trackpath = trackpath + "/"; }
+			/*if(!trackpath.EndsWith("/")) { trackpath = trackpath + "/"; }
 			if(!File.Exists(Engine.PFP(trackpath + "track.xml")))
 			{
 				Console.WriteLine("Track {0} does not exist.", trackpath);
@@ -718,7 +721,7 @@ namespace gurumod
 				Engine.TheTrack = (Track)s.Deserialize(tr);
 				
 				tr.Close();*/
-			}
+			/*}
 			catch(Exception ex)
 			{
 				Console.WriteLine("Exception while loading track.");
@@ -727,7 +730,7 @@ namespace gurumod
 				//Console.WriteLine(ex.GetBaseException().Message);
 				Console.WriteLine(ex.StackTrace);
 				Environment.Exit(0);
-			}
+			}*/
 		}
 		
 		public int AddPattern()
