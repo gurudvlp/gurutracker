@@ -284,8 +284,8 @@ namespace gurumod.Serializers
 				insamps[sampid].Year = year;
 				insamps[sampid].BitRate = bitrate;
 				insamps[sampid].channels = nochans;
-				insamps[sampid].bits_per_sample = bitspersample;
-				insamps[sampid].sample_rate = samplerate;
+				insamps[sampid].bits_per_sample = (int)bitspersample;
+				insamps[sampid].sample_rate = (int)samplerate;
 
 				if(wavegen == 1) { insamps[sampid].UseWaveGenerator = true; }
 				if(wavemach == 1) { insamps[sampid].UseWaveMachine = true; }
@@ -301,12 +301,12 @@ namespace gurumod.Serializers
 				if(sounddatalen > 0)
 				{
 					insamps[sampid].SoundData = new byte[sounddatalen];
-					insamps[sampid].SoundData = reader.ReadBytes (sounddatalen);
+					insamps[sampid].SoundData = reader.ReadBytes ((int)sounddatalen);
 				}
 
 				if(wavegen == 1)
 				{
-
+					insamps[sampid].WaveGenerator = GrabWaveGenerator(reader);
 				}
 
 				if(wavemach == 1)
@@ -317,6 +317,192 @@ namespace gurumod.Serializers
 			}
 
 			return insamps;
+		}
+
+		public static gurumod.Generator GrabWaveGenerator(BinaryReader reader)
+		{
+			//	If the wave generator flag is 1, then:
+			//		tfffffssssssllll
+			//			t: sound type
+			//			f: 5 digit frequency
+			//			s: 6 digit sample rate
+			//			l: 4 digit length in seconds
+
+			gurumod.Generator togen = new Generator();
+
+			int soundtype = 0;
+			int frequency = 0;
+			int samplerate = 0;
+			int samplelen = 0;
+
+			if(!GrabInt(reader, out soundtype, 1)
+			   || !GrabInt(reader, out frequency, 5)
+			   || !GrabInt(reader, out samplerate, 6)
+			   || !GrabInt(reader, out samplelen, 4))
+			{
+				Console.WriteLine("Loading sample type of wave generator failed.");
+				return null;
+			}
+
+			togen.WaveType = soundtype;
+			togen.Frequency = (double)frequency;
+			togen.SampleRate = samplerate;
+			togen.Length = samplelen;
+
+			return togen;
+
+		}
+
+		public static gurumod.Machine GrabWaveMachine(BinaryReader reader)
+		{
+			//	If the wave machine flag is 1, then:
+			//		ssssssfffffgggppp
+			//			s: 6 digit sample rate
+			//			f: 5 digit frequency
+			//			g: 3 digit number of generators
+			//			p: 3 digit number of processors
+
+			gurumod.Machine inmachine = new Machine();
+
+			int samplerate = 0;
+			double frequency = 440;
+			int nogens = 0;
+			int noprocs = 0;
+
+			if(!GrabInt(reader, out samplerate, 6)
+			   || !GrabDouble(reader, out frequency, 5)
+			   || !GrabInt(reader, out nogens, 3)
+			   || !GrabInt(reader, out noprocs, 3))
+			{
+				Console.WriteLine("Failed to load wave machine header.");
+				return null;
+			}
+
+			//	For each generator:
+			//		tessssssfffffaaaa
+			//			t: 1 digit generator type
+			//			e: 1 digit enabled (0 or 1)
+			//			s: 6 digit sample rate
+			//			f: 5 digit frequency
+			//			a: 4 digit amplitude (x.xx)
+
+			inmachine.Generators = new gurumod.Machines.Generator[inmachine.MaxGenerators];
+
+			for(int egen = 0; egen < nogens; egen++)
+			{
+				int gentype = 0;
+				int genenabled = 0;
+				int gensamplerate = 0;
+				int genfrequency = 0;
+				double genamplitude = 0;
+
+				if(!GrabInt(reader, out gentype, 1)
+				   || !GrabInt(reader, out genenabled, 1)
+				   || !GrabInt(reader, out gensamplerate, 6)
+				   || !GrabInt(reader, out genfrequency, 5)
+				   || !GrabDouble(reader, out genamplitude, 4))
+				{
+					Console.WriteLine("Failed to load generator {0} in wave machine.", egen);
+					return null;
+				}
+
+				if(gentype == 0)	//oscillator
+				{
+					//	For generator type 0 (oscillator)
+					//		w
+					//			w: 1 digit wave type
+					inmachine.Generators[egen] = new Machines.Osc();
+					inmachine.Generators[egen].Amplitude = genamplitude;
+					inmachine.Generators[egen].GeneratorType = gentype;
+					if(genenabled == 1) { inmachine.Generators[egen].Enabled = true; }
+					else { inmachine.Generators[egen].Enabled = false; }
+					inmachine.Generators[egen].SampleRate = gensamplerate;
+					inmachine.Generators[egen].Frequency = (double)genfrequency;
+
+					GrabInt(reader, out ((Machines.Osc)inmachine.Generators[egen]).WaveType, 1);
+				}
+				else if(gentype == 1)	//wave player
+				{
+					//	For generator type 1 (wave player)
+					//		cssssssbbbbbbbbbblllllllllllllllllllf<chr 0>
+					//			c: 1 digit channel count
+					//			s: 6 digit sample rate
+					//			b: 10 digit bit rate
+					//			l: 19 digit length of audio data
+					//			f: filename
+					//		list of 2-byte shorts of audio data
+
+					inmachine.Generators[egen] = new Machines.WavFile();
+					inmachine.Generators[egen].Amplitude = genamplitude;
+					inmachine.Generators[egen].GeneratorType = gentype;
+					if(genenabled == 1) { inmachine.Generators[egen].Enabled = true; }
+					else { inmachine.Generators[egen].Enabled = false; }
+					inmachine.Generators[egen].SampleRate = gensamplerate;
+					inmachine.Generators[egen].Frequency = (double)genfrequency;
+
+					int nochans = 0;
+					int wsamplerate = 0;
+					long wbitrate = 0;
+					long waudiolen = 0;
+					string wfilename = "";
+
+					if(!GrabInt(reader, out nochans, 1)
+					   || !GrabInt(reader, out wsamplerate, 6)
+					   || !GrabLong(reader, out wbitrate, 10)
+					   || !GrabLong(reader, out waudiolen, 19))
+					{
+						Console.WriteLine("Loading wave player in wave machine failed.");
+						return null;
+					}
+
+					((Machines.WavFile)inmachine.Generators[egen]).Channels = nochans;
+					((Machines.WavFile)inmachine.Generators[egen]).SampleRate = wsamplerate;
+					((Machines.WavFile)inmachine.Generators[egen]).BitRate = (int)wbitrate;
+					((Machines.WavFile)inmachine.Generators[egen]).AudioData = new short[waudiolen];
+					((Machines.WavFile)inmachine.Generators[egen]).Filename = wfilename;
+
+					for(long esh = 0; esh < waudiolen; esh++)
+					{
+						byte bone = reader.ReadByte();
+						byte btwo = reader.ReadByte();
+
+						((Machines.WavFile)inmachine.Generators[egen]).AudioData[esh] = ((Machines.WavFile)inmachine.Generators[egen]).ToShort(bone, btwo);
+					}
+				}
+			}
+
+
+			//	For each processor:
+			//		nnniiittt
+			//			n: 3 digit processor id
+			//			i: 3 digit number of inputs
+			//			t: 3 digit processor type
+			//	For each input of the processor:
+			//		iiitttaaaa
+			//			i: 3 digit source id
+			//			t: 3 digit source type
+			//			a: 4 digit amplitude (x.xx)
+			//	For mixers
+			//		m
+			//			m: 1 digit combine method
+			//	For envelopes:
+			//		aaaaaaaaaabbbbddddddddddeeeessssssssssrrrrrrrrrr
+			//			a: 10 digit attack
+			//			b: 4 digit attack amplitude (x.xx)
+			//			d: 10 digit decay
+			//			e: 4 digit decay amplitude (x.xx)
+			//			s: 10 digit sustain
+			//			r: 10 digit release
+			//	For gates
+			//		llllllllllhhhhhhhhhh
+			//			l: 10 digit MinGateManual
+			//			h: 10 digit MaxGateManual
+			//	For reverb
+			//		wwwwwwwwwwdddddddddd
+			//			w: 10 digit delay
+			//			d: 10 digit decay
+
+			return inmachine;
 		}
 
 		public static bool GrabInt(BinaryReader reader, out int intval, int length)
@@ -376,6 +562,24 @@ namespace gurumod.Serializers
 			}
 
 			return toret;
+		}
+
+		public static bool GrabDouble(BinaryReader reader, out double doubval, int length)
+		{
+			doubval = 0;
+			byte[] buf = new byte[length];
+			buf = reader.ReadBytes (length);
+
+			if(buf.Length < length) { Console.WriteLine("Data not long enough to retrieve what was asked for."); return false; }
+
+			string tnm = Encoding.UTF8.GetString(buf);
+			if(!Double.TryParse(tnm, out doubval))
+			{
+				Console.WriteLine("Data was not a double.");
+				return false;
+			}
+
+			return true;
 		}
 	}
 }
