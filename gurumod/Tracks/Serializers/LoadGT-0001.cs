@@ -311,7 +311,7 @@ namespace gurumod.Serializers
 
 				if(wavemach == 1)
 				{
-
+					insamps[sampid].WaveMachine = GrabWaveMachine(reader);
 				}
 
 			}
@@ -477,30 +477,160 @@ namespace gurumod.Serializers
 			//			n: 3 digit processor id
 			//			i: 3 digit number of inputs
 			//			t: 3 digit processor type
-			//	For each input of the processor:
-			//		iiitttaaaa
-			//			i: 3 digit source id
-			//			t: 3 digit source type
-			//			a: 4 digit amplitude (x.xx)
-			//	For mixers
-			//		m
-			//			m: 1 digit combine method
-			//	For envelopes:
-			//		aaaaaaaaaabbbbddddddddddeeeessssssssssrrrrrrrrrr
-			//			a: 10 digit attack
-			//			b: 4 digit attack amplitude (x.xx)
-			//			d: 10 digit decay
-			//			e: 4 digit decay amplitude (x.xx)
-			//			s: 10 digit sustain
-			//			r: 10 digit release
-			//	For gates
-			//		llllllllllhhhhhhhhhh
-			//			l: 10 digit MinGateManual
-			//			h: 10 digit MaxGateManual
-			//	For reverb
-			//		wwwwwwwwwwdddddddddd
-			//			w: 10 digit delay
-			//			d: 10 digit decay
+			inmachine.Processors = new gurumod.Machines.Processor[inmachine.MaxProcessors];
+
+			for(int eproc = 0 ; eproc < inmachine.Processors.Length; eproc++)
+			{
+				int procid = 0;
+				int noinputs = 0;
+				int proctype = 0;
+
+				if(!GrabInt(reader, out procid, 3)
+				   || !GrabInt(reader, out noinputs, 3)
+				   || !GrabInt(reader, out proctype, 3))
+				{
+					Console.WriteLine("Processor header corrupt while loading wave machine");
+					return null;
+				}
+
+				//	For each input of the processor:
+				//		iiitttaaaa
+				//			i: 3 digit source id
+				//			t: 3 digit source type
+				//			a: 4 digit amplitude (x.xx)
+
+				Machines.InputData[] tinputs = new Machines.InputData[noinputs];
+				for(int ein = 0; ein < noinputs; ein++)
+				{
+					int sid = 0;
+					int stype = 0;
+					double ampl = 0;
+
+					if(!GrabInt(reader, out sid, 3)
+					   || !GrabInt(reader, out stype, 3)
+					   || !GrabDouble(reader, out ampl, 4))
+					{
+						Console.WriteLine("Input data corrupt while loading");
+						return null;
+					}
+
+					tinputs[ein] = new gurumod.Machines.InputData();
+					tinputs[ein].Amplitude = ampl;
+					tinputs[ein].SourceType = stype;
+					tinputs[ein].SourceID = sid;
+				}
+
+				if(proctype == Machines.Processor.ProcTypeMixer)
+				{
+					//	For mixers
+					//		m
+					//			m: 1 digit combine method
+					inmachine.Processors[procid] = new gurumod.Machines.Mixer();
+					inmachine.Processors[procid].ProcessorType = proctype;
+
+					int combmeth = 0;
+					if(!GrabInt(reader, out combmeth, 1))
+					{
+						Console.WriteLine("Load mixer failed");
+						return null;
+					}
+
+					((gurumod.Machines.Mixer)inmachine.Processors[procid]).CombineMethod = combmeth;
+				}
+				else if(proctype == Machines.Processor.ProcTypeEnvelope)
+				{
+					//	For envelopes:
+					//		aaaaaaaaaabbbbddddddddddeeeessssssssssrrrrrrrrrr
+					//			a: 10 digit attack
+					//			b: 4 digit attack amplitude (x.xx)
+					//			d: 10 digit decay
+					//			e: 4 digit decay amplitude (x.xx)
+					//			s: 10 digit sustain
+					//			r: 10 digit release
+
+					inmachine.Processors[procid] = new gurumod.Machines.Envelope();
+					inmachine.Processors[procid].ProcessorType = proctype;
+
+					double attack = 0;
+					double attackamp = 0;
+					double decay = 0;
+					double decayamp = 0;
+					double sustain = 0;
+					double release = 0;
+
+					if(!GrabDouble(reader, out attack, 10)
+					   || !GrabDouble(reader, out attackamp, 4)
+					   || !GrabDouble(reader, out decay, 10)
+					   || !GrabDouble(reader, out decayamp, 4)
+					   || !GrabDouble(reader, out sustain, 10)
+					   || !GrabDouble(reader, out release, 10))
+					{
+						Console.WriteLine("Error loading envelope.");
+						return null;
+					}
+
+					((gurumod.Machines.Envelope)inmachine.Processors[procid]).Attack = attack;
+					((gurumod.Machines.Envelope)inmachine.Processors[procid]).AttackAmp = attackamp;
+					((gurumod.Machines.Envelope)inmachine.Processors[procid]).Decay = decay;
+					((gurumod.Machines.Envelope)inmachine.Processors[procid]).DecayAmp = decayamp;
+					((gurumod.Machines.Envelope)inmachine.Processors[procid]).Sustain = sustain;
+					((gurumod.Machines.Envelope)inmachine.Processors[procid]).Release = release;
+				}
+				else if(proctype == gurumod.Machines.Processor.ProcTypeGate)
+				{
+					//	For gates
+					//		llllllllllhhhhhhhhhh
+					//			l: 10 digit MinGateManual
+					//			h: 10 digit MaxGateManual
+
+					inmachine.Processors[procid] = new gurumod.Machines.Gate();
+					inmachine.Processors[procid].ProcessorType = proctype;
+
+					double min = 0;
+					double max = 0;
+
+					if(!GrabDouble(reader, out min, 10)
+					   || !GrabDouble(reader, out max, 10))
+					{
+						Console.WriteLine("Error reading gate values");
+						return null;
+					}
+
+					((gurumod.Machines.Gate)inmachine.Processors[procid]).MinGateManual = min;
+					((gurumod.Machines.Gate)inmachine.Processors[procid]).MaxGateManual = max;
+				}
+				else if(proctype == gurumod.Machines.Processor.ProcTypeReverb)
+				{
+
+					//	For reverb
+					//		wwwwwwwwwwdddddddddd
+					//			w: 10 digit delay
+					//			d: 10 digit decay
+					inmachine.Processors[procid] = new gurumod.Machines.Reverb();
+					inmachine.Processors[procid].ProcessorType = proctype;
+
+					double min = 0;
+					double max = 0;
+
+					if(!GrabDouble(reader, out min, 10)
+					   || !GrabDouble(reader, out max, 10))
+					{
+						Console.WriteLine("Error reading gate values");
+						return null;
+					}
+
+					((gurumod.Machines.Reverb)inmachine.Processors[procid]).Delay = min;
+					((gurumod.Machines.Reverb)inmachine.Processors[procid]).Decay = max;
+				}
+
+				inmachine.Processors[procid].InputCount = tinputs.Length;
+				inmachine.Processors[procid].Inputs = tinputs;
+			}
+
+
+		
+
+		
 
 			return inmachine;
 		}
