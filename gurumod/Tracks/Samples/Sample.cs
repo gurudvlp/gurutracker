@@ -524,7 +524,7 @@ namespace gurumod
 			sampwr.Write(wavegenout);
 			if(this.UseWaveMachine) { sampwr.Write(wavemachout); }
 
-			//sampstr.Flush();
+			sampstr.Flush();
 			//Console.WriteLine("SampleStream for gt is {0} bytes", sampstr.ToArray ().Length);
 			return sampstr.ToArray();
 
