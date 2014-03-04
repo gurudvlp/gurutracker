@@ -243,7 +243,7 @@ namespace gurumod
 							|| args[earg].ToLower() == "-help")
 							{
 								Console.WriteLine(Engine.EngineName + " " + Engine.EngineVersion);
-								Console.WriteLine("Copyright 2012 Brian Murphy");
+								Console.WriteLine("Copyright 2012 - 2014 Brian Murphy");
 								Console.WriteLine(" www.gurudigitalsolutions.com");
 								Console.WriteLine(" ");
 								Console.WriteLine("USAGE:  gurutracker.exe [FLAGS]");
