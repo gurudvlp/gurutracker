@@ -478,96 +478,8 @@ namespace gurumod
 
 			Environment.Exit(0);
 
-			Console.WriteLine("Loading track {0}", trackpath);
-			/*if(!trackpath.EndsWith("/")) { trackpath = trackpath + "/"; }
-			if(!File.Exists(Engine.PFP(trackpath + "track.xml")))
-			{
-				Console.WriteLine("Track {0} does not exist.", trackpath);
-				return;
-			}
-			try
-			{
-				//	Open up our .tar.gz file to start reading parts
-				//	from.
-				
-				XmlSerializer s = new XmlSerializer(typeof(Track));
-				TextReader tr = new StreamReader(Engine.PFP(trackpath + "track.xml"));
-				Engine.TheTrack = new Track();
-				Engine.TheTrack = (Track)s.Deserialize(tr);
-				
-				Engine.TheTrack.Samples = new Sample[Track.MaxSamples];
-				Engine.TheTrack.Patterns = new Pattern[Track.MaxPatterns];
-				
-				Console.WriteLine("Loading initial samples.");
-				if(Engine.TheTrack != null && Engine.TheTrack.Samples != null)
-				{
-					Engine.TheTrack.Samples = new Sample[Track.MaxSamples];
-					for(int esample = 0; esample < Track.MaxSamples; esample++)
-					{
-						Engine.TheTrack.Samples[esample] = new Sample();
-						Sample.UnserializeSample(Engine.PFP(trackpath + "Samples/Meta/" + esample.ToString() + ".xml"), esample);
-						Engine.TheTrack.Samples[esample].WaveMachine.InitGenerators();
-						Engine.TheTrack.Samples[esample].WaveMachine.InitProcessors();
-						
-						if(Directory.Exists(Engine.PFP(trackpath + "Samples/Generators/" + esample.ToString())))
-						{
-							Engine.TheTrack.Samples[esample].WaveMachine.LoadGenerators(trackpath, esample);
-						}
-						
-						if(Directory.Exists(Engine.PFP(trackpath + "Samples/Processors/" + esample.ToString())))
-						{
-							Engine.TheTrack.Samples[esample].WaveMachine.LoadProcessors(trackpath, esample);
-						}
-						
-						if(Engine.TheTrack.Samples[esample].WaveMachine.Processors == null)
-						{
-							Engine.TheTrack.Samples[esample].WaveMachine.Processors = new Machines.Processor[1];
-							Engine.TheTrack.Samples[esample].WaveMachine.Processors[0] = new Machines.Mixer();
-							Engine.TheTrack.Samples[esample].WaveMachine.ProcessorTypes = new string[1];
-							Engine.TheTrack.Samples[esample].WaveMachine.ProcessorTypes[0] = Engine.TheTrack.Samples[esample].WaveMachine.Processors[0].GetType().ToString();
-						}
-						//if(File.Exists(Engine.PFP()))
-					}
-				}
-				
-				Console.WriteLine("Loading initial patterns.");
-				if(Engine.TheTrack != null && Engine.TheTrack.Patterns != null)
-				{
-					for(int ep = 0; ep < Track.MaxPatterns; ep++)
-					{
-						if(File.Exists(Engine.PFP(trackpath + "Patterns/" + ep.ToString() + ".xml")))
-						{
-							//Engine.TheTrack.Patterns[ep] = new Pattern(Engine.TheTrack.ChannelCount, Engine.TheTrack.DefaultPatternLength);
-							Pattern.Load(ep, trackpath);
-						}
-					}
-				}
-				
-				
-				
-				/*Console.WriteLine("-1");
-				XmlSerializer s = new XmlSerializer(typeof(Track));
-					
-				Console.WriteLine("{0} {1}", trackpath, Engine.PFP(trackpath));
-				TextReader tr = new StreamReader(Engine.PFP(trackpath));
-				//if(Engine.TheTrack == null) { Console.WriteLine ("TheTrack is null!"); }
-				//if(Engine.TheTrack.Patterns == null) { Console.WriteLine("TheTrack.Patterns is null!"); }
-				Console.WriteLine("1");
-				Engine.TheTrack = new Track();
-				Console.WriteLine("2");
-				Engine.TheTrack = (Track)s.Deserialize(tr);
-				
-				tr.Close();*/
-			/*}
-			catch(Exception ex)
-			{
-				Console.WriteLine("Exception while loading track.");
-				Console.WriteLine(ex.Message);
-				//Console.WriteLine(ex.InnerException.Message);
-				//Console.WriteLine(ex.GetBaseException().Message);
-				Console.WriteLine(ex.StackTrace);
-				Environment.Exit(0);
-			}*/
+
+
 		}
 		
 		public int AddPattern()
@@ -624,62 +536,7 @@ namespace gurumod
 			return 0;
 		}
 		
-		public string LoadFromSave(string filename)
-		{
-			if(!File.Exists(Engine.PFP(filename))) { return null; }
-			
-			FileStream fsIn = new FileStream(Engine.PFP(filename), FileMode.Open, FileAccess.Read);
-			
-			TarInputStream tarIn = new TarInputStream(fsIn);
-			TarEntry tarEntry;
-			TarHeader tarHeader = new TarHeader();
-			tarEntry = new TarEntry(tarHeader);
-			
-			TarEntry[] dirEntries = tarEntry.GetDirectoryEntries();
-			Console.WriteLine("Tar Entries ----");
-			
-			foreach(TarEntry een in dirEntries)
-			{
-				Console.WriteLine(een.File);
-				Console.WriteLine(een.Name);
-				Console.WriteLine(" ");
-			}
-			
-			/*while ((tarEntry = tarIn.GetNextEntry()) != null) {
-	
-				if (tarEntry.IsDirectory) {
-					continue;
-				}
-				// Converts the unix forward slashes in the filenames to windows backslashes
-				//
-				string name = tarEntry.Name.Replace('/', Path.DirectorySeparatorChar);
-	
-				// Remove any root e.g. '\' because a PathRooted filename defeats Path.Combine
-				if (Path.IsPathRooted(name)) {
-					name = name.Substring(Path.GetPathRoot(name).Length);
-				}
-	
-				// Apply further name transformations here as necessary
-				string outName = Path.Combine(targetDir, name);
-	
-				string directoryName = Path.GetDirectoryName(outName);
-				Directory.CreateDirectory(directoryName);		// Does nothing if directory exists
-	
-				FileStream outStr = new FileStream(outName, FileMode.Create);
-	
-				if (asciiTranslate) {
-					CopyWithAsciiTranslate(tarIn, outStr);
-				}
-				else {
-					tarIn.CopyEntryContents(outStr);
-				}
-				outStr.Close();
-			}*/
-				
-			tarIn.Close();
-			
-			return "";
-		}
+
 	}
 }
 
