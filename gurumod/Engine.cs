@@ -50,7 +50,7 @@ namespace gurumod
 			if(!Directory.Exists(Engine.PFP(Engine.Configuration.SharedConfigPath)))
 			{
 				Console.WriteLine(Engine.EngineName + " " + Engine.EngineVersion);
-				Console.WriteLine("Copyright 2012 - 2013 Brian Murphy");
+				Console.WriteLine("Copyright 2012 - 2014 Brian Murphy");
 				Console.WriteLine(" www.gurudigitalsolutions.com");
 				Console.WriteLine(" ");
 				Console.WriteLine(Engine.EngineName + " could not find the configuration directory.");
