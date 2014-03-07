@@ -13,11 +13,6 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 
-using ICSharpCode;
-using ICSharpCode.SharpZipLib;
-using ICSharpCode.SharpZipLib.GZip;
-using ICSharpCode.SharpZipLib.Zip;
-using ICSharpCode.SharpZipLib.Tar;
 
 namespace gurumod
 {
