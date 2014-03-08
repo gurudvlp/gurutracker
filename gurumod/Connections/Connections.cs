@@ -16,12 +16,7 @@ namespace gurumod
 {
 	public class IncomingConnections
 	{
-		//	This class keeps track of the info for each incoming connection.
-		//	Depending on some details I haven't thought about yet, this
-		//	will need to bind an interface controller to itself so that it
-		//	knows how to handle the connection properly.
-		
-		
+
 		public string Protocol = "";
 		public Interface TheInterface;
 		
