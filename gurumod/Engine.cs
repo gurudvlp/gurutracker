@@ -26,12 +26,7 @@ namespace gurumod
 			Engine.Configuration.Initialize();
 			Config.Load();
 			
-			//Console.WriteLine(System.Reflection.Assembly().Location);
-			//Console.WriteLine(System.AppDomain.CurrentDomain.BaseDirectory);
-			//Directory.SetCurrentDirectory(Engine.Configuration.SharedConfigPath + "bin");
-			//Console.WriteLine(System.AppDomain.CurrentDomain.BaseDirectory);
-			//System.AppDomain.CurrentDomain.BaseDirectory = Engine.PFP(Engine.Configuration.SharedConfigPath + "bin");
-			
+
 			if(!Installer.Installer.IsInstalled()
 			|| (args.Length > 0 && args[0].ToLower() == "install"))
 			{
@@ -62,7 +57,7 @@ namespace gurumod
 			trk.Title = "betateztz";
 			trk.Tempo = 142;
 			trk.WebSite = "http://www.gurudigitalsolutions.com";
-			trk.Year = 2012;
+			trk.Year = 2014;
 			trk.Samples = new Sample[Track.MaxSamples];
 			for(int es = 0; es < Track.MaxSamples; es++)
 			{
@@ -105,17 +100,13 @@ namespace gurumod
 		//	The part that makes gurutracker go.
 		
 		[XmlIgnore()] public static string EngineName = "gurutracker";
-		[XmlIgnore()] public static string EngineVersion = "v0.13.1011";
-		//[XmlIgnore()] public static string SharedPath = "/usr/share/" + Engine.EngineName + "/";
-		//[XmlIgnore()] public static string ConfigPath = "/home/" + Environment.UserName + "/.gurutracker/";
-		//[XmlIgnore()] public static string TracksPath = "/home/" + Environment.UserName + "/gurutracker/Tracks/";
-		
+		[XmlIgnore()] public static string EngineVersion = "v0.14.0309";
+	
 		[XmlIgnore()] public static Config Configuration = new Config();
 		
 		[XmlIgnore()] public static Dictionary<string, string> CommandFlags = new Dictionary<string, string>();
 		
 		[XmlIgnore()] public bool KeepRunning = true;
-		//[XmlElement("DisplayDebug")] public static bool DisplayDebug = true;
 		
 		
 		[XmlIgnore()] public static long totalcycletime = 0;
@@ -125,7 +116,6 @@ namespace gurumod
 		
 		public static int MaxIncomingConnections = 255;
 		public static IncomingConnections[] Connections = new IncomingConnections[MaxIncomingConnections];
-		//public static int WebListenPort = 6789;
 		
 		public static Track TheTrack;
 		
