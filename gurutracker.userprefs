@@ -1,21 +1,23 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="gurumod/Tracks/Track.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="gurumod/Config.cs">
     <Files>
-      <File FileName="gurumod/Engine.cs" Line="387" Column="8" />
-      <File FileName="gurumod/Install.cs" Line="1" Column="1" />
-      <File FileName="gurumod/Connections/Connections.cs" Line="62" Column="54" />
-      <File FileName="gurumod/Tracks/Track.cs" Line="640" Column="1" />
+      <File FileName="gurumod/Engine.cs" Line="186" Column="10" />
+      <File FileName="gurumod/Install.cs" Line="42" Column="7" />
+      <File FileName="gurumod/Connections/Connections.cs" Line="19" Column="1" />
+      <File FileName="gurumod/Tracks/Track.cs" Line="29" Column="36" />
       <File FileName="gurumod/Tracks/Samples/Sample.cs" Line="528" Column="6" />
       <File FileName="gurumod/Tracks/Machines/Machine.cs" Line="140" Column="55" />
       <File FileName="gurumod/Tracks/Machines/Generators/Generator.cs" Line="101" Column="46" />
       <File FileName="gurumod/Tracks/Serializers/LoadGT-0001.cs" Line="98" Column="5" />
       <File FileName="gurumod/Tracks/Patterns/PatternChannel.cs" Line="50" Column="1" />
       <File FileName="gurumod/Tracks/Patterns/Pattern.cs" Line="208" Column="16" />
+      <File FileName="gurumod/Config.cs" Line="7" Column="30" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <AuthorInfo Name="Brian Murphy" Email="gurudvlp@gmail.com" Copyright="Brian Murphy" Company="Guru Digital Solutions" Trademark="" />
 </Properties>
