@@ -1,18 +1,20 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="gurumod/Config.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="gurumod/Tracks/Track.cs">
     <Files>
-      <File FileName="gurumod/Engine.cs" Line="186" Column="10" />
-      <File FileName="gurumod/Install.cs" Line="42" Column="7" />
-      <File FileName="gurumod/Connections/Connections.cs" Line="19" Column="1" />
-      <File FileName="gurumod/Tracks/Track.cs" Line="29" Column="36" />
+      <File FileName="gurumod/Engine.cs" Line="378" Column="26" />
+      <File FileName="gurumod/Tracks/Track.cs" Line="232" Column="5" />
       <File FileName="gurumod/Tracks/Samples/Sample.cs" Line="528" Column="6" />
       <File FileName="gurumod/Tracks/Machines/Machine.cs" Line="140" Column="55" />
       <File FileName="gurumod/Tracks/Machines/Generators/Generator.cs" Line="101" Column="46" />
       <File FileName="gurumod/Tracks/Serializers/LoadGT-0001.cs" Line="98" Column="5" />
       <File FileName="gurumod/Tracks/Patterns/PatternChannel.cs" Line="50" Column="1" />
-      <File FileName="gurumod/Tracks/Patterns/Pattern.cs" Line="208" Column="16" />
-      <File FileName="gurumod/Config.cs" Line="7" Column="30" />
+      <File FileName="gurumod/Tracks/Patterns/Pattern.cs" Line="195" Column="8" />
+      <File FileName="gurumod/Config.cs" Line="36" Column="60" />
+      <File FileName="gurumod/Interfaces/WebInterface/Pages/Home.cs" Line="1" Column="1" />
+      <File FileName="gurumod/Interfaces/WebInterface/IncomingRequest.cs" Line="1" Column="1" />
+      <File FileName="gurumod/Interfaces/WebInterface/WebInterface.cs" Line="464" Column="3" />
+      <File FileName="gurumod/Interfaces/WebInterface/Player.cs" Line="108" Column="22" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

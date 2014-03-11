@@ -10,7 +10,7 @@
     <RootNamespace>gurumod</RootNamespace>
     <AssemblyName>gurutracker</AssemblyName>
     <Description>Music synthesizer and sequencing tool.</Description>
-    <ReleaseVersion>0.14.0228</ReleaseVersion>
+    <ReleaseVersion>0.14.0311</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,7 +22,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <Externalconsole>true</Externalconsole>
-    <Commandlineparameters>-f /home/guru/gurutracker/Tracks/betatezt2 --webtemplatedir /home/guru/Projects/gurutracker/Interfaces/Web/templates/</Commandlineparameters>
+    <Commandlineparameters>-f /home/guru/gurutracker/Tracks/betatezt.gt</Commandlineparameters>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>none</DebugType>

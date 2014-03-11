@@ -192,7 +192,7 @@ namespace gurumod
 					if(special.Length > 3) { special = "-" + special.Substring(special.Length - 2); }
 					if(sampleid.Length > 5) { sampleid = "-" + sampleid.Substring(sampleid.Length - 4); }
 
-					Console.WriteLine("Channel {0} Row {1}\t {2}{3}{4}{5}{6}", channel, erow, octave, note, volume, special, sampleid);
+					//Console.WriteLine("Channel {0} Row {1}\t {2}{3}{4}{5}{6}", channel, erow, octave, note, volume, special, sampleid);
 
 					telement = octave + note + volume + special + sampleid;
 					tout = tout + telement;

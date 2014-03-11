@@ -264,7 +264,7 @@ namespace gurumod
 			
 			if(!Engine.CommandFlags.ContainsKey("-f"))
 			{
-				Engine.CommandFlags.Add("-f", Engine.PFP(Configuration.TracksPath + "untitled/"));
+				Engine.CommandFlags.Add("-f", Engine.PFP(Configuration.TracksPath + "untitled.gt"));
 			}
 		}
 		
@@ -358,7 +358,7 @@ namespace gurumod
 			//	Initialize the track.
 			if(Engine.CommandFlags.ContainsKey("-f"))
 			{
-				if(System.IO.Directory.Exists(Engine.CommandFlags["-f"]))
+				/*if(System.IO.Directory.Exists(Engine.CommandFlags["-f"]))
 				{
 					Console.WriteLine("Loading track from specified directory. {0}", Engine.CommandFlags["-f"]);
 					Engine.TheTrack = new Track();
@@ -370,6 +370,13 @@ namespace gurumod
 					Console.WriteLine("A test of saving the .gt format...");
 
 					//TheTrack.SaveAsGT();
+				}*/
+				if(System.IO.File.Exists(Engine.CommandFlags["-f"]))
+				{
+					Console.WriteLine("Loading track {0}", Engine.CommandFlags["-f"]);
+					Engine.TheTrack = new Track();
+					Engine.TheTrack.NewTrack();
+					Track.Load(Engine.CommandFlags["-f"]);
 				}
 				else
 				{
@@ -389,15 +396,6 @@ namespace gurumod
 			
 			
 			Engine.TheTrack.LoopEnabled = true;
-			/*
-			 * Old Track Initialization code:
-			 * 
-			//Engine.TheTrack = new Track();
-			Track.Load(Engine.ConfigPath + "track.xml");
-			//Engine.TheTrack.EnablePlayer();
-			Engine.TheTrack.LoopEnabled = true;
-			//Engine.TheTrack.Save();
-			*/
 			
 		}
 		

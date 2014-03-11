@@ -118,6 +118,13 @@ namespace gurumod
 			{
 				Samples[es] = new Sample();
 			}
+
+			ChannelMuted = new bool[ChannelCount];
+			for(int ec = 0; ec < ChannelCount; ec++)
+			{
+				ChannelMuted[ec] = false;
+			}
+
 			Console.WriteLine("Empty track generated.");
 			Console.WriteLine("End of newTrack()");
 		}
@@ -215,9 +222,15 @@ namespace gurumod
 		
 		public void Save()
 		{
-
-		
-			this.SaveAsGT();
+			Console.WriteLine("Saving track as {0}", Engine.CommandFlags["-f"]);
+			if(this.SaveAsGT())
+			{
+				Console.WriteLine("Save successful.");
+			}
+			else
+			{
+				Console.WriteLine("Save failed.");
+			}
 		}
 		
 
@@ -394,7 +407,7 @@ namespace gurumod
 							string tmpcol = this.Patterns[epat].ChannelGTString(ech);
 							gtwriter.Write(tmpcol);
 
-							File.WriteAllText("/tmp/gtcol"+ech.ToString()+".txt", tmpcol);
+							//File.WriteAllText("/tmp/gtcol"+ech.ToString()+".txt", tmpcol);
 							//gtwriter.Write(this.Patterns[epat].GTString());
 						}
 					}
@@ -415,7 +428,7 @@ namespace gurumod
 
 
 
-			File.WriteAllBytes("/tmp/test.gt", gtstream.ToArray());
+			File.WriteAllBytes(Engine.CommandFlags["-f"], gtstream.ToArray());
 
 			return true;
 		}
@@ -461,7 +474,7 @@ namespace gurumod
 			string version = headtag.Substring(3, 4);
 			if(version != "0001") { Console.WriteLine("Version mismatch."); return false; }
 
-			Engine.TheTrack = Serializers.LoadGT_0001.Load(reader);
+			Serializers.LoadGT_0001.Load(reader);
 			if(Engine.TheTrack == null)
 			{
 				Console.WriteLine("Track deserializer returned null.");
@@ -474,9 +487,16 @@ namespace gurumod
 		
 		public static void Load(string trackpath)
 		{
-			Track.LoadGT("/tmp/test.gt");
-
-			Environment.Exit(0);
+			//Track.LoadGT("/tmp/test.gt");
+			if(!Track.LoadGT(trackpath))
+			{
+				Console.WriteLine("Failed to load track {0}", trackpath);
+				Environment.Exit(0);
+			}
+			else
+			{
+				Console.WriteLine("Loaded track {0}", trackpath);
+			}
 
 
 
