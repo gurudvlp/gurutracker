@@ -109,7 +109,7 @@ namespace gurumod.Serializers
 			}
 
 
-			Engine.TheTrack.Patterns = new Pattern[Engine.Configuration.MaxPatterns];
+			Engine.TheTrack.Patterns = new Pattern[nopats];
 
 			for(int ep = 0; ep < nopats; ep++)
 			{
@@ -131,7 +131,8 @@ namespace gurumod.Serializers
 				}
 				Engine.TheTrack.Patterns[ep] = new Pattern();
 				Engine.TheTrack.Patterns[ep].Channels = new PatternChannel[nochans];
-
+				Engine.TheTrack.Patterns[ep].ChannelCount = nochans;
+				Engine.TheTrack.Patterns[ep].RowCount = tpatternrows;
 
 				for(int ech = 0; ech < nochans; ech++)
 				{
@@ -145,6 +146,7 @@ namespace gurumod.Serializers
 
 					Engine.TheTrack.Patterns[ep].Channels[tchid] = new PatternChannel(tpatternrows);
 					Engine.TheTrack.Patterns[ep].Channels[tchid].ChannelID = tchid;
+					Engine.TheTrack.Patterns[ep].Channels[tchid].ElementCount = tpatternrows;
 
 
 
