@@ -1,0 +1,271 @@
+<html>
+<head>
+	<title>guru tracker</title>
+	<script>
+		
+
+		var cactive = 0;
+		var chatserver = '';
+		var chatserveractive = 0;
+		var chatservertid = -1;
+		var CurrentPattern = 0;
+		var CurrentRow = 0;
+		var CurrentCol = 0;
+		var CurrentSubCol = 0;
+		var VolumeSubColPresses = 0;
+		var VolumePressFirst = 0;
+		var VolumePressSecond = 0;
+		var SampleSubColPresses = 0;
+		var SamplePressFirst = 0;
+		var SamplePressSecond = 0;
+		var EditorMode = 0;
+		//	EditorMode 0 = Sequencer
+		//	EditorMode 1 = Sampler
+		
+		document.addEventListener("click", function(event){
+			
+		});
+		
+		
+
+		
+		
+		function LoadPageCallFunction(url, functionname, arguments)
+		{
+			if(cactive == 1)
+			{
+				setTimeout("LoadPageCallFunction('"+url+"', '"+functionname+"', '"+arguments+"')", 1200);
+				//alert("LoadPage('"+url+"', '"+output+"')");
+				return;
+			}
+	
+			cactive = 1;
+	
+			if (window.XMLHttpRequest)
+			{// code for IE7+, Firefox, Chrome, Opera, Safari
+				xhaddtobuds=new XMLHttpRequest();
+			}
+			else
+			{// code for IE6, IE5
+				xhaddtobuds=new ActiveXObject("Microsoft.XMLHTTP");
+			}
+	
+			xhaddtobuds.open("GET", url, false);
+			xhaddtobuds.send(null);
+	
+			//document.getElementById(output).innerHTML = url; // xhaddtobuds.responseText;
+			window[functionname](xhaddtobuds.responseText, arguments);
+			
+			cactive = 0;
+		}
+		
+		function LoadPagePostCallFunction(url, functionname, postvars, arguments)
+		{
+			if(cactive == 1)
+			{
+				setTimeout("LoadPagePostCallFunction('"+url+"', '"+functionname+"', '"+postvars+"', "+arguments+"')", 1200);
+				return;
+			}
+	
+			cactive = 1;
+	
+			if (window.XMLHttpRequest)
+			{// code for IE7+, Firefox, Chrome, Opera, Safari
+				xhaddtobuds=new XMLHttpRequest();
+			}
+			else
+			{// code for IE6, IE5
+				xhaddtobuds=new ActiveXObject("Microsoft.XMLHTTP");
+			}
+	
+			xhaddtobuds.open("POST", url, false);
+			var postbody = "";
+			for(var eitem in postvars)
+			{
+				if(postbody != "") { postbody = postbody + "&"; }
+				postbody = postbody + encodeURIComponent(eitem) + "=" + encodeURIComponent(postvars[eitem]);
+			}
+			//alert(postbody);
+			//Send the proper header information along with the request
+			xhaddtobuds.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			xhaddtobuds.setRequestHeader("Content-length", postbody.length);
+			xhaddtobuds.setRequestHeader("Connection", "close");
+			xhaddtobuds.send(postbody);
+	
+			//document.getElementById(output).innerHTML = xhaddtobuds.responseText;
+			window[functionname](xhaddtobuds.responseText, arguments);
+	
+			cactive = 0;
+		}
+		
+		
+		
+		function KeyPressHandler(e)
+		{
+			alert("A key was pressed.");
+		}
+		
+		function RemoveCurrentNote()
+		{
+			
+			document.getElementById('elementsub_' + CurrentCol + "_" + CurrentRow + "_" + CurrentSubCol).innerHTML = "---";
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		function AddPattern()
+		{
+			
+			LoadPageCallFunction("/player/newpattern", "AddPatternHandler", null);
+		}
+		
+		function AddPatternHandler(responsetext, args)
+		{
+			LoadPage("/sequencer/patternoptions", "sequencer_pattern_options");
+		}
+		
+		function DuplicatePattern()
+		{
+			LoadPageCallFunction("/player/duplicatepattern/" + CurrentPattern, "DuplicatePatternHandler", null);
+		}
+		
+		function DuplicatePatternHandler(responsetext, args)
+		{
+			ShowSequencerAt(CurrentPattern);
+		}
+		
+		
+		
+		function ShowPatternOptionsHandler(responsetext, args)
+		{
+			document.getElementById("sequencer_pattern_options").innerHTML = responsetext;
+			
+			//sequencer_patternoptions_id
+			document.getElementById("sequencer_patternoptions_id").innerHTML = CurrentPattern;
+		}
+		
+		
+		
+		function ShowSamplerHandler(responsetext, args)
+		{
+			document.getElementById("page_content").innerHTML = responsetext;
+			//document.getElementById("sampler_genmachine").disabled = true;
+			//document.getElementById("sampler_generator").disabled = true;
+			//document.getElementById("sampler_importfile").disabled = true;
+			
+		}
+		
+		function SaveSample(sampleid)
+		{
+			//alert("Saving sample");
+			postvars = Array();
+			postvars["title"] = (document.getElementById("sampler_details_title")).value;
+			postvars["filename"] = (document.getElementById("sampler_details_filename")).value;
+			postvars["sampleid"] = sampleid;
+			LoadPagePost("/sampler/updatesample", null, postvars);
+			//sampler_list_[SAMPLEID]_name
+			document.getElementById("sampler_list_" + sampleid + "_name").innerHTML = postvars["title"];
+		}
+		
+		function LoadWavFileToSample(sampleid)
+		{
+			//alert("loadwavfiletosample");
+			postvars = Array();
+			postvars["newfilename"] = (document.getElementById("sampler_loadfile_name")).value;
+			postvars["sampleid"] = sampleid;
+			postvars["loadfile"] = "loadfile";
+			//alert("oh man");
+			args = Array();
+			args["sampleid"] = sampleid;
+			
+			
+			LoadPagePostCallFunction("/sampler/updatesample", "LoadWavHandler", postvars, args);
+		}
+		
+		function LoadWavHandler(responsetext, args)
+		{
+			LoadPage("/sampler/details/" + args["sampleid"], "sampler_detailscell");
+		}
+		
+		function GenerateSample(sampleid)
+		{
+			//alert("yeah");
+			postvars = Array();
+			postvars["sampleid"] = sampleid;
+			tmp = document.getElementById("sampler_generator_type");
+			postvars["type"] = tmp.options[tmp.selectedIndex].value;
+			//tmp = document.getElementById("sampler_generator_samplerate");
+			postvars["samplerate"] = (document.getElementById("sampler_generator_samplerate")).value;
+			postvars["lengthz"] = (document.getElementById("sampler_generator_length")).value;
+			postvars["frequency"] = (document.getElementById("sampler_generator_frequency")).value;
+			//alert("yo");
+			args = Array();
+			args["sampleid"] = sampleid;
+			
+			LoadPagePostCallFunction("/sampler/generatesample", "GenerateSampleHandler", postvars, args);
+		}
+		
+		function GenerateSampleHandler(args)
+		{
+			//alert("args");
+			
+			//LoadPage("/sampler/details/" + args["sampleid"], "sampler_detailscell");
+		}
+		
+	
+		
+		
+		
+		function HideSoundMachine()
+		{
+			document.getElementById("sampler_genmachine").style.visibility = 'hidden';
+			document.getElementById("sampler_genmachine").style.position = 'auto';
+		}
+		
+		function HideSampleGenerator()
+		{
+			document.getElementById("sampler_generator").style.visibility = 'hidden';
+			document.getElementById("sampler_generator").style.position = 'auto';
+		}
+		
+		function HideSampleImporter()
+		{
+			document.getElementById("sampler_importfile").style.visibility = 'hidden';
+			document.getElementById("sampler_importfile").style.position = 'auto';
+		}
+	</script>
+
+</head>
+<body>
+	<div id="page_header">
+		<a href="javascript:SaveTrack();" title="Save"><img src="/images/toolicons/document-save.png" border="0" alt="Save"></a>
+		<a href="javascript:NewTrack();" title="New"><img src="/images/toolicons/document-new.png" border="0" alt="New"></a>
+		<a href="javascript:StopPlayback();" title="Stop"><img src="/images/media-playback-stop.png" border="0" alt="Stop"></a>
+		<a href="javascript:StartPlayback();" title="Play"><img src="/images/media-playback-start.png" border="0" alt="Play"></a>
+		<a href="javascript:PausePlayback();" title="Pause"><img src="/images/media-playback-pause.png" border="0" alt="Pause"></a>
+		
+		<select onChange="PlaybackLoopChange(this.options[this.selectedIndex].value)" name="playbackloopselect" id="playbackloopselect">
+			<option value="off">Loop Off</option>
+			<option value="pattern">Loop Pattern</option>
+			<option value="track">Loop Track</option>
+		</select>
+	</div>
+	<div id="page_topnav">
+		<a href="javascript:ShowSequencer();" title="Show Sequencer" target="_top">Sequencer</a>
+		<a href="javascript:ShowSampler();" title="Show Sampler" target="_top">Sampler</a>
+	</div>
+	<div id="page_content">
+		[FRAMEWORK_CONTENT]
+	</div>
+</body>
+</html>

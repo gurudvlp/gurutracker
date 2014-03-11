@@ -10,7 +10,7 @@
 				<td>Channels:</td>
 				<td>Bit Rate:</td>
 				<td>Sample Rate:</td>
-				<td><input type="button" value="Save" id="sampler_savedetails" name="sampler_savedetails" onclick="SaveSample([SAMPLEID])"></td>
+				<td><input type="button" value="Save" id="sampler_savedetails" name="sampler_savedetails" onclick="Sampler.SaveSample([SAMPLEID])"></td>
 			</tr>
 			<tr>
 				<td><input type="text" id="sampler_details_title" name="sampler_details_title" value="[TITLE]"></td>
@@ -26,9 +26,9 @@
 		</form>
 		<hr />
 		
-		<a href="javascript:void(0);" onClick="ShowSampleImporter([SAMPLEID])" title="Show Sample Importer">[Import]</a>
-		<a href="javascript:void(0);" onClick="ShowSampleGenerator([SAMPLEID])" title="Show Sample Generator">[Generator]</a>
-		<a href="javascript:void(0);" onClick="ShowSoundMachine([SAMPLEID])" title="Show Sound Machine">[Sound Machine]</a>
+		<a href="javascript:Sampler.ShowSampleImporter([SAMPLEID]);" title="Show Sample Importer">[Import]</a>
+		<a href="javascript:Sampler.ShowSampleGenerator([SAMPLEID]);" title="Show Sample Generator">[Generator]</a>
+		<a href="javascript:Sampler.ShowSoundMachine([SAMPLEID]);" title="Show Sound Machine">[Sound Machine]</a>
 	</div>
 	<br />
 	

@@ -1,0 +1,22 @@
+
+<div class="sampler_genmachine_mixera" id="sampler_genmachine_processor[PROCESSORID]" name="sampler_genmachine_processor[PROCESSORID]">
+	<div class="sampler_genmachine_mixer_head">
+		<div class="sampler_genmachine_mixer_controlbuttons">
+			<a href="javascript:Sampler.ToggleMinimizeProcessor([PROCESSORID]);"><img
+				src="/images/toolicons/list-remove.png" border="0" height="24" id="sampler_genmachine_processor[PROCESSORID]_minicon" /></a>
+		</div>
+		<span class="sampler_genmachine_processor_title">Processor [PROCESSORID]: Envelope</span><br />
+	</div>
+	
+	<div id="sampler_genmachine_processor[PROCESSORID]_content">
+		Source: [SELECTINPUT:0]<br />
+		Attack: <input type="text" id="sampler_gm_processor[PROCESSORID]_attack" onblur="Sampler.TweakEnvelope([SAMPLEID], [PROCESSORID], '[PROCESSORID]');" value="[ATTACK]" /><br />
+		Decay: <input type="text" id="sampler_gm_processor[PROCESSORID]_decay" onblur="Sampler.TweakEnvelope([SAMPLEID], [PROCESSORID], '[PROCESSORID]');" value="[DECAY]" /><br />
+		Sustain: <input type="text" id="sampler_gm_processor[PROCESSORID]_sustain" onblur="Sampler.TweakEnvelope([SAMPLEID], [PROCESSORID], '[PROCESSORID]');" value="[SUSTAIN]" /><br />
+		Release: <input type="text" id="sampler_gm_processor[PROCESSORID]_release" onblur="Sampler.TweakEnvelope([SAMPLEID], [PROCESSORID], '[PROCESSORID]');" value="[RELEASE]" /><br />
+		Attack Amp: <input type="text" id="sampler_gm_processor[PROCESSORID]_attackamp" onblur="Sampler.TweakEnvelope([SAMPLEID], [PROCESSORID], '[PROCESSORID]');" value="[ATTACKAMP]" /><br />
+		Decay Amp: <input type="text" id="sampler_gm_processor[PROCESSORID]_decayamp" onblur="Sampler.TweakEnvelope([SAMPLEID], [PROCESSORID], '[PROCESSORID]');" value="[DECAYAMP]" />
+		
+	</div>
+</div>
+<br />		

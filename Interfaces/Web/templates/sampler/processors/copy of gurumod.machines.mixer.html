@@ -1,0 +1,43 @@
+<!--<li>-->
+<div class="sampler_genmachine_mixera" id="sampler_genmachine_processor[PROCESSORID]" name="sampler_genmachine_processor[PROCESSORID]">
+	<span class="sampler_genmachine_processor_title">Mixer [PROCESSORID]</span><br />
+	<table>
+		<tr>
+			<td>
+				<table>
+				<tr class="sampler_genmachine_processor_inputrow">
+					<td>
+						<span class="sampler_genmachine_processor_label">Input A:</span>
+					</td>
+					<td>
+						[SELECTINPUT:0]
+					</td>
+				</tr>
+				<tr class="sampler_genmachine_processor_inputrow">
+					<td>
+						<span class="sampler_genmachine_processor_label">Input B:</span>
+					</td>
+					<td>
+						[SELECTINPUT:1]
+					</td>
+				</tr>
+				</table>
+			</td>
+		
+			<td>
+				<span class="sampler_genmachine_processor_label">Method:</span><br />
+				<select name="sampler_gm_processor[PROCESSORID]_type" id="sampler_gm_processor[PROCESSORID]_type">
+					<option value="add"[TYPEADDSELECTED]>Add (A + B)</option>
+					<option value="subtract"[TYPESUBTRACTSELECTED]>Subtract (A - B)</option>
+					<option value="multiply"[TYPEMULTIPLYSELECTED]>Multiply (A * B)</option>
+					<option value="divide"[TYPEDIVIDESELECTED]>Divide (A / B)</option>
+				</select>
+				
+			</td>
+		</tr>
+	</table>
+	
+	<input type="button" name="sampler_gm_processor[PROCESSORID]_update" id="sampler_gm_processor[PROCESSORID]_update" value="Update" onclick="javascript:Sampler.TweakSoundMixer([SAMPLEID], [PROCESSORID], '[PROCESSORID]')">
+</div>
+<!--</li>-->
+		

@@ -1,42 +1,51 @@
-<li>
+
 <div class="sampler_genmachine_mixera" id="sampler_genmachine_processor[PROCESSORID]" name="sampler_genmachine_processor[PROCESSORID]">
-	<span class="sampler_genmachine_processor_title">Mixer [PROCESSORID]</span><br />
-	<table>
-		<tr>
-			<td>
-				<table>
-				<tr class="sampler_genmachine_processor_inputrow">
-					<td>
-						<span class="sampler_genmachine_processor_label">Input A:</span>
-					</td>
-					<td>
-						[SELECTINPUT:0]
-					</td>
-				</tr>
-				<tr class="sampler_genmachine_processor_inputrow">
-					<td>
-						<span class="sampler_genmachine_processor_label">Input B:</span>
-					</td>
-					<td>
-						[SELECTINPUT:1]
-					</td>
-				</tr>
-				</table>
-			</td>
+	<div class="sampler_genmachine_mixer_head">
+		<div class="sampler_genmachine_mixer_controlbuttons">
+			<a href="javascript:Sampler.ToggleMinimizeProcessor([PROCESSORID]);"><img
+				src="/images/toolicons/list-remove.png" border="0" height="24" id="sampler_genmachine_processor[PROCESSORID]_minicon" /></a>
+		</div>
+		<span class="sampler_genmachine_processor_title">Mixer [PROCESSORID]</span><br />
+	</div>
+	
+	<div id="sampler_genmachine_processor[PROCESSORID]_content">
 		
+		<div class="sampler_genmachine_mixer_method">
+			<a href="javascript:Sampler.SetMixerMethod([SAMPLEID], [PROCESSORID], 'add');" title="Combine using Addition"><img
+				src="/images/processors/plus.png" border="4" width="24" id="sampler_gm_mixer[PROCESSORID]_add" /></a>
+			<a href="javascript:Sampler.SetMixerMethod([SAMPLEID], [PROCESSORID], 'subtract');" title="Combine using Subtraction"><img
+				src="/images/processors/minus.png" border="4" width="24" id="sampler_gm_mixer[PROCESSORID]_sub" /></a>
+			<a href="javascript:Sampler.SetMixerMethod([SAMPLEID], [PROCESSORID], 'multiply');" title="Combine using Multiplication"><img
+				src="/images/processors/multiply.png" border="4" width="24" id="sampler_gm_mixer[PROCESSORID]_mul" /></a>
+			<a href="javascript:Sampler.SetMixerMethod([SAMPLEID], [PROCESSORID], 'divide');" title="Combine using Division"><img
+				src="/images/processors/divide.png" border="4" width="24" id="sampler_gm_mixer[PROCESSORID]_div" /></a>
+		</div>
+		
+		<table border="0" width="100%">
+	
+		<tr class="sampler_genmachine_mixer_inputrow">
+			
 			<td>
-				<span class="sampler_genmachine_processor_label">Method:</span><br />
-				<select name="sampler_gm_processor[PROCESSORID]_type" id="sampler_gm_processor[PROCESSORID]_type">
-					<option value="add"[TYPEADDSELECTED]>Add (A + B)</option>
-					<option value="subtract"[TYPESUBTRACTSELECTED]>Subtract (A - B)</option>
-					<option value="multiply"[TYPEMULTIPLYSELECTED]>Multiply (A * B)</option>
-					<option value="divide"[TYPEDIVIDESELECTED]>Divide (A / B)</option>
-				</select>
-				
+				[SELECTINPUT:0]
+			</td>
+			<td>
+				<img src="/images/audio-volume-low.png" border="0" height="20" />
+				<canvas id="sampler_gm_processor[PROCESSORID]_input0amp" width="200" height="20"></canvas>
 			</td>
 		</tr>
-	</table>
-	
-	<input type="button" name="sampler_gm_processor[PROCESSORID]_update" id="sampler_gm_processor[PROCESSORID]_update" value="Update" onclick="TweakSoundMixer([SAMPLEID], [PROCESSORID], '[PROCESSORID]')">
-</div></li>
 		
+		<tr class="sampler_genmachine_mixer_inputrowb">
+
+			<td>
+				[SELECTINPUT:1]
+			</td>
+			<td>
+				<img src="/images/audio-volume-low.png" border="0" height="20" />
+				<canvas id="sampler_gm_processor[PROCESSORID]_input1amp" width="200" height="20"></canvas>
+			</td>
+		</tr>
+		</table>
+	</div>
+</div>
+		
+<br />

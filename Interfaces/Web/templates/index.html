@@ -1,819 +1,10 @@
 <html>
 <head>
 	<title>guru tracker</title>
-	<script>
-		
-
-		var cactive = 0;
-		var chatserver = '';
-		var chatserveractive = 0;
-		var chatservertid = -1;
-		var CurrentPattern = 0;
-		var CurrentRow = 0;
-		var CurrentCol = 0;
-		var CurrentSubCol = 0;
-		var VolumeSubColPresses = 0;
-		var VolumePressFirst = 0;
-		var VolumePressSecond = 0;
-		var SampleSubColPresses = 0;
-		var SamplePressFirst = 0;
-		var SamplePressSecond = 0;
-		var EditorMode = 0;
-		//	EditorMode 0 = Sequencer
-		//	EditorMode 1 = Sampler
-		
-		document.addEventListener("click", function(event){
-			
-		});
-		
-		document.addEventListener("keydown", function(event){
-			if(EditorMode == 1) { return; }
-			//alert(event.keyCode);
-			if(CurrentSubCol != 3) { VolumeSubColPresses = 0; }
-			if(CurrentSubCol != 1) { SampleSubColPresses = 0; }
-			
-			if(event.keyCode == 37)
-			{
-				//	left arrow
-				UnHighlightCurrentElement();
-				
-				if(CurrentSubCol == 0)
-				{
-					if(CurrentCol > 0)
-					{
-						CurrentCol = CurrentCol - 1;
-						CurrentSubCol = 3;
-					}
-				}
-				else
-				{
-					CurrentSubCol = CurrentSubCol - 1;
-				}
-				
-				SetChannelRow(CurrentCol, CurrentRow);
-			}else
-			if(event.keyCode == 38)
-			{
-				//	Up arrow
-				if(CurrentRow > 0) { SetChannelRow(CurrentCol, CurrentRow - 1); }
-			}else
-			if(event.keyCode == 39)
-			{
-				//	right arrow
-				UnHighlightCurrentElement();
-				if(CurrentSubCol == 3)
-				{
-					if(CurrentCol < 7)
-					{
-						CurrentCol = CurrentCol + 1;
-						CurrentSubCol = 0;
-					}
-				}
-				else
-				{
-					CurrentSubCol = CurrentSubCol + 1;
-				}
-				
-				SetChannelRow(CurrentCol, CurrentRow);
-			}else
-			if(event.keyCode == 40)
-			{
-				//	Down arrow
-				if(CurrentRow < 127) { SetChannelRow(CurrentCol, CurrentRow + 1); }
-			}
-			else
-			{
-				//alert(event.keyCode);
-				
-				if(CurrentSubCol == 0)
-				{
-					//	A note is selected right now
-					if(event.keyCode == 46) { SetCurrentNote(-1, 5, "---"); }
-					else if(event.keyCode == 65) { SetCurrentNote(0, 5, "C-5"); }
-					else if(event.keyCode == 83) { SetCurrentNote(1, 5, "D-5"); }
-					else if(event.keyCode == 68) { SetCurrentNote(2, 5, "E-5"); }
-					else if(event.keyCode == 70) { SetCurrentNote(3, 5, "F-5"); }
-					else if(event.keyCode == 71) { SetCurrentNote(4, 5, "G-5"); }
-					else if(event.keyCode == 72) { SetCurrentNote(5, 5, "A-5"); }
-					else if(event.keyCode == 74) { SetCurrentNote(6, 5, "B-5"); }
-					else if(event.keyCode == 81) { SetCurrentNote(0, 6, "C-6"); }
-					else if(event.keyCode == 88) { SetCurrentNote(1, 4, "D-4"); }
-					else if(event.keyCode == 67) { SetCurrentNote(2, 4, "E-4"); }
-					else if(event.keyCode == 86) { SetCurrentNote(3, 4, "F-4"); }
-					else if(event.keyCode == 66) { SetCurrentNote(4, 4, "G-4"); }
-					else if(event.keyCode == 78) { SetCurrentNote(5, 4, "A-4"); }
-					else if(event.keyCode == 77) { SetCurrentNote(6, 4, "B-4"); }
-					else if(event.keyCode == 90) { SetCurrentNote(0, 4, "C-4"); }
-					else if(event.keyCode == 87) { SetCurrentNote(1, 6, "D-6"); }
-					else if(event.keyCode == 69) { SetCurrentNote(2, 6, "E-6"); }
-					else if(event.keyCode == 82) { SetCurrentNote(3, 6, "F-6"); }
-					else if(event.keyCode == 84) { SetCurrentNote(4, 6, "G-6"); }
-					else if(event.keyCode == 89) { SetCurrentNote(5, 6, "A-6"); }
-					else if(event.keyCode == 85) { SetCurrentNote(6, 6, "B-6"); }
-					else if(event.keyCode == 61) { SetCurrentNote(-2, 5, "==="); }
-					else { alert(event.keyCode); }
-				}
-				else if(CurrentSubCol == 1)
-				{
-					if(event.keyCode > 47 && event.keyCode < 58)
-					{
-						if(SampleSubColPresses == 0) { SamplePressFirst = event.keyCode - 48; }
-						else { SamplePressSecond = event.keyCode - 48; }
-						SampleSubColPresses++;
-						
-						if(SampleSubColPresses == 2)
-						{
-							SampleSubColPresses = 0;
-							smpstr = SamplePressFirst.toString() + SamplePressSecond.toString();
-							SetCurrentSample(smpstr);
-						}
-					}
-				}
-				else if(CurrentSubCol == 3)
-				{
-					if(event.keyCode > 47 && event.keyCode < 58)
-					{
-						if(VolumeSubColPresses == 0) { VolumePressFirst = event.keyCode - 48; }
-						else { VolumePressSecond = event.keyCode - 48; }
-						VolumeSubColPresses++;
-						
-						if(VolumeSubColPresses == 2)
-						{
-							VolumeSubColPresses = 0;
-							volstr = VolumePressFirst.toString() + VolumePressSecond.toString();
-							SetCurrentVolume(volstr);
-						}
-					}
-					else if(event.keyCode == 46)
-					{
-						SetCurrentVolume('-1');
-					}
-				}
-			}
-		});
-
-		function LoadPage(url, output)
-		{
-			if(cactive == 1)
-			{
-				setTimeout("LoadPage('"+url+"', '"+output+"')", 1200);
-				//alert("LoadPage('"+url+"', '"+output+"')");
-				return;
-			}
-	
-			cactive = 1;
-	
-			if (window.XMLHttpRequest)
-			{// code for IE7+, Firefox, Chrome, Opera, Safari
-				xhaddtobuds=new XMLHttpRequest();
-			}
-			else
-			{// code for IE6, IE5
-				xhaddtobuds=new ActiveXObject("Microsoft.XMLHTTP");
-			}
-	
-			xhaddtobuds.open("GET", url, false);
-			xhaddtobuds.send(null);
-	
-			if(output == null)
-			{
-				//	Function was directed to not display the output anywhere.
-			}
-			else
-			{
-				document.getElementById(output).innerHTML = xhaddtobuds.responseText;
-			}
-			
-			cactive = 0;
-		}
-
-		function LoadPagePost(url, output, postvars)
-		{
-			if(cactive == 1)
-			{
-				setTimeout("LoadPagePost('"+url+"', '"+output+"', '"+postvars+"')", 1200);
-				//alert("LoadPage('"+url+"', '"+output+"')");
-				return;
-			}
-	
-			cactive = 1;
-	
-			if (window.XMLHttpRequest)
-			{// code for IE7+, Firefox, Chrome, Opera, Safari
-				xhaddtobuds=new XMLHttpRequest();
-			}
-			else
-			{// code for IE6, IE5
-				xhaddtobuds=new ActiveXObject("Microsoft.XMLHTTP");
-			}
-	
-			xhaddtobuds.open("POST", url, false);
-			
-			var postbody = "";
-			for(var eitem in postvars)
-			{
-				if(postbody != "") { postbody = postbody + "&"; }
-				postbody = postbody + encodeURIComponent(eitem) + "=" + encodeURIComponent(postvars[eitem]);
-			}
-			
-			//Send the proper header information along with the request
-			xhaddtobuds.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			xhaddtobuds.setRequestHeader("Content-length", postbody.length);
-			xhaddtobuds.setRequestHeader("Connection", "close");
-			
-			//alert(postbody);
-			
-			xhaddtobuds.send(postbody);
-	
-			if(output == null)
-			{
-				//	The function was directed to not display the output.
-			}
-			else
-			{
-				document.getElementById(output).innerHTML = xhaddtobuds.responseText;
-			}
-	
-			cactive = 0;
-		}
-		
-		
-		
-		function LoadPageCallFunction(url, functionname, arguments)
-		{
-			if(cactive == 1)
-			{
-				setTimeout("LoadPageCallFunction('"+url+"', '"+functionname+"', '"+arguments+"')", 1200);
-				//alert("LoadPage('"+url+"', '"+output+"')");
-				return;
-			}
-	
-			cactive = 1;
-	
-			if (window.XMLHttpRequest)
-			{// code for IE7+, Firefox, Chrome, Opera, Safari
-				xhaddtobuds=new XMLHttpRequest();
-			}
-			else
-			{// code for IE6, IE5
-				xhaddtobuds=new ActiveXObject("Microsoft.XMLHTTP");
-			}
-	
-			xhaddtobuds.open("GET", url, false);
-			xhaddtobuds.send(null);
-	
-			//document.getElementById(output).innerHTML = url; // xhaddtobuds.responseText;
-			window[functionname](xhaddtobuds.responseText, arguments);
-			
-			cactive = 0;
-		}
-		
-		function LoadPagePostCallFunction(url, functionname, postvars, arguments)
-		{
-			if(cactive == 1)
-			{
-				setTimeout("LoadPagePostCallFunction('"+url+"', '"+functionname+"', '"+postvars+"', "+arguments+"')", 1200);
-				return;
-			}
-	
-			cactive = 1;
-	
-			if (window.XMLHttpRequest)
-			{// code for IE7+, Firefox, Chrome, Opera, Safari
-				xhaddtobuds=new XMLHttpRequest();
-			}
-			else
-			{// code for IE6, IE5
-				xhaddtobuds=new ActiveXObject("Microsoft.XMLHTTP");
-			}
-	
-			xhaddtobuds.open("POST", url, false);
-			var postbody = "";
-			for(var eitem in postvars)
-			{
-				if(postbody != "") { postbody = postbody + "&"; }
-				postbody = postbody + encodeURIComponent(eitem) + "=" + encodeURIComponent(postvars[eitem]);
-			}
-			//alert(postbody);
-			//Send the proper header information along with the request
-			xhaddtobuds.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			xhaddtobuds.setRequestHeader("Content-length", postbody.length);
-			xhaddtobuds.setRequestHeader("Connection", "close");
-			xhaddtobuds.send(postbody);
-	
-			//document.getElementById(output).innerHTML = xhaddtobuds.responseText;
-			window[functionname](xhaddtobuds.responseText, arguments);
-	
-			cactive = 0;
-		}
-		
-		function SetChannelRow(channel, row)
-		{
-			//alert("SetchannelRow");
-			UnHighlightCurrentRow();
-			CurrentCol = channel;
-			CurrentRow = row;
-			HighlightCurrentRow();
-		}
-		
-		function SetChannelRowSub(channel, row, sub)
-		{
-			UnHighlightCurrentRow();
-			CurrentCol = channel;
-			CurrentRow = row;
-			CurrentSubCol = sub;
-			HighlightCurrentRow();
-		}
-		
-		function HighlightCurrentRow()
-		{
-			//alert("done highlighting row");
-			//document.getElementById('sequencer_row_' + CurrentRow).className = "gurumod_sequencer_row_highlighted";
-			document.getElementById('sequencer_row_' + CurrentRow).style.backgroundColor = "#404040";
-			document.getElementById('elementsub_' + CurrentCol + '_' + CurrentRow + "_" + CurrentSubCol).style.backgroundColor = "#EEEEEE";
-		}
-		
-		function UnHighlightCurrentRow()
-		{
-			
-			//getElementById('sequencer_row_' + CurrentRow).className = "gurumod_sequencer_row_blank";
-			document.getElementById('sequencer_row_' + CurrentRow).style.backgroundColor = "#FFFFFF";
-			document.getElementById('elementsub_' + CurrentCol + '_' + CurrentRow + "_" + CurrentSubCol).style.backgroundColor = "#FFFFFF";
-			//alert("done highlighting row");
-		}
-		
-		function HighlightCurrentElement()
-		{
-			document.getElementById('elementsub_' + CurrentCol + '_' + CurrentRow + "_" + CurrentSubCol).style.backgroundColor = "";
-		}
-		
-		function UnHighlightCurrentElement()
-		{
-			document.getElementById('elementsub_' + CurrentCol + '_' + CurrentRow + "_" + CurrentSubCol).style.backgroundColor = "#FFFFFF";
-		}
-		
-		function KeyPressHandler(e)
-		{
-			alert("A key was pressed.");
-		}
-		
-		function RemoveCurrentNote()
-		{
-			
-			document.getElementById('elementsub_' + CurrentCol + "_" + CurrentRow + "_" + CurrentSubCol).innerHTML = "---";
-		}
-		
-		function SetCurrentNote(noteid, octave, notename)
-		{
-			
-			document.getElementById('elementsub_' + CurrentCol + "_" + CurrentRow + "_" + CurrentSubCol).innerHTML = notename;
-			postvars = Array();
-			postvars['subcol'] = 0;
-			postvars['pattern'] = CurrentPattern;
-			postvars['channel'] = CurrentCol;
-			postvars['element'] = CurrentRow;
-			postvars['note'] = noteid;
-			postvars['octave'] = octave;
-			
-			LoadPagePost("/updatepattern", null, postvars);
-		}
-		
-		function SetCurrentSample(sampleid)
-		{
-			sampname = sampleid;
-			if(sampleid < 0) { sampname = "--"; } else { sampname = sampleid; }
-			document.getElementById('elementsub_' + CurrentCol + "_" + CurrentRow + "_" + CurrentSubCol).innerHTML = sampname;
-			
-			postvars = Array();
-			postvars['subcol'] = 1;
-			postvars['pattern'] = CurrentPattern;
-			postvars['channel'] = CurrentCol;
-			postvars['element'] = CurrentRow;
-			postvars['sampleid'] = sampleid;
-			
-			LoadPagePost("/updatepattern", null, postvars);
-		}
-		
-		function SetCurrentVolume(volstr)
-		{
-			if(volstr > -1)
-			{
-				document.getElementById('elementsub_' + CurrentCol + "_" + CurrentRow + "_" + CurrentSubCol).innerHTML = "v" + volstr;
-			}
-			else
-			{
-				document.getElementById('elementsub_' + CurrentCol + "_" + CurrentRow + "_" + CurrentSubCol).innerHTML = "---";
-			}
-			
-			postvars = Array();
-			postvars['subcol'] = 3;
-			postvars['pattern'] = CurrentPattern;
-			postvars['channel'] = CurrentCol;
-			postvars['element'] = CurrentRow;
-			postvars['volume'] = volstr;
-			
-			
-			LoadPagePost("/updatepattern", null, postvars);
-		}
-		
-		function SaveTrack()
-		{
-			LoadPage("/player/save", null);
-		}
-		
-		function NewTrack()
-		{
-			LoadPage("/player/new", null);
-		}
-		
-		function StartPlayback()
-		{
-			LoadPage("/player/play", null);
-		}
-		
-		function PausePlayback()
-		{
-			LoadPage("/player/pause", null);
-		}
-		
-		function StopPlayback()
-		{
-			LoadPage("/player/stop", null);
-		}
-		
-		function PlaybackLoopChange(newstyle)
-		{
-			postvars = Array();
-			postvars["patternid"] = CurrentPattern;
-			LoadPagePost("/player/loop/" + newstyle, null, postvars);
-		}
-		
-		function ToggleMute(channel)
-		{
-			LoadPage("/player/togglemute/" + channel);
-			alert("Toggled mute on channel " + channel);
-		}
-		
-		function AddPattern()
-		{
-			
-			LoadPageCallFunction("/player/newpattern", "AddPatternHandler", null);
-		}
-		
-		function AddPatternHandler(responsetext, args)
-		{
-			LoadPage("/sequencer/patternoptions", "sequencer_pattern_options");
-		}
-		
-		function DuplicatePattern()
-		{
-			LoadPageCallFunction("/player/duplicatepattern/" + CurrentPattern, "DuplicatePatternHandler", null);
-		}
-		
-		function DuplicatePatternHandler(responsetext, args)
-		{
-			ShowSequencerAt(CurrentPattern);
-		}
-		
-		function ShowSequencer()
-		{
-			ShowSequencerAt(0);
-		}
-		
-		function ShowSequencerAt(patternid)
-		{
-			postvars = Array();
-			postvars["patternid"] = patternid;
-			LoadPagePostCallFunction("/sequencer", "ShowSequencerHandler", postvars, null);
-			EditorMode = 0;
-			CurrentPattern = patternid;
-		}
-		
-		function ShowSequencerHandler(responsetext, args)
-		{
-			document.getElementById("page_content").innerHTML = responsetext;
-			LoadPageCallFunction("/sequencer/patternoptions", "ShowPatternOptionsHandler", null);
-			
-		}
-		
-		function ShowPatternOptionsHandler(responsetext, args)
-		{
-			document.getElementById("sequencer_pattern_options").innerHTML = responsetext;
-			
-			//sequencer_patternoptions_id
-			document.getElementById("sequencer_patternoptions_id").innerHTML = CurrentPattern;
-		}
-		
-		function ShowSampler()
-		{
-			LoadPageCallFunction("/sampler", "ShowSamplerHandler", null);
-			EditorMode = 1;
-		}
-		
-		function ShowSamplerHandler(responsetext, args)
-		{
-			document.getElementById("page_content").innerHTML = responsetext;
-			//document.getElementById("sampler_genmachine").disabled = true;
-			//document.getElementById("sampler_generator").disabled = true;
-			//document.getElementById("sampler_importfile").disabled = true;
-			
-		}
-		
-		function SaveSample(sampleid)
-		{
-			//alert("Saving sample");
-			postvars = Array();
-			postvars["title"] = (document.getElementById("sampler_details_title")).value;
-			postvars["filename"] = (document.getElementById("sampler_details_filename")).value;
-			postvars["sampleid"] = sampleid;
-			LoadPagePost("/sampler/updatesample", null, postvars);
-			//sampler_list_[SAMPLEID]_name
-			document.getElementById("sampler_list_" + sampleid + "_name").innerHTML = postvars["title"];
-		}
-		
-		function LoadWavFileToSample(sampleid)
-		{
-			//alert("loadwavfiletosample");
-			postvars = Array();
-			postvars["newfilename"] = (document.getElementById("sampler_loadfile_name")).value;
-			postvars["sampleid"] = sampleid;
-			postvars["loadfile"] = "loadfile";
-			//alert("oh man");
-			args = Array();
-			args["sampleid"] = sampleid;
-			
-			
-			LoadPagePostCallFunction("/sampler/updatesample", "LoadWavHandler", postvars, args);
-		}
-		
-		function LoadWavHandler(responsetext, args)
-		{
-			LoadPage("/sampler/details/" + args["sampleid"], "sampler_detailscell");
-		}
-		
-		function GenerateSample(sampleid)
-		{
-			//alert("yeah");
-			postvars = Array();
-			postvars["sampleid"] = sampleid;
-			tmp = document.getElementById("sampler_generator_type");
-			postvars["type"] = tmp.options[tmp.selectedIndex].value;
-			//tmp = document.getElementById("sampler_generator_samplerate");
-			postvars["samplerate"] = (document.getElementById("sampler_generator_samplerate")).value;
-			postvars["lengthz"] = (document.getElementById("sampler_generator_length")).value;
-			postvars["frequency"] = (document.getElementById("sampler_generator_frequency")).value;
-			//alert("yo");
-			args = Array();
-			args["sampleid"] = sampleid;
-			
-			LoadPagePostCallFunction("/sampler/generatesample", "GenerateSampleHandler", postvars, args);
-		}
-		
-		function GenerateSampleHandler(args)
-		{
-			//alert("args");
-			
-			//LoadPage("/sampler/details/" + args["sampleid"], "sampler_detailscell");
-		}
-		
-		function TweakOscillator(sampleid, oscid)
-		{
-			ec = oscid;
-			postvars = Array();
-			postvars["sampleid"] = sampleid;
-			//alert("hi");
-			tmp = document.getElementById("sampler_genmachine_type" + ec);
-			postvars["type"] = tmp.options[tmp.selectedIndex].value;
-			postvars["frequency"] = (document.getElementById("sampler_genmachine_frequency" + ec)).value;
-			postvars["amplitude"] = (document.getElementById("sampler_genmachine_amplitude" + ec)).value;
-			postvars["oscid"] = oscid;
-			
-			if((document.getElementById("sampler_genmachine_usegen" + ec)).checked == true)
-			{
-				postvars["oenabled"] = "true";
-			}
-			else
-			{
-				postvars["oenabled"] = "false";
-			}
-			//alert("test");
-			LoadPagePost("/sampler/tweakmachine", null, postvars);
-		}
-		
-		function TweakSoundMachine(sampleid, oscid)
-		{
-			ec = oscid;
-			postvars = Array();
-			postvars["sampleid"] = sampleid;
-			//alert("hi");
-			tmp = document.getElementById("sampler_genmachine_type" + ec);
-			postvars["type"] = tmp.options[tmp.selectedIndex].value;
-			postvars["frequency"] = (document.getElementById("sampler_genmachine_frequency" + ec)).value;
-			postvars["amplitude"] = (document.getElementById("sampler_genmachine_amplitude" + ec)).value;
-			postvars["oscid"] = oscid;
-			
-			if((document.getElementById("sampler_genmachine_useosc" + ec)).checked == true)
-			{
-				postvars["oenabled"] = "true";
-			}
-			else
-			{
-				postvars["oenabled"] = "false";
-			}
-			//alert("test");
-			LoadPagePost("/sampler/tweakmachine", null, postvars);
-		}
-		
-		function TweakSoundMixer(sampleid, mixerid, mixerlabel)
-		{
-			
-			ec = mixerid;
-			
-			postvars = Array();
-			postvars["sampleid"] = sampleid;
-			postvars["mixerid"] = mixerid;
-			
-			//postvars["gatemin"] = (document.getElementById("sampler_gm_mixer" + ec + "_gatemin")).value;
-			//postvars["gatemax"] = (document.getElementById("sampler_gm_mixer" + ec + "_gatemax")).value;
-			
-			//tmp = document.getElementById("sampler_gm_mixer" + ec + "_gateminsrc");
-			//postvars["gateminsrc"] = tmp.options[tmp.selectedIndex].value;
-			//tmp = document.getElementById("sampler_gm_mixer" + ec + "_gatemaxsrc");
-			//postvars["gatemaxsrc"] = tmp.options[tmp.selectedIndex].value;
-			
-			tmp = document.getElementById("sampler_gm_processor" + ec + "_input0");
-			postvars["input0"] = tmp.options[tmp.selectedIndex].value;
-			
-			tmp = document.getElementById("sampler_gm_processor" + ec + "_input1");
-			postvars["input1"] = tmp.options[tmp.selectedIndex].value;
-			
-			tmp = document.getElementById("sampler_gm_processor" + ec + "_type");
-			postvars["combmethod"] = tmp.options[tmp.selectedIndex].value;
-			
-			
-			
-			LoadPagePost("/sampler/tweakmachine", null, postvars);
-		}
-		
-		function TweakSoundGate(sampleid, mixerid, mixerlabel)
-		{
-			
-			ec = mixerid;
-			
-			postvars = Array();
-			postvars["sampleid"] = sampleid;
-			postvars["processorid"] = mixerid;
-			
-			postvars["gatemin"] = (document.getElementById("sampler_genmachine_processor" + ec + "_mingateman")).value;
-			postvars["gatemax"] = (document.getElementById("sampler_genmachine_processor" + ec + "_maxgateman")).value;
-			
-			tmp = document.getElementById("sampler_gm_processor" + ec + "_input0");
-			postvars["input0"] = tmp.options[tmp.selectedIndex].value;
-			
-			tmp = document.getElementById("sampler_gm_processor" + ec + "_input1");
-			postvars["input1"] = tmp.options[tmp.selectedIndex].value;
-			
-			tmp = document.getElementById("sampler_gm_processor" + ec + "_input2");
-			postvars["input2"] = tmp.options[tmp.selectedIndex].value;
-			
-			LoadPagePost("/sampler/tweakgate", null, postvars);
-			//alert("tweaked gate");
-		}
-		
-		function TweakWavePlayer(sampleid, mixerid, mixerlabel)
-		{
-			ec = mixerid;
-			
-			postvars = Array();
-			postvars["sampleid"] = sampleid;
-			postvars["generatorid"] = mixerid;
-			postvars["nfilename"] = (document.getElementById("sampler_genmachine_filename" + ec)).value;
-			
-			if((document.getElementById("sampler_genmachine_usegen" + ec)).checked == true)
-			{
-				postvars["oenabled"] = "true";
-			}
-			else
-			{
-				postvars["oenabled"] = "false";
-			}
-			
-			LoadPagePost("/sampler/tweakwaveplayer", null, postvars);
-		}
-		
-		function AddOscillator(sampleid)
-		{
-			args = Array();
-			args["sampleid"] = sampleid;
-			
-			LoadPageCallFunction("/sampler/addosc/" + sampleid, "AddOscillatorHandler", args);
-		}
-		
-		function AddOscillatorHandler(args)
-		{
-			//alert("AddOscillatorHandler " + args["sampleid"]);
-			//ShowSoundMachine(args["sampleid"]);
-		}
-		
-		function AddMixer(sampleid)
-		{
-			args = Array();
-			args["sampleid"] = sampleid;
-			
-			LoadPageCallFunction("/sampler/addmixer/" + sampleid, "AddMixerHandler", args);
-		}
-		
-		function AddMixerHandler(args)
-		{
-			//nothin yet
-		}
-		
-		function AddGate(sampleid)
-		{
-			args = Array();
-			args["sampleid"] = sampleid;
-			LoadPageCallFunction("/sampler/addgate/" + sampleid, "AddGateHandler", args);
-		}
-		
-		function AddGateHandler(args)
-		{
-		
-		}
-		
-		function AddWavePlayer(sampleid)
-		{
-			args = Array();
-			args["sampleid"] = sampleid;
-			LoadPageCallFunction("/sampler/addwaveplayer/" + sampleid, "AddWavePlayerHandler", args);
-		}
-		
-		function AddWavePlayerHandler(args)
-		{
-		
-		}
-		
-		function ShowSampleImporter(sampleid)
-		{
-			//HideSoundMachine();
-			//HideSampleGenerator();
-			
-			//(document.getElementById("sampler_importfile")).style.visibility = 'visible';
-			//(document.getElementById("sampler_importfile")).style.position = 'float';
-			//(document.getElementById("sampler_importfile")).style.float = 'top';
-			postvars = Array();
-			postvars["sampleid"] = sampleid;
-			LoadPagePost("/sampler/import", "sampler_workbench", postvars);
-		}
-		
-		function ShowSampleGenerator(sampleid)
-		{
-			/*HideSoundMachine();
-			HideSampleImporter();
-			
-			(document.getElementById("sampler_generator")).style.visibility = 'visible';
-			(document.getElementById("sampler_generator")).style.position = 'float';
-			(document.getElementById("sampler_generator")).style.float = 'top';
-			*/
-			postvars = Array();
-			postvars["sampleid"] = sampleid;
-			LoadPagePost("/sampler/generator", "sampler_workbench", postvars);
-		}
-		
-		function ShowSoundMachine(sampleid)
-		{
-			//alert("oh we wee");
-			/*HideSampleGenerator();
-			HideSampleImporter();
-			
-			(document.getElementById("sampler_genmachine")).style.visibility = 'visible';
-			(document.getElementById("sampler_genmachine")).style.position = 'float';
-			(document.getElementById("sampler_genmachine")).style.float = 'top';
-			*/
-			postvars = Array();
-			postvars["sampleid"] = sampleid;
-			//alert(sampleid);
-			LoadPagePost("/sampler/genmachine", "sampler_workbench", postvars);
-			//alert('oh dude');
-		}
-		
-		function HideSoundMachine()
-		{
-			document.getElementById("sampler_genmachine").style.visibility = 'hidden';
-			document.getElementById("sampler_genmachine").style.position = 'auto';
-		}
-		
-		function HideSampleGenerator()
-		{
-			document.getElementById("sampler_generator").style.visibility = 'hidden';
-			document.getElementById("sampler_generator").style.position = 'auto';
-		}
-		
-		function HideSampleImporter()
-		{
-			document.getElementById("sampler_importfile").style.visibility = 'hidden';
-			document.getElementById("sampler_importfile").style.position = 'auto';
-		}
-	</script>
+	<script src="/scripts/track.js"></script>
+	<script src="/scripts/pattern-editor.js"></script>
+	<script src="/scripts/sampler.js"></script>
+	<script src="/scripts/detailer.js"></script>
 	<style>
 		BODY
 		{
@@ -869,6 +60,7 @@
 			border-bottom: 0px;
 			border-style: solid;
 			border-color: black;
+			background: #FFFFFF;
 		}
 		.gurumod_sequencer_table
 		{
@@ -914,6 +106,23 @@
 			border-top: 1px;
 			border-style: solid;
 			border-color: black;
+		}
+		
+		#sequencer_patternblock
+		{
+			position: fixed;
+			bottom: 0px;
+			left: 0px;
+			right: 0px;
+			top: 140px;
+			border-style: solid;
+			border-width-left: 2px;
+			border-width-right: 2px;
+			border-width-top: 2px;
+			border-width-bottom: 2px;
+			overflow-y: scroll;
+			overflow-x: scroll;
+			background: #A0A0A0;
 		}
 		
 		#sampler_list
@@ -1002,7 +211,7 @@
 			border-color: black;
 			position: float;
 			float: left;
-			width: 400px;
+			width: 200px;
 		}
 		
 		.sampler_genmachine_mixer_title
@@ -1013,19 +222,47 @@
 		
 		.sampler_genmachine_mixera
 		{
-			border-right: 1px;
-			border-left: 1px;
-			border-bottom: 1px;
-			border-top: 1px;
+			border-right: 4x;
+			border-left: 4px;
+			border-bottom: 2px;
+			border-top: 2px;
 			border-style: dashed;
+			border-left-style: double;
+			border-right-style: double;
+			border-bottom-style: solid;
+			border-top-style: solid;
 			border-color: black;
-			position: float;
-			float: left;
-			width: 400px;
+			
+		}
+		
+		.sampler_genmachine_mixer_head
+		{
+			border-bottom-width: 1px;
+			border-color: #000000;
+			border-bottom-style: solid;
+		}
+		
+		.sampler_genmachine_mixer_method
+		{
+			border-bottom-width: 1px;
+			border-color: #000000;
+			border-bottom-style: solid;
 		}
 		
 		.sampler_genmachine_mixer_label
 		{
+			font-weight: bold;
+		}
+		
+		.sampler_genmachine_mixer_controlbuttons
+		{
+			float: right;
+			width: 32px;
+		}
+		
+		.sampler_genmachine_processor_title
+		{
+			font-size: 1.2em;
 			font-weight: bold;
 		}
 		
@@ -1037,11 +274,52 @@
 			border-top: 1px;
 			border-style: solid;
 			border-color: black;
+			background: #00ff00;
+		}
+		
+		.sampler_genmachine_mixer_inputrowb
+		{
+			border-right: 1px;
+			border-left: 1px;
+			border-bottom: 1px;
+			border-top: 1px;
+			border-style: solid;
+			border-color: black;
+			background: #5555FF;
+		}
+		
+		.sampler_genmachine_gate_sourcerow
+		{
+			border-right: 1px;
+			border-left: 1px;
+			border-bottom: 1px;
+			border-top: 1px;
+			border-style: solid;
+			border-color: black;
+			background: #55CC55;
+		}
+		
+		.sampler_genmachine_gate_maxrow
+		{
+			border-right: 1px;
+			border-left: 1px;
+			border-bottom: 1px;
+			border-top: 1px;
+			border-style: solid;
+			border-color: black;
+			background: #5555FF;
 		}
 		
 		.sampler_genmachine_list
 		{
 			list-style-type: none;
+		}
+		
+		
+		.detailer_form_header
+		{
+			font-weight: bold;
+			font-size: .8em;
 		}
 		
 		.clear
@@ -1091,13 +369,13 @@
 </head>
 <body>
 	<div id="page_header">
-		<a href="javascript:SaveTrack();" title="Save"><img src="/images/toolicons/document-save.png" border="0" alt="Save"></a>
-		<a href="javascript:NewTrack();" title="New"><img src="/images/toolicons/document-new.png" border="0" alt="New"></a>
-		<a href="javascript:StopPlayback();" title="Stop"><img src="/images/media-playback-stop.png" border="0" alt="Stop"></a>
-		<a href="javascript:StartPlayback();" title="Play"><img src="/images/media-playback-start.png" border="0" alt="Play"></a>
-		<a href="javascript:PausePlayback();" title="Pause"><img src="/images/media-playback-pause.png" border="0" alt="Pause"></a>
+		<a href="javascript:Track.SaveTrack();" title="Save"><img src="/images/toolicons/document-save.png" border="0" alt="Save"></a>
+		<a href="javascript:Track.NewTrack();" title="New"><img src="/images/toolicons/document-new.png" border="0" alt="New"></a>
+		<a href="javascript:Track.StopPlayback();" title="Stop"><img src="/images/media-playback-stop.png" border="0" alt="Stop"></a>
+		<a href="javascript:Track.StartPlayback();" title="Play"><img src="/images/media-playback-start.png" border="0" alt="Play"></a>
+		<a href="javascript:Track.PausePlayback();" title="Pause"><img src="/images/media-playback-pause.png" border="0" alt="Pause"></a>
 		
-		<select onChange="PlaybackLoopChange(this.options[this.selectedIndex].value)" name="playbackloopselect" id="playbackloopselect">
+		<select onChange="Track.PlaybackLoopChange(this.options[this.selectedIndex].value)" name="playbackloopselect" id="playbackloopselect">
 			<option value="off">Loop Off</option>
 			<option value="pattern">Loop Pattern</option>
 			<option value="track">Loop Track</option>
@@ -1106,9 +384,11 @@
 	<div id="page_topnav">
 		<a href="javascript:ShowSequencer();" title="Show Sequencer" target="_top">Sequencer</a>
 		<a href="javascript:ShowSampler();" title="Show Sampler" target="_top">Sampler</a>
+		<a href="javascript:ShowDetailEditor();" title="Show Detail Editor" target="_top">Detail Editor</a>
 	</div>
 	<div id="page_content">
-		[FRAMEWORK_CONTENT]
+		[FRAMEWORK_CONTENT]<br />
+		<img src="/images/media-playback-start.png" onload="javascript:Track.LoadTrack();" />
 	</div>
 </body>
 </html>

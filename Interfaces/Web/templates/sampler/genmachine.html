@@ -5,18 +5,34 @@
 		
 		<br />
 		
-		<input type="button" onclick="AddOscillator([SAMPLEID])" name="sampler_genmachine_newoscbtn" id="sampler_genmachine_newoscbtn" value="New Oscillator" />
-		<input type="button" onclick="AddWavePlayer([SAMPLEID])" name="sampler_genmachine_newwpbtn" id="sampler_genmachine_newwpbtn" value="New Wave Player" />
-		<ul class="sampler_genmachine_list">
-		[EACHGENERATOR]
+		<table border="0">
+			<tr>
+				<td valign="top" width="220">
 		
-		</ul>
-		<br class="clear" />
+					<!--<input type="button" onclick="javascript:Sampler.AddOscillator([SAMPLEID])" name="sampler_genmachine_newoscbtn" id="sampler_genmachine_newoscbtn" value="New Oscillator" />
+					<input type="button" onclick="javascript:Sampler.AddWavePlayer([SAMPLEID])" name="sampler_genmachine_newwpbtn" id="sampler_genmachine_newwpbtn" value="New Wave Player" />
+					<ul class="sampler_genmachine_list">-->
+					[EACHGENERATOR]
+					
+					<!--</ul>-->
+					
+					<a href="javascript:Sampler.AddOscillator([SAMPLEID]);" title="Add an Oscillator"><img
+						src="/images/oscillators/newosc.png" border="0" width="64" /></a>
+					<a href="javascript:Sampler.AddWavePlayer([SAMPLEID]);" title="Add a Wave Player"><img 
+						src="/images/oscillators/newwaveplayer.png" border="0" width="64" /></a>
+				</td>
+				<td valign="top">
 		
-		<input type="button" onclick="AddMixer([SAMPLEID])" name="sampler_genmachine_newmixerbtn" id="sampler_genmachine_newmixerbtn" value="New Mixer" />
-		<input type="button" onclick="AddGate([SAMPLEID])" name="sampler_genmachine_newgatebtn" id="sampler_genmachine_newgatebtn" value="New Gate" />
-		<ul class="sampler_genmachine_list">
-		[EACHPROCESSOR]
-		</ul>
+		
+					<input type="button" onclick="javascript:Sampler.AddMixer([SAMPLEID])" name="sampler_genmachine_newmixerbtn" id="sampler_genmachine_newmixerbtn" value="New Mixer" />
+					<input type="button" onclick="javascript:Sampler.AddGate([SAMPLEID])" name="sampler_genmachine_newgatebtn" id="sampler_genmachine_newgatebtn" value="New Gate" />
+					<input type="button" onclick="javascript:Sampler.AddReverb([SAMPLEID])" name="sampler_genmachine_newreverbbtn" id="sampler_genmachine_newreverbbtn" value="New Reverb Box" />
+					<input type="button" onclick="javascript:Sampler.AddEnvelope([SAMPLEID])" name="sampler_genmachine_newenvelopebtn" id="sampler_genmachine_newenvelopebtn" value="New Envelope Filter" />
+					<!--<ul class="sampler_genmachine_list">-->
+					[EACHPROCESSOR]
+					<!--</ul>-->
+				</td>
+			</tr>
+		</table>
 		<br class="clear" />
 		</div>

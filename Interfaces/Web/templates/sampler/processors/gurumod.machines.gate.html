@@ -1,33 +1,58 @@
-<li>
+
 <div class="sampler_genmachine_mixera" id="sampler_genmachine_processor[PROCESSORID]" name="sampler_genmachine_processor[PROCESSORID]">
-	<span class="sampler_genmachine_processor_title">Processor [PROCESSORID]: Gate</span><br />
-	<table>
-		<tr>
-			<td>
-				<span class="sampler_genmachine_processor_label">Gate Min:</span><br />
-				[SELECTINPUT:1]
-				<br />
-				<input type="text" name="sampler_genmachine_processor[PROCESSORID]_mingateman" id="sampler_genmachine_processor[PROCESSORID]_mingateman" value="[MINGATE]">
-			</td>
-			<td>
-				<span class="sampler_genmachine_processor_label">Gate Max:</span><br />
-				[SELECTINPUT:2]
-				<br />
-				<input type="text" name="sampler_genmachine_processor[PROCESSORID]_maxgateman" id="sampler_genmachine_processor[PROCESSORID]_maxgateman" value="[MAXGATE]">
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<span class="sampler_genmachine_processor_label">Audio Source:</span><br />
-				[SELECTINPUT:0]
+	<div class="sampler_genmachine_mixer_head">
+		<div class="sampler_genmachine_mixer_controlbuttons">
+			<a href="javascript:Sampler.ToggleMinimizeProcessor([PROCESSORID]);"><img
+				src="/images/toolicons/list-remove.png" border="0" height="24" id="sampler_genmachine_processor[PROCESSORID]_minicon" /></a>
+		</div>
+		<span class="sampler_genmachine_processor_title">Processor [PROCESSORID]: Gate</span><br />
+	</div>
+	
+	<div id="sampler_genmachine_processor[PROCESSORID]_content">
+		<table border="0" width="100%">
+			<tr class="sampler_genmachine_gate_sourcerow">
+				<td>
+					<span class="sampler_genmachine_processor_label">Audio Source:</span>
+					
+				</td>
+				<td>
+					[SELECTINPUT:0]
+				</td>
 				
-			</td>
-			<td>
-				<input type="button" name="sampler_gm_processor[PROCESSORID]_update" id="sampler_gm_processor[PROCESSORID]_update" value="Update" onclick="TweakSoundGate([SAMPLEID], [PROCESSORID], '[PROCESSORID]')">
-			</td>
+				
+			</tr>
+			<tr>
+				<td>
+					<span class="sampler_genmachine_processor_label">Gate Min:</span>
+				</td>
+				<td>
+					[SELECTINPUT:1]
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<div id="sampler_gm_processor[PROCESSORID]_mingatectrl" style="display: none;">
+						<canvas id="sampler_gm_processor[PROCESSORID]_mingateman" width="200" height="20"></canvas>
+					</div>
+				</td>
+			</tr>
+			<tr class="sampler_genmachine_gate_maxrow">
+				<td>
+					<span class="sampler_genmachine_processor_label">Gate Max:</span>
+				</td>
+				<td>
+					[SELECTINPUT:2]
+				</td>
+			</tr>
+			<tr class="sampler_genmachine_gate_maxrow">
+				<td colspan="2">
+					<div id="sampler_gm_processor[PROCESSORID]_maxgatectrl" style="display: none;">
+						<canvas id="sampler_gm_processor[PROCESSORID]_maxgateman" width="200" height="20"></canvas>
+					</div>
+				</td>
+			</tr>
 			
-			
-		</tr>
-	</table>
-</div></li>
-		
+		</table>
+	</div>
+</div>
+<br />		

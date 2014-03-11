@@ -1,9 +1,16 @@
-<li>
 <div class="sampler_genmachine_osca" id="sampler_genmachine_gen[GENERATORID]">
 	<input type="checkbox" name="sampler_genmachine_usegen[GENERATORID]" id="sampler_genmachine_usegen[GENERATORID]"[GENENABLED]/>Generator [GENERATORID]: Wav File<br />
 	
 	<table border="0">
 		<tr>
+			<td>Length:</td>
+			<td>[TIME]</td>
+		</tr>
+		<tr>
+			<td>Rate:</td>
+			<td>[SAMPLERATE]</td>
+		</tr>
+		<!--<tr>
 			<td>Length:</td>
 			<td>Channels:</td>
 			<td>Bit Rate:</td>
@@ -14,10 +21,9 @@
 			<td>[CHANNELS]</td>
 			<td>[BITRATE]</td>
 			<td>[SAMPLERATE]</td>
-		</tr>
+		</tr>-->
 	</table>
 	<input type="text" name="sampler_genmachine_filename[GENERATORID]" id="sampler_genmachine_filename[GENERATORID]" value="[FILENAME]">
-	<input type="button" name="sampler_genmachine_go[GENERATORID]" id="sampler_genmachine_go[GENERATORID]" value="Load" onclick="TweakWavePlayer([SAMPLEID], [GENERATORID])">
+	<input type="button" name="sampler_genmachine_go[GENERATORID]" id="sampler_genmachine_go[GENERATORID]" value="Load" onclick="javascript:Sampler.TweakWavePlayer([SAMPLEID], [GENERATORID])">
 </div>
-</li>
 		

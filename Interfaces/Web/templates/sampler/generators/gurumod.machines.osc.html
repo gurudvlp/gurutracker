@@ -1,25 +1,38 @@
-<li>
+
 <div class="sampler_genmachine_osca" id="sampler_genmachine_gen[GENERATORID]">
 	<input type="checkbox" name="sampler_genmachine_usegen[GENERATORID]" id="sampler_genmachine_usegen[GENERATORID]"[GENENABLED]/>Oscillator [GENERATORID]<br />
 	<table border="0">
 	<tr>
+		<td valign="top">
+			<a href="javascript:Sampler.RotateOscWaveType([SAMPLEID], [GENERATORID]);" title="Change wave type."><img
+				src="/images/oscillators/[ICONNAME].png" border="0" width="64" height="64" id="sampler_genmachine_gentypeimg[GENERATORID]" /></a>
+		</td>
+		
+		<!--
 		<td valign="top"><select name="sampler_genmachine_type[GENERATORID]" id="sampler_genmachine_type[GENERATORID]">
 			<option value="sine"[GENSELSINE]>Sine Wave</option>
 			<option value="square"[GENSELSQUARE]>Square Wave</option>
 			<option value="triangle"[GENSELTRIANGLE]>Triangle Wave</option>
 			<option value="sawtooth"[GENSELSAWTOOTH]>Sawtooth Wave</option>
 		</select></td>
+		-->
 	
 		<td valign="top">
-		<input type="text" size="5" name="sampler_genmachine_frequency[GENERATORID]" id="sampler_genmachine_frequency[GENERATORID]" value="[GENERATORMACHINEFREQUENCY]">
+			<table border="0">
+				<tr>
+					<td>Freq:</td>
+					<td><input type="text" size="5" name="sampler_genmachine_frequency[GENERATORID]" id="sampler_genmachine_frequency[GENERATORID]" value="[GENERATORMACHINEFREQUENCY]" onblur="Sampler.TweakOscillator([SAMPLEID], [GENERATORID]);"></td>
+				</tr>
+				<tr>
+					<td>Amp:</td>
+					<td><input type="text" size="5" name="sampler_genmachine_amplitude[GENERATORID]" id="sampler_genmachine_amplitude[GENERATORID]" value="[GENMACHINEAMPLITUDE]" onblur="Sampler.TweakOscillator([SAMPLEID], [GENERATORID]);"></td>
+				</tr>
+			</table>
+
 		</td>
 	
-		<td valign="top">
-		<input type="text" size="5" name="sampler_genmachine_amplitude[GENERATORID]" id="sampler_genmachine_amplitude[GENERATORID]" value="[GENMACHINEAMPLITUDE]"></td>
-	
-		<td valign="top"><input type="button" name="sampler_genmachine_go[GENERATORID]" id="sampler_genmachine_go[GENERATORID]" value="Update" onclick="TweakOscillator([SAMPLEID], [GENERATORID])"></td>
+
 	</tr>	
 	</table>
 </div>
-</li>
 		
