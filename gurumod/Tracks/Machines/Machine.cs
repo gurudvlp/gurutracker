@@ -180,6 +180,7 @@ namespace gurumod
 			gtwr.AutoFlush = true;
 
 			gtwr.Write(samplerate + frequency + nogens + noprocs);
+			gtwr.Flush();
 			gtstream.Write (genstream.ToArray(), 0, genstream.ToArray().Length);
 			gtstream.Write(procstream.ToArray(), 0, procstream.ToArray().Length);
 			gtstream.Flush();

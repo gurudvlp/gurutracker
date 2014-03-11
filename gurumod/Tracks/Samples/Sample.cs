@@ -38,8 +38,8 @@ namespace gurumod
 	{
 		//[XmlIgnore()] public static Sample[] Samples = new Sample[32];
 		[XmlElement("Name")] public string Name = "unnamed";
-		[XmlElement("Artist")] public string Artist = "";
-		[XmlElement("Year")] public int Year = 2012;
+		[XmlElement("Artist")] public string Artist = "Unknown Artist";
+		[XmlElement("Year")] public int Year = 2014;
 		[XmlElement("ID")] public int ID = 0;
 		[XmlElement("Filename")] public string Filename = "";
 		
@@ -508,9 +508,12 @@ namespace gurumod
 			if(this.SoundData != null) { datalength = this.SoundData.Length.ToString("D19"); }
 			else { datalength = (0).ToString("D19"); }
 
+			if(sampleid.Length > 5) { sampleid = sampleid.Substring(sampleid.Length - 5); }
+
+
 			tout = sampleid + year + brate + channels + bitspersample + samplerate + wavegenerator + wavemachine + datalength;
 			tout = tout + this.Name + "\0" + this.Artist + "\0" + this.Filename + "\0";
-			Console.WriteLine("Samp Header: {0}", tout);
+			//Console.WriteLine("Samp Header: {0}", tout);
 			//	Sound data plugged in here
 
 			string wavegenout = "";
@@ -520,12 +523,16 @@ namespace gurumod
 			if(this.UseWaveMachine) { wavemachout = WaveMachine.GTString(); }
 
 			sampwr.Write(tout);
+			sampwr.Flush();
 			if(this.SoundData != null) { sampstr.Write(this.SoundData, 0, this.SoundData.Length); }
 			if(this.UseWaveGenerator) { sampwr.Write(wavegenout); }
 			if(this.UseWaveMachine) { sampstr.Write(wavemachout, 0, wavemachout.Length); }
 
+			sampwr.Flush();
 			sampstr.Flush();
-			Console.WriteLine("Length of wavemachout: {0}", wavemachout);
+
+			Console.WriteLine("Length of wavemachout: {0}", wavemachout.Length);
+
 
 			byte[] outtr = sampstr.ToArray();
 			File.WriteAllBytes("/tmp/gt-sample-"+this.ID.ToString()+".sm", outtr);

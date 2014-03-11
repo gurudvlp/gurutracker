@@ -341,10 +341,6 @@ namespace gurumod
 		
 		public void Initialize()
 		{
-			//	This method needs to set up the engine.  This includes creating listening devices for
-			//	the various interfaces.
-			//
-			//	As of now, only http connections will be allowed, so we only need one listener.
 			
 			Engine.TcpListeners[0] = new Listeners(Engine.Configuration.WebListenPort, "Web Interface Listener", "HTTP");
 			

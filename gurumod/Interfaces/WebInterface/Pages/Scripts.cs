@@ -58,6 +58,12 @@ namespace gurumod.WebPages
 					base.OutgoingBuffer = toret;
 					base.ContentType = "application/javascript";
 				}
+				else if(base.RequestParts[1].ToLower() == "detailer.js")
+				{
+					string toret = System.IO.File.ReadAllText(Engine.PFP(Engine.Configuration.WebTemplateDir + "detailer.js"));
+					base.OutgoingBuffer = toret;
+					base.ContentType = "application/javascript";
+				}
 				else
 				{
 					base.OutgoingBuffer = "Unknown action";

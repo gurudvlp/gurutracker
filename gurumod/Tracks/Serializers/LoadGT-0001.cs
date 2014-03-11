@@ -209,6 +209,7 @@ namespace gurumod.Serializers
 		}
 
 	
+	
 
 		public static bool GrabSamples(BinaryReader reader, int numsamples)
 		{
@@ -291,7 +292,7 @@ namespace gurumod.Serializers
 			//			d: 10 digit decay
 
 			Engine.TheTrack.Samples = new Sample[Engine.Configuration.MaxSamples];
-			for(int es = 0; es < numsamples; es++) { Engine.TheTrack.Samples[es] = new Sample(); }
+			for(int es = 0; es < Engine.Configuration.MaxSamples; es++) { Engine.TheTrack.Samples[es] = new Sample(); }
 
 			for(int esamp = 0; esamp < numsamples; esamp++)
 			{
@@ -332,41 +333,42 @@ namespace gurumod.Serializers
 					return false;
 				}
 
-				if(sampid < 0) { sampid = esamp; }
-
-				Engine.TheTrack.Samples[sampid] = new Sample();
-				Engine.TheTrack.Samples[sampid].ID = sampid;
-				Engine.TheTrack.Samples[sampid].Year = year;
-				Engine.TheTrack.Samples[sampid].BitRate = bitrate;
-				Engine.TheTrack.Samples[sampid].channels = nochans;
-				Engine.TheTrack.Samples[sampid].bits_per_sample = (int)bitspersample;
-				Engine.TheTrack.Samples[sampid].sample_rate = (int)samplerate;
-
-				if(wavegen == 1) { Engine.TheTrack.Samples[sampid].UseWaveGenerator = true; }
-				if(wavemach == 1) { Engine.TheTrack.Samples[sampid].UseWaveMachine = true; }
-
-				sampname = GrabString(reader);
-				artist = GrabString(reader);
-				sampfilename = GrabString(reader);
-
-				Engine.TheTrack.Samples[sampid].Name = sampname;
-				Engine.TheTrack.Samples[sampid].Artist = artist;
-				Engine.TheTrack.Samples[sampid].Filename = sampfilename;
-
-				if(sounddatalen > 0)
+				if(sampid >= 0)
 				{
-					Engine.TheTrack.Samples[sampid].SoundData = new byte[sounddatalen];
-					Engine.TheTrack.Samples[sampid].SoundData = reader.ReadBytes ((int)sounddatalen);
-				}
+					Engine.TheTrack.Samples[sampid] = new Sample();
+					Engine.TheTrack.Samples[sampid].ID = sampid;
+					Engine.TheTrack.Samples[sampid].Year = year;
+					Engine.TheTrack.Samples[sampid].BitRate = bitrate;
+					Engine.TheTrack.Samples[sampid].channels = nochans;
+					Engine.TheTrack.Samples[sampid].bits_per_sample = (int)bitspersample;
+					Engine.TheTrack.Samples[sampid].sample_rate = (int)samplerate;
 
-				if(wavegen == 1)
-				{
-					Engine.TheTrack.Samples[sampid].WaveGenerator = GrabWaveGenerator(reader);
-				}
+					if(wavegen == 1) { Engine.TheTrack.Samples[sampid].UseWaveGenerator = true; }
+					if(wavemach == 1) { Engine.TheTrack.Samples[sampid].UseWaveMachine = true; }
 
-				if(wavemach == 1)
-				{
-					Engine.TheTrack.Samples[sampid].WaveMachine = GrabWaveMachine(reader);
+					sampname = GrabString(reader);
+					artist = GrabString(reader);
+					sampfilename = GrabString(reader);
+
+					Engine.TheTrack.Samples[sampid].Name = sampname;
+					Engine.TheTrack.Samples[sampid].Artist = artist;
+					Engine.TheTrack.Samples[sampid].Filename = sampfilename;
+
+					if(sounddatalen > 0)
+					{
+						Engine.TheTrack.Samples[sampid].SoundData = new byte[sounddatalen];
+						Engine.TheTrack.Samples[sampid].SoundData = reader.ReadBytes ((int)sounddatalen);
+					}
+
+					if(wavegen == 1)
+					{
+						Engine.TheTrack.Samples[sampid].WaveGenerator = GrabWaveGenerator(reader);
+					}
+
+					if(wavemach == 1)
+					{
+						Engine.TheTrack.Samples[sampid].WaveMachine = GrabWaveMachine(reader);
+					}
 				}
 
 			}
