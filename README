@@ -12,3 +12,7 @@ gurutracker - Copyright 2012 - 2014 Brian Murphy
 
 gurutracker is a sound synthesis and music composing program designed to run on as
 many systems as possible.
+
+The player and engine of gurutracker run as a server, and are accessed with a web
+browser.  This allows you to connect to the machine that is playing sound with others,
+and allows people to collaborate on a track.
