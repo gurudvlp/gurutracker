@@ -1,0 +1,261 @@
+gurutracker -------------------------------------------------------------------------
+	Copyright 2012 - 2013 Brian Murphy
+	www.gurudigitalsolutions.com
+
+-------------------------------------------------------------------------------------
+
+	.gt File Format Specification
+
+-------------------------------------------------------------------------------------
+
+This document outlines and details the way in which tracks edited with gurutracker
+are saved and loaded.  Originally, gurutracker saved tracks, patterns, samples and
+other data as a ton of separate xml files.  Since sending hundreds of files to
+someone so that they can hear your track is a silly idea, the gt format has been
+devised.
+
+-------------------------------------------------------------------------------------
+
+
+Outline of gt File:
+-------------------
+
+The general layout of a gt file can be summarized as:
+
+	- GT Format Header
+	- List of Channels Mutic/Unmuted
+	- Pattern Sequence
+	- Patterns
+	- Samples
+	
+
+
+gt Format Header:
+-----------------
+
+A gt file will always have a headers that follows the same format.
+
+
+	The format will be:
+		gt-0001-pppppssssscccyyyytttllll
+			p: 5 digit number of patterns
+			s: 5 digit number of samples
+			c: 3 digit number of channels
+			y: 4 digit year
+			t: 3 digit tempo
+			l: 4 digit default pattern length
+		
+		- When formated correctly, this part of the header should always be 32 bytes.
+		- The header minus the gt version info should be 24 bytes.
+		- gt-****- indicates that this is a gt file and specifies the save file
+			version.
+			
+	Followed by:
+		author<chr 0>title<chr 0>genre<chr 0>website<chr 0>email<chr 0>comments<chr 0>
+			author:		Creator of this track.
+			title:		Title of the track.
+			genre:		Genre of the track.
+			website:	URL where more information can be found.
+			email:		Email address of author.
+			comments:	Comments about the track.
+
+
+Muted Channel List:
+-------------------
+
+The save file at this point records what channels are muted and not muted.
+
+
+	List muted channels:
+		m
+			m: muted channels.  repeats for however many channels there are, and is
+				either 0 or 1.
+			
+			- When saved properly, the section of the save file should be the same
+				number of bytes as their are channels.
+	
+
+Pattern Sequence List:
+----------------------
+
+
+What patterns and their order are listed next.
+
+	List pattern sequence:
+		ppppp...<chr 0>
+			p: 5 digit pattern id, looped for pattern sequence
+
+
+
+Patterns:
+----------------------
+
+Pattern data is the next item found in the save file.  This data starts to become
+rather nested.
+
+
+	Pattern Data:
+		rrrr...ccc...onnvvvsssiiiii...
+			r: 4 digit number of rows in pattern
+			c: 3 digit channel number/id
+			o: 1 digit octave
+			n: 2 digit note
+			v: 3 digit volume
+			s: 3 digit special value
+			i: 5 digit sample id
+		
+		- Each pattern is comprised of channels, and the channels each have rows of
+			pattern elements in them.
+		- Size of a patterns:
+			(channels * rows * 14) + (3 * channels) + 4
+
+
+Samples:
+----------------------
+
+Sample data is the last section of a gt file.  Samples have quite a few more options
+than anything before it.  Each sample follows the same general format.  The layout
+starts like:
+
+	[Sample Header]
+	[Sample Details]
+	[Sound Data]
+	[Wave Generator Data]
+	[Wave Machine Data]
+
+Each section has no termination, except where noted with <chr 0>s.
+
+	Sample Data:
+		iiiiiyyyybbbbbbbbbbbbbbbbbbbcppppppppppssssssssssgmddddddddddddddddddd
+			i: 5 digit sample id
+			y: 4 digit year
+			b: 19 digit bit rate
+			c: 1 digit number of channels
+			p: 10 digit bits per sample
+			s: 10 digit sample rate
+			g: 1 digit for using a wave generator (0 or 1)
+			m: 1 digit for using a wave machine (0 or 1)
+			d: 19 digit length of sound data
+		
+		- Every sample will have this header.
+		- When saved correctly, the header will be 70 bytes.
+		
+	
+	Sample Details:
+		n<chr 0>a<chr 0>f<chr 0>
+			n: name of sample
+			a: artist
+			f: filename of sample
+		
+		- Each string here is terminated with a null character, or <chr 0>.
+	
+	
+	------------------------------------
+	Sound Data:
+	-----------
+	
+	If the length of sound data above is greater than 0, then bytes representing this
+	soundwave will be in the file here, in the length defined in the sample's header.
+	
+	This should only contain information if the sample has been loaded from a sound
+	file.
+	
+		sounddata as byte[]
+
+
+	------------------------------------
+	Wave Generator:
+	---------------
+	
+	
+
+	If the wave generator flag is 1, then:
+		tfffffssssssllll
+			t: 1 digit sound type
+			f: 5 digit frequency
+			s: 6 digit sample rate
+			l: 4 digit length in seconds
+			
+		- This information will only be present if this sample is a wave generator.
+		- If the information is saved correctly, this data should be 16 bytes.
+	
+	
+	------------------------------------
+	Wave Machine:
+	-------------
+
+	If the wave machine flag is 1, then:
+		ssssssfffffgggppp
+			s: 6 digit sample rate
+			f: 5 digit frequency
+			g: 3 digit number of generators
+			p: 3 digit number of processors
+			
+		- This header will be on every wave machine.
+		- If saved correctly, the data will be 17 bytes.
+
+		--------------------------------
+		For each generator:
+			tessssssfffffaaaa
+				t: 1 digit generator type
+				e: 1 digit enabled (0 or 1)
+				s: 6 digit sample rate
+				f: 5 digit frequency
+				a: 4 digit amplitude (x.xx)
+			
+			- This generator-header will be on every generator.
+			- If saved correctly, it should be 17 bytes.
+	
+			----------------------------
+			For generator type 0 (oscillator)
+				w
+					w: 1 digit wave type
+					
+			For generator type 1 (wave player)
+				cssssssbbbbbbbbbblllllllllllllllllllf<chr 0>
+					c: 1 digit channel count
+					s: 6 digit sample rate
+					b: 10 digit bit rate
+					l: 19 digit length of audio data
+					f: filename
+				list of 2-byte shorts of audio data
+
+		--------------------------------
+		For each processor:
+			nnniiittt
+				n: 3 digit processor id
+				i: 3 digit number of inputs
+				t: 3 digit processor type
+			
+			- This processor-header will be with every processor.
+			- When save correctly, this will be 9 bytes of data.
+			
+			----------------------------
+			For each input of the processor:
+				iiitttaaaa
+					i: 3 digit source id
+					t: 3 digit source type
+					a: 4 digit amplitude (x.xx)
+				
+				- When saved correctly, this data will be 10 bytes.
+				
+				
+			For mixers
+				m
+					m: 1 digit combine method
+			For envelopes:
+				aaaaaaaaaabbbbddddddddddeeeessssssssssrrrrrrrrrr
+					a: 10 digit attack
+					b: 4 digit attack amplitude (x.xx)
+					d: 10 digit decay
+					e: 4 digit decay amplitude (x.xx)
+					s: 10 digit sustain
+					r: 10 digit release
+			For gates
+				llllllllllhhhhhhhhhh
+					l: 10 digit MinGateManual
+					h: 10 digit MaxGateManual
+			For reverb
+				wwwwwwwwwwdddddddddd
+					w: 10 digit delay
+					d: 10 digit decay

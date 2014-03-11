@@ -40,158 +40,19 @@ namespace gurumod.Serializers
 		{
 
 
-			//LoadHeader(reader, out thetrack);
-			int nopats = 0;
 			int nosamps = 0;
 			int nochans = 0;
 			int year = 2014;
 			int tempo = 145;
 			int patlen = 128;
 
-			if(!GrabInt(reader, out nopats, 5)
-			|| !GrabInt(reader, out nosamps, 5)
-			|| !GrabInt(reader, out nochans, 3)
-			   || !GrabInt(reader, out year, 4)
-			   || !GrabInt(reader, out tempo, 3)
-			   || !GrabInt(reader, out patlen, 4))
-			{
-				Console.WriteLine("Track header is corrupted.");
-				return false;
-			}
-			Engine.TheTrack.Year = year;
-			Engine.TheTrack.Tempo = tempo;
-			Engine.TheTrack.ChannelCount = nochans;
-
-
-			Console.WriteLine("Patterns: {0}\nSamples: {1}\nChannels: {2}\nYear: {3}\nTempo: {4}\nPattern Len: {5}", nopats, nosamps, nochans, year, tempo, patlen);
-
-			string author = GrabString(reader);
-			string title = GrabString(reader);
-			string genre = GrabString(reader);
-			string website = GrabString(reader);
-			string email = GrabString(reader);
-			string comments = GrabString(reader);
-
-			Console.WriteLine("{0} {1} {2} {3} {4} {5}", author, title, genre, website, email, comments);
-			Engine.TheTrack.Author = author;
-			Engine.TheTrack.Title = title;
-			Engine.TheTrack.Genre = genre;
-			Engine.TheTrack.WebSite = website;
-			Engine.TheTrack.Email = email;
-			Engine.TheTrack.Comments = comments;
-
-
-			Engine.TheTrack.ChannelMuted = new bool[nochans];
-			for(int ec = 0; ec < nochans; ec++)
-			{
-				int yesno = 0;
-				if(!GrabInt(reader, out yesno, 1))
-				{
-					Console.WriteLine("Corruption while loading channel mute data.");
-					return false;
-				}
-
-				if(yesno == 0) { Engine.TheTrack.ChannelMuted[ec] = false; }
-				else { Engine.TheTrack.ChannelMuted[ec] = true; }
-			}
-
-
-			string patternlist = GrabString(reader);
-
-			if(patternlist == "") { Engine.TheTrack.PatternSequence = new int[1]; }
-			else
-			{
-				Engine.TheTrack.PatternSequence = new int[patternlist.Length / 5];
-				for(int ep = 0; ep < patternlist.Length / 5; ep++)
-				{
-					Engine.TheTrack.PatternSequence[ep] = Int32.Parse(patternlist.Substring(ep * 5, 5));
-				}
-			}
-
-
-			Engine.TheTrack.Patterns = new Pattern[nopats];
-
-			for(int ep = 0; ep < nopats; ep++)
-			{
-				//		rrrr...ccc...onnvvvsssiiiii...
-				//			r: 4 digit number of rows in pattern
-				//			c: 3 digit channel number/id
-				//			o: 1 digit octave
-				//			n: 2 digit note
-				//			v: 3 digit volume
-				//			s: 3 digitl special value
-				//			i: 5 digit sample id
-				Console.WriteLine("Loading pattern {0}", ep);
-
-				int tpatternrows = 0;
-				if(!GrabInt(reader, out tpatternrows, 4))
-				{
-					Console.WriteLine("Failed to grab the number of rows for the current pattern.");
-					return false;
-				}
-				Engine.TheTrack.Patterns[ep] = new Pattern();
-				Engine.TheTrack.Patterns[ep].Channels = new PatternChannel[nochans];
-				Engine.TheTrack.Patterns[ep].ChannelCount = nochans;
-				Engine.TheTrack.Patterns[ep].RowCount = tpatternrows;
-
-				for(int ech = 0; ech < nochans; ech++)
-				{
-					int tchid = 0;
-					if(!GrabInt(reader, out tchid, 3))
-					{
-						Console.WriteLine("Failed to grab channel ID");
-						return false;
-					}
-
-
-					Engine.TheTrack.Patterns[ep].Channels[tchid] = new PatternChannel(tpatternrows);
-					Engine.TheTrack.Patterns[ep].Channels[tchid].ChannelID = tchid;
-					Engine.TheTrack.Patterns[ep].Channels[tchid].ElementCount = tpatternrows;
+			if(!GetTrackHeader(reader)) { Console.WriteLine("Track header could not be read."); return false; }
+			if(!GetMutedChannels(reader)) { Console.WriteLine("Muted channel list could not be read."); return false; }
+			if(!GetPatternSequence(reader)) { Console.WriteLine("Pattern sequence could not be read."); return false; }
+			if(!GetPatternData(reader)) { Console.WriteLine("Pattern data could not be read."); return false; }
 
 
 
-					for(int erow = 0; erow < tpatternrows; erow++)
-					{
-						//Console.WriteLine("{0} {1} {2}", ep, ech, erow);
-						int octave = 5;
-						int note = -1;
-						int volume = -1;
-						int specialcontrol = -1;
-						int sampleid = 0;
-
-						if(!GrabInt(reader, out octave, 1)) { Console.WriteLine("Deserializer failed to parse octave."); return false; }
-						if(!GrabInt(reader, out note, 2)) { Console.WriteLine("Deserializer failed to parse note."); return false; }
-						if(!GrabInt(reader, out volume, 3)) { Console.WriteLine("Deserializer failed to parse volume."); return false; }
-						if(!GrabInt(reader, out specialcontrol, 3)) { Console.WriteLine("Deserializer failed to parse specialcontrol."); return false; }
-						if(!GrabInt(reader, out sampleid, 5)) { Console.WriteLine("Deserializer failed to parse sampleid."); return false; }
-
-						Engine.TheTrack.Patterns[ep].Channels[tchid].Elements[erow].Octave = octave;
-						Engine.TheTrack.Patterns[ep].Channels[tchid].Elements[erow].Note = note;
-						Engine.TheTrack.Patterns[ep].Channels[tchid].Elements[erow].Volume = volume;
-						Engine.TheTrack.Patterns[ep].Channels[tchid].Elements[erow].SpecialControl = specialcontrol;
-						Engine.TheTrack.Patterns[ep].Channels[tchid].Elements[erow].SampleID = sampleid;
-
-						if(note != -1
-						   || sampleid > -1
-						   || specialcontrol > -1
-						   || volume > -1)
-						{
-							Console.WriteLine("{0}-{1} {2} {3} {4}", note, octave, sampleid, specialcontrol, volume);
-						}
-					}
-				}
-			}
-
-
-			if(Engine.TheTrack.Patterns == null)
-			{
-				Console.WriteLine("Pattern data is null after loading.");
-			}
-			else
-			{
-				Console.WriteLine("Loaded {0} patterns", Engine.TheTrack.Patterns.Length);
-
-			}
 
 
 
@@ -774,6 +635,39 @@ namespace gurumod.Serializers
 			return toret;
 		}
 
+		public static string GrabString(BinaryReader reader, int strlen)
+		{
+			byte[] inb = new byte[1];
+			bool keepgoin = true;
+			string toret = "";
+
+			inb = reader.ReadBytes (strlen);
+
+			if(inb.Length < strlen) { Console.WriteLine("GrabString failed."); return ""; }
+			toret = Encoding.UTF8.GetString(inb);
+
+
+			return toret;
+		}
+
+		public static byte[] GrabBytes(BinaryReader reader, int strlen)
+		{
+			byte[] inb = new byte[1];
+			string toret = "";
+
+			inb = reader.ReadBytes (strlen);
+			return inb;
+		}
+
+		public static bool bGrabDouble(byte[] barray, out double doubval, int start, int length)
+		{
+			string toret = Encoding.UTF8.GetString(barray, start, length);
+
+			if(!Double.TryParse(toret, out doubval)) { Console.WriteLine("Data in bGrabDouble {0} {1} didn't parse.", start, length); return false; }
+
+			return true;
+		}
+
 		public static bool GrabDouble(BinaryReader reader, out double doubval, int length)
 		{
 			doubval = 0;
@@ -788,6 +682,201 @@ namespace gurumod.Serializers
 				Console.WriteLine("Data was not a double. {0}", tnm);
 				return false;
 			}
+
+			return true;
+		}
+
+		public static bool bGrabInt(byte[] barray, out int intval, int start, int length)
+		{
+			string toret = Encoding.UTF8.GetString(barray, start, length);
+			if(!Int32.TryParse(toret, out intval))
+			{
+				Console.WriteLine("Failed to bGrabInt at {0} {1}.", start, length);
+				return false;
+			}
+
+
+
+			return true;
+		}
+
+		public static bool GetTrackHeader(BinaryReader reader)
+		{
+		
+
+			int nopats = 0;
+			int nosamps = 0;
+			int nochans = 0;
+			int year = 2014;
+			int tempo = 145;
+			int patlen = 128;
+
+
+			if(!GrabInt(reader, out nopats, 5)) { Console.WriteLine("Track header corrupt on nopats."); return false; }
+			if(!GrabInt(reader, out nosamps, 5)) { Console.WriteLine("Track header corrupt on nosamps."); return false; }
+			if(!GrabInt(reader, out nochans, 3)) { Console.WriteLine("Track header corrupt on nochans."); return false; }
+			if(!GrabInt(reader, out year, 4)) { Console.WriteLine("Track header corrupt on year."); return false; }
+			if(!GrabInt(reader, out tempo, 3)) { Console.WriteLine("Track header corrupt on tempo."); return false; }
+			if(!GrabInt(reader, out patlen, 4)) { Console.WriteLine("Track header is corrupted on patlen."); return false; }
+
+			Engine.TheTrack.Year = year;
+			Engine.TheTrack.Tempo = tempo;
+			Engine.TheTrack.ChannelCount = nochans;
+			Engine.TheTrack.DefaultPatternLength = patlen;
+			Engine.TheTrack.PatternCount = nopats;
+
+			string author = GrabString(reader);
+			string title = GrabString(reader);
+			string genre = GrabString(reader);
+			string website = GrabString(reader);
+			string email = GrabString(reader);
+			string comments = GrabString(reader);
+
+			//Console.WriteLine("{0} {1} {2} {3} {4} {5}", author, title, genre, website, email, comments);
+			Engine.TheTrack.Author = author;
+			Engine.TheTrack.Title = title;
+			Engine.TheTrack.Genre = genre;
+			Engine.TheTrack.WebSite = website;
+			Engine.TheTrack.Email = email;
+			Engine.TheTrack.Comments = comments;
+
+			Engine.TheTrack.Samples = new Sample[nosamps];
+			for(int es = 0; es < nosamps; es++)
+			{
+				Engine.TheTrack.Samples[es] = new Sample();
+			}
+
+			return true;
+		}
+
+
+		public static bool GetMutedChannels(BinaryReader reader)
+		{
+			byte[] inmu = new byte[1];
+			inmu = reader.ReadBytes (Engine.TheTrack.ChannelCount);
+
+			for(int ec = 0; ec < Engine.TheTrack.ChannelCount; ec++)
+			{
+				int tmpchnid = 0;
+				if(!bGrabInt(inmu, out tmpchnid, 0 * ec, 1))
+				{
+					Console.WriteLine("Failed to load muted channels list.");
+					return false;
+				}
+
+				if(tmpchnid == 0) { Engine.TheTrack.ChannelMuted[ec] = true; }
+				else { Engine.TheTrack.ChannelMuted[ec] = false; }
+			}
+			return true;
+		}
+
+		public static bool GetPatternSequence(BinaryReader reader)
+		{
+			string patternlist = GrabString(reader);
+
+			if(patternlist == "") { Engine.TheTrack.PatternSequence = new int[1]; }
+			else
+			{
+				Engine.TheTrack.PatternSequence = new int[patternlist.Length / 5];
+				int ptrcnt = 0;
+				for(int ep = 0; ep < patternlist.Length; ep = ep + 5)
+				{
+					string ptno = patternlist.Substring(ep, 5);
+					Engine.TheTrack.PatternSequence[ptrcnt] = Int32.Parse(ptno);
+					ptrcnt++;
+				}
+			}
+
+			return true;
+		}
+
+		public static bool GetPatternData(BinaryReader reader)
+		{
+			Engine.TheTrack.Patterns = new Pattern[Engine.TheTrack.PatternCount];
+
+			for(int ep = 0; ep < Engine.TheTrack.PatternCount; ep++)
+			{
+				//		rrrr...ccc...onnvvvsssiiiii...
+				//			r: 4 digit number of rows in pattern
+				//			c: 3 digit channel number/id
+				//			o: 1 digit octave
+				//			n: 2 digit note
+				//			v: 3 digit volume
+				//			s: 3 digitl special value
+				//			i: 5 digit sample id
+				Console.WriteLine("Loading pattern {0}", ep);
+
+				int tpatternrows = 0;
+				if(!GrabInt(reader, out tpatternrows, 4))
+				{
+					Console.WriteLine("Failed to grab the number of rows for the current pattern.");
+					return false;
+				}
+				Engine.TheTrack.Patterns[ep] = new Pattern();
+				Engine.TheTrack.Patterns[ep].Channels = new PatternChannel[Engine.TheTrack.ChannelCount];
+				Engine.TheTrack.Patterns[ep].ChannelCount = Engine.TheTrack.ChannelCount;
+				Engine.TheTrack.Patterns[ep].RowCount = tpatternrows;
+
+				for(int ech = 0; ech < Engine.TheTrack.ChannelCount; ech++)
+				{
+					int tchid = 0;
+					if(!GrabInt(reader, out tchid, 3))
+					{
+						Console.WriteLine("Failed to grab channel ID");
+						return false;
+					}
+
+
+					Engine.TheTrack.Patterns[ep].Channels[tchid] = new PatternChannel(tpatternrows);
+					Engine.TheTrack.Patterns[ep].Channels[tchid].ChannelID = tchid;
+					Engine.TheTrack.Patterns[ep].Channels[tchid].ElementCount = tpatternrows;
+
+
+
+					for(int erow = 0; erow < tpatternrows; erow++)
+					{
+						//Console.WriteLine("{0} {1} {2}", ep, ech, erow);
+						int octave = 5;
+						int note = -1;
+						int volume = -1;
+						int specialcontrol = -1;
+						int sampleid = 0;
+
+						if(!GrabInt(reader, out octave, 1)) { Console.WriteLine("Deserializer failed to parse octave."); return false; }
+						if(!GrabInt(reader, out note, 2)) { Console.WriteLine("Deserializer failed to parse note."); return false; }
+						if(!GrabInt(reader, out volume, 3)) { Console.WriteLine("Deserializer failed to parse volume."); return false; }
+						if(!GrabInt(reader, out specialcontrol, 3)) { Console.WriteLine("Deserializer failed to parse specialcontrol."); return false; }
+						if(!GrabInt(reader, out sampleid, 5)) { Console.WriteLine("Deserializer failed to parse sampleid."); return false; }
+
+						Engine.TheTrack.Patterns[ep].Channels[tchid].Elements[erow].Octave = octave;
+						Engine.TheTrack.Patterns[ep].Channels[tchid].Elements[erow].Note = note;
+						Engine.TheTrack.Patterns[ep].Channels[tchid].Elements[erow].Volume = volume;
+						Engine.TheTrack.Patterns[ep].Channels[tchid].Elements[erow].SpecialControl = specialcontrol;
+						Engine.TheTrack.Patterns[ep].Channels[tchid].Elements[erow].SampleID = sampleid;
+
+
+					}
+				}
+			}
+
+
+			if(Engine.TheTrack.Patterns == null)
+			{
+				Console.WriteLine("Pattern data is null after loading.");
+			}
+			else
+			{
+				Console.WriteLine("Loaded {0} patterns", Engine.TheTrack.Patterns.Length);
+
+			}	
+
+			return true;
+		}
+
+
+		public static bool GetSampleData(BinaryReader reader)
+		{
+
 
 			return true;
 		}

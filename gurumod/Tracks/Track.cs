@@ -56,8 +56,20 @@ namespace gurumod
 				Engine.Configuration.MaxPatterns = value;
 			}
 		}// = 32;
-		
-		
+
+		private int _PatternCount = 0;
+		[XmlIgnore()] public int PatternCount
+		{
+			get
+			{
+				return _PatternCount;
+			}
+			set
+			{
+				_PatternCount = value;
+			}
+		}
+
 		//[XmlElement("Samples")] public Sample[] Samples;
 		[XmlIgnore()] public Sample[] Samples;
 		[XmlElement("Author")] public string Author = "";
@@ -69,7 +81,7 @@ namespace gurumod
 		[XmlIgnore()] public int[] PatternSequence;
 		//[XmlElement("Patterns")] public Pattern[] Patterns;// = new Pattern[Track.MaxPatterns];
 		[XmlIgnore()] public Pattern[] Patterns;
-		[XmlElement("DefaultPatternLength")] int DefaultPatternLength = 128;
+		[XmlElement("DefaultPatternLength")] public int DefaultPatternLength = 128;
 		
 		[XmlElement("Genre")] public string Genre = "";
 		[XmlElement("WebSite")] public string WebSite = "";
