@@ -348,6 +348,7 @@ namespace gurumod
 
 			gtwriter.AutoFlush = true;
 
+
 			string tout = "gt-" + this.GTVersion + "-";
 			int rpats = 0;
 			for(int ep = 0; ep < this.Patterns.Length; ep++)
@@ -420,14 +421,17 @@ namespace gurumod
 			{
 				if(this.Samples[esam] != null)
 				{
-					gtstream.Write(this.Samples[esam].GTString(), 0, this.Samples[esam].GTString().Length);
+					byte[] sampstr = this.Samples[esam].GTString();
+					gtstream.Write(sampstr, 0, sampstr.Length);
+
+					File.WriteAllBytes("/tmp/gt-smp-"+esam.ToString()+".txt", sampstr);
 					//break;
 				}
 
 			}
 
 
-
+			gtstream.Flush();
 			File.WriteAllBytes(Engine.CommandFlags["-f"], gtstream.ToArray());
 
 			return true;

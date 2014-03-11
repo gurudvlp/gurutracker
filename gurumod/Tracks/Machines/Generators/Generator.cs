@@ -92,6 +92,7 @@ namespace gurumod.Machines
 
 			MemoryStream ms = new MemoryStream();
 			StreamWriter wr = new StreamWriter(ms);
+			wr.AutoFlush = true;
 
 			string toret = "";
 			string gentype = this.GeneratorType.ToString();

@@ -473,7 +473,6 @@ namespace gurumod
 			//			d: 10 digit decay
 
 
-			byte[] toret;
 			string tout = "";
 
 			//	Now for sample data.  It gets a little more tricky.
@@ -495,6 +494,7 @@ namespace gurumod
 
 			MemoryStream sampstr = new MemoryStream();
 			StreamWriter sampwr = new StreamWriter(sampstr);
+			sampwr.AutoFlush = true;
 
 			string sampleid = this.ID.ToString("D5");
 			string year = this.Year.ToString("D4");
@@ -510,7 +510,7 @@ namespace gurumod
 
 			tout = sampleid + year + brate + channels + bitspersample + samplerate + wavegenerator + wavemachine + datalength;
 			tout = tout + this.Name + "\0" + this.Artist + "\0" + this.Filename + "\0";
-
+			Console.WriteLine("Samp Header: {0}", tout);
 			//	Sound data plugged in here
 
 			string wavegenout = "";
@@ -521,12 +521,15 @@ namespace gurumod
 
 			sampwr.Write(tout);
 			if(this.SoundData != null) { sampstr.Write(this.SoundData, 0, this.SoundData.Length); }
-			sampwr.Write(wavegenout);
-			if(this.UseWaveMachine) { sampwr.Write(wavemachout); }
+			if(this.UseWaveGenerator) { sampwr.Write(wavegenout); }
+			if(this.UseWaveMachine) { sampstr.Write(wavemachout, 0, wavemachout.Length); }
 
 			sampstr.Flush();
-			//Console.WriteLine("SampleStream for gt is {0} bytes", sampstr.ToArray ().Length);
-			return sampstr.ToArray();
+			Console.WriteLine("Length of wavemachout: {0}", wavemachout);
+
+			byte[] outtr = sampstr.ToArray();
+			File.WriteAllBytes("/tmp/gt-sample-"+this.ID.ToString()+".sm", outtr);
+			return outtr;
 
 		}
 	}

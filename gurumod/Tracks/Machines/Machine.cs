@@ -135,22 +135,23 @@ namespace gurumod
 				//			d: 10 digit decay
 
 			string samplerate = this.SampleRate.ToString("D6");
-			string frequency = this.Frequency.ToString("0000.0");
+			string frequency = this.Frequency.ToString("00000");
 			string nogens = this.Generators.Length.ToString("D3");
 			string noprocs = this.Processors.Length.ToString("D3");
 
 			MemoryStream genstream = new MemoryStream();
 			StreamWriter gw = new StreamWriter(genstream);
+			gw.AutoFlush = true;
 
 			for(int egen = 0; egen < this.Generators.Length; egen++)
 			{
 				if(this.Generators[egen] != null)
 				{
 					byte[] gendata = this.Generators[egen].GTString();
-					byte[] genbytes = this.Generators[egen].GTString();
+					//byte[] genbytes = this.Generators[egen].GTString();
 
-					genstream.Write(gendata, 0, gendata.Length);
-					if(genbytes != null) { genstream.Write(genbytes, 0, genbytes.Length); }
+					//genstream.Write(gendata, 0, gendata.Length);
+					if(gendata != null) { genstream.Write(gendata, 0, gendata.Length); }
 				}
 				else
 				{
@@ -160,21 +161,28 @@ namespace gurumod
 
 			MemoryStream procstream = new MemoryStream();
 			StreamWriter pw = new StreamWriter(procstream);
+			pw.AutoFlush = true;
 
 			for(int eproc = 0; eproc < this.Processors.Length; eproc++)
 			{
-				string procid = eproc.ToString("D3");
-				string procdata = this.Processors[eproc].GTString();
+				if(this.Processors[eproc] != null)
+				{
+					string procid = eproc.ToString("D3");
+					string procdata = this.Processors[eproc].GTString();
 
-				pw.Write(procid + procdata);
+					if(procid == "-001") { procid = "-01"; }
+					pw.Write(procid + procdata);
+				}
 			}
 
 			MemoryStream gtstream = new MemoryStream();
 			StreamWriter gtwr = new StreamWriter(gtstream);
+			gtwr.AutoFlush = true;
 
 			gtwr.Write(samplerate + frequency + nogens + noprocs);
 			gtstream.Write (genstream.ToArray(), 0, genstream.ToArray().Length);
 			gtstream.Write(procstream.ToArray(), 0, procstream.ToArray().Length);
+			gtstream.Flush();
 
 			return gtstream.ToArray();
 		}
