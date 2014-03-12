@@ -230,7 +230,7 @@ namespace gurumod.Serializers
 			return true;
 		}
 */
-		public static gurumod.Generator GrabWaveGenerator(BinaryReader reader)
+		public static bool GrabWaveGenerator(BinaryReader reader, int sampid)
 		{
 			//	If the wave generator flag is 1, then:
 			//		tfffffssssssllll
@@ -239,28 +239,25 @@ namespace gurumod.Serializers
 			//			s: 6 digit sample rate
 			//			l: 4 digit length in seconds
 
-			gurumod.Generator togen = new Generator();
+
 
 			int soundtype = 0;
 			int frequency = 0;
 			int samplerate = 0;
 			int samplelen = 0;
 
-			if(!GrabInt(reader, out soundtype, 1)
-			   || !GrabInt(reader, out frequency, 5)
-			   || !GrabInt(reader, out samplerate, 6)
-			   || !GrabInt(reader, out samplelen, 4))
-			{
-				Console.WriteLine("Loading sample type of wave generator failed.");
-				return null;
-			}
+			if(!GrabInt(reader, out soundtype, 1)) { Console.WriteLine("GrabWaveGenerator failed on soundtype"); return false; }
+			if(!GrabInt(reader, out frequency, 5)) { Console.WriteLine("GrabWaveGenerator failed on frequency"); return false; }
+			if(!GrabInt(reader, out samplerate, 6)) { Console.WriteLine("GrabWaveGenerator failed on samplerate"); return false; }
+			if(!GrabInt(reader, out samplelen, 4)) { Console.WriteLine("GrabWaveGenerator failed on samplelen"); return false; }
 
-			togen.WaveType = soundtype;
-			togen.Frequency = (double)frequency;
-			togen.SampleRate = samplerate;
-			togen.Length = samplelen;
 
-			return togen;
+			Engine.TheTrack.Samples[sampid].WaveGenerator.WaveType = soundtype;
+			Engine.TheTrack.Samples[sampid].WaveGenerator.Frequency = frequency;
+			Engine.TheTrack.Samples[sampid].WaveGenerator.SampleRate = samplerate;
+			Engine.TheTrack.Samples[sampid].WaveGenerator.Length = samplelen;
+
+			return true;
 
 		}
 
@@ -601,30 +598,36 @@ namespace gurumod.Serializers
 		    long read=0;
 		    
 		    int chunk;
-		    while ( (chunk = reader.Read(buf, (int)read, buf.Length-(int)read)) > 0)
+			bool keepgoin = true;
+		    while (keepgoin)
 		    {
+				chunk = reader.Read(buf, (int)read, len-(int)read);
 		        read += chunk;
-		        
+				if(chunk == 0) { break; }
+				if(chunk == -1) { return buf; }
+
 		        // If we've reached the end of our buffer, check to see if there's
 		        // any more information
-		        if (read == buf.Length)
+		        if (read == len)
 		        {
-		            int nextByte = reader.ReadByte();
+		            /*int nextByte = reader.ReadByte();
 		            
 		            // End of stream? If so, we're done
 		            if (nextByte==-1)
 		            {
 		                return buf;
-		            }
+		            }*/
 		            
 		            // Nope. Resize the buffer, put in the byte we've just
 		            // read, and continue
 		            byte[] newBuffer = new byte[buf.Length*2];
 		            Array.Copy(buf, newBuffer, buf.Length);
-		            newBuffer[read]=(byte)nextByte;
+		            //newBuffer[read]=(byte)nextByte;
 		            buf = newBuffer;
 		            read++;
 		        }
+
+				if(read >= len) { keepgoin = false; }
 		    }
 		    // Buffer is now too big. Shrink it.
 		    byte[] ret = new byte[read];
@@ -684,21 +687,17 @@ namespace gurumod.Serializers
 
 		public static bool GetMutedChannels(BinaryReader reader)
 		{
-			byte[] inmu = new byte[1];
-			inmu = reader.ReadBytes (Engine.TheTrack.ChannelCount);
-
 			for(int ec = 0; ec < Engine.TheTrack.ChannelCount; ec++)
 			{
-				int tmpchnid = 0;
-				if(!bGrabInt(inmu, out tmpchnid, 0 * ec, 1))
-				{
-					Console.WriteLine("Failed to load muted channels list.");
-					return false;
-				}
-
-				if(tmpchnid == 0) { Engine.TheTrack.ChannelMuted[ec] = true; }
-				else { Engine.TheTrack.ChannelMuted[ec] = false; }
+				int cmed = 0;
+				if(!GrabInt(reader, out cmed, 1)) { Console.WriteLine("Getting muted channels failed."); return false; }
+			
+				if(cmed == 0) { Engine.TheTrack.ChannelMuted[ec] = false; }
+				else { Engine.TheTrack.ChannelMuted[ec] = true; }
 			}
+
+
+
 			return true;
 		}
 
@@ -815,7 +814,7 @@ namespace gurumod.Serializers
 
 				if(Engine.TheTrack.Samples[es].UseWaveGenerator)
 				{
-					Console.WriteLine("Sample {0} uses a WaveGenerator");
+					if(!GrabWaveGenerator(reader, es)) { Console.WriteLine("Wave generator failed to load."); }
 				}
 				else if(Engine.TheTrack.Samples[es].UseWaveMachine)
 				{
@@ -825,6 +824,8 @@ namespace gurumod.Serializers
 				{
 					Engine.TheTrack.Samples[es].SoundData = reader.ReadBytes (Engine.TheTrack.Samples[es].SoundData.Length);
 				}
+
+				Console.WriteLine("Sample data {0} loaded.", es);
 			}
 
 			return true;

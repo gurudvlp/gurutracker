@@ -163,11 +163,14 @@ namespace gurumod
 			StreamWriter pw = new StreamWriter(procstream);
 			pw.AutoFlush = true;
 
+			int realprocs = 0;
 			for(int eproc = 0; eproc < this.Processors.Length; eproc++)
 			{
 				if(this.Processors[eproc] != null)
 				{
+					realprocs++;
 					string procid = eproc.ToString("D3");
+
 					string procdata = this.Processors[eproc].GTString();
 
 					if(procid == "-001") { procid = "-01"; }
@@ -179,13 +182,15 @@ namespace gurumod
 			StreamWriter gtwr = new StreamWriter(gtstream);
 			gtwr.AutoFlush = true;
 
-			gtwr.Write(samplerate + frequency + nogens + noprocs);
+			gtwr.Write(samplerate + frequency + nogens + realprocs);
 			gtwr.Flush();
 			gtstream.Write (genstream.ToArray(), 0, genstream.ToArray().Length);
 			gtstream.Write(procstream.ToArray(), 0, procstream.ToArray().Length);
 			gtstream.Flush();
 
-			return gtstream.ToArray();
+			byte[] toret = gtstream.ToArray();
+			File.WriteAllBytes("/tmp/gt-machine.txt", toret);
+			return toret;
 		}
 		
 		public short[] GetSignal(PatternElement element)

@@ -84,13 +84,10 @@ namespace gurumod.Serializers.GT0001
 				int noinputs = 0;
 				int proctype = 0;
 
-				if(!GrabInt(reader, out procid, 3)
-				   || !GrabInt(reader, out noinputs, 3)
-				   || !GrabInt(reader, out proctype, 3))
-				{
-					Console.WriteLine("Processor header corrupt while loading wave machine");
-					return false;
-				}
+				if(!GrabInt(reader, out procid, 3)) { Console.WriteLine("Processor header procid corrupt."); return false; }
+				if(!GrabInt(reader, out noinputs, 3)) { Console.WriteLine("Processor header noinputs corrupt."); return false; }
+				if(!GrabInt(reader, out proctype, 3)) { Console.WriteLine("Processor header proctype corrupt."); return false; }
+			
 
 				//if(procid == -1) { procid = eproc; }
 
@@ -110,13 +107,10 @@ namespace gurumod.Serializers.GT0001
 						int stype = 0;
 						double ampl = 0;
 
-						if(!GrabInt(reader, out sid, 3)
-						   || !GrabInt(reader, out stype, 3)
-						   || !GrabDouble(reader, out ampl, 4))
-						{
-							Console.WriteLine("Input data corrupt while loading");
-							return false;
-						}
+						if(!GrabInt(reader, out sid, 3)) { Console.WriteLine("Input data corrupt at sid during {0}", ein); return false; }
+						if(!GrabInt(reader, out stype, 3)) { Console.WriteLine("Input data corrupt at sid during {0}", ein); return false; }
+						if(!GrabDouble(reader, out ampl, 4)) { Console.WriteLine("Input data corrupt at sid during {0}", ein); return false; }
+
 
 						tinputs[ein] = new gurumod.Machines.InputData();
 						tinputs[ein].Amplitude = ampl;

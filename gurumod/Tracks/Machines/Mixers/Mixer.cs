@@ -75,8 +75,8 @@ namespace gurumod.Machines
 				string stype = this.Inputs[ein].SourceType.ToString("D3");
 				string amp = this.Inputs[ein].Amplitude.ToString("0.00");
 
-				if(sid.Length > 3) { sid = this.Inputs[ein].SourceID.ToString("D2"); }
-				if(stype.Length > 3) { sid = this.Inputs[ein].SourceType.ToString("D2"); }
+				if(sid.Length > 3) { sid = sid.Substring(sid.Length - 3); }
+				if(stype.Length > 3) { stype = this.Inputs[ein].SourceType.ToString("D2"); }
 
 				toret = toret + sid + stype + amp;
 			}
