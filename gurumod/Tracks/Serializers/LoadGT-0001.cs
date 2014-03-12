@@ -39,13 +39,6 @@ namespace gurumod.Serializers
 		public static bool Load(BinaryReader reader)
 		{
 
-
-			int nosamps = 0;
-			int nochans = 0;
-			int year = 2014;
-			int tempo = 145;
-			int patlen = 128;
-
 			if(!GetTrackHeader(reader)) { Console.WriteLine("Track header could not be read."); return false; }
 			if(!GetMutedChannels(reader)) { Console.WriteLine("Muted channel list could not be read."); return false; }
 			if(!GetPatternSequence(reader)) { Console.WriteLine("Pattern sequence could not be read."); return false; }
@@ -280,33 +273,13 @@ namespace gurumod.Serializers
 			//			g: 3 digit number of generators
 			//			p: 3 digit number of processors
 
-			gurumod.Machine inmachine = new Machine();
+			if(!Serializers.GT0001.WaveMachineLoader.Load(reader, sampid))
+			{
+				Console.WriteLine("Failed to launch wave machine loader.");
+				return false;
+			}
 
-			int samplerate = 0;
-			double frequency = 440;
-			int nogens = 0;
-			int noprocs = 0;
-
-			if(!GrabInt(reader, out samplerate, 6)) { Console.WriteLine("WaveMachine for {0} header null at sample rate", sampid); return false; }
-			if(!GrabDouble(reader, out frequency, 5)) { Console.WriteLine("WaveMachine for {0} header null at frequency", sampid); return false; }
-			if(!GrabInt(reader, out nogens, 3)) { Console.WriteLine("WaveMachine for {0} header null at number of generators", sampid); return false; }
-			if(!GrabInt(reader, out noprocs, 3)) { Console.WriteLine("WaveMachine for {0} header null at number of processors", sampid); return false; }
-
-			Engine.TheTrack.Samples[sampid].sample_rate = samplerate;
-			if(nogens > 0) { Engine.TheTrack.Samples[sampid].WaveMachine.Generators = new gurumod.Machines.Generator[nogens]; }
-			if(noprocs > 0) { Engine.TheTrack.Samples[sampid].WaveMachine.Processors = new gurumod.Machines.Processor[noprocs]; }
-
-			//	For each generator:
-			//		tessssssfffffaaaa
-			//			t: 1 digit generator type
-			//			e: 1 digit enabled (0 or 1)
-			//			s: 6 digit sample rate
-			//			f: 5 digit frequency
-			//			a: 4 digit amplitude (x.xx)
-
-			if(!GetWaveMachineGenerator(reader, sampid, nogens)) { Console.WriteLine("WaveMachine failed to load generators."); return false; }
-
-
+			int noprocs = Engine.TheTrack.Samples[sampid].WaveMachine.Processors.Length;
 
 			//	For each processor:
 			//		nnniiittt
@@ -493,101 +466,15 @@ namespace gurumod.Serializers
 			return true;
 		}
 
-		public static bool GetWaveMachineGenerator(BinaryReader reader, int sampid, int nogens)
-		{
 
-			for(int egen = 0; egen < nogens; egen++)
-			{
-				int gentype = 0;
-				int genenabled = 0;
-				int gensamplerate = 0;
-				double genfrequency = 0;
-				double genamplitude = 0;
-
-				if(!GrabInt(reader, out gentype, 1)) { Console.WriteLine("WaveMachineGen {0} invalid on gentype.", egen); return false; }
-				if(!GrabInt(reader, out genenabled, 1)) { Console.WriteLine("WaveMachineGen {0} invalid on gentenabled.", egen); return false; }
-				if(!GrabInt(reader, out gensamplerate, 6)) { Console.WriteLine("WaveMachineGen {0} invalid on gensamplerate.", egen); return false; }
-				if(!GrabDouble(reader, out genfrequency, 5)) { Console.WriteLine("WaveMachineGen {0} invalid on genfreq.", egen); return false; }
-				if(!GrabDouble(reader, out genamplitude, 4)) { Console.WriteLine("WaveMachineGen {0} invalid on genamp.", egen); return false; }
-			
-
-				if(gentype == 0)	//oscillator
-				{
-					//	For generator type 0 (oscillator)
-					//		w
-					//			w: 1 digit wave type
-					Engine.TheTrack.Samples[sampid].WaveMachine.Generators[egen] = new Machines.Osc();
-					Engine.TheTrack.Samples[sampid].WaveMachine.Generators[egen].Amplitude = genamplitude;
-					Engine.TheTrack.Samples[sampid].WaveMachine.Generators[egen].GeneratorType = gentype;
-					if(genenabled == 1) { Engine.TheTrack.Samples[sampid].WaveMachine.Generators[egen].Enabled = true; }
-					else { Engine.TheTrack.Samples[sampid].WaveMachine.Generators[egen].Enabled = false; }
-					Engine.TheTrack.Samples[sampid].WaveMachine.Generators[egen].SampleRate = gensamplerate;
-					Engine.TheTrack.Samples[sampid].WaveMachine.Generators[egen].Frequency = genfrequency;
-
-					GrabInt(reader, out ((Machines.Osc)Engine.TheTrack.Samples[sampid].WaveMachine.Generators[egen]).WaveType, 1);
-				}
-				else if(gentype == 1)	//wave player
-				{
-					//	For generator type 1 (wave player)
-					//		cssssssbbbbbbbbbblllllllllllllllllllf<chr 0>
-					//			c: 1 digit channel count
-					//			s: 6 digit sample rate
-					//			b: 10 digit bit rate
-					//			l: 19 digit length of audio data
-					//			f: filename
-					//		list of 2-byte shorts of audio data
-
-					Engine.TheTrack.Samples[sampid].WaveMachine.Generators[egen] = new Machines.WavFile();
-					Engine.TheTrack.Samples[sampid].WaveMachine.Generators[egen].Amplitude = genamplitude;
-					Engine.TheTrack.Samples[sampid].WaveMachine.Generators[egen].GeneratorType = gentype;
-					if(genenabled == 1) { Engine.TheTrack.Samples[sampid].WaveMachine.Generators[egen].Enabled = true; }
-					else { Engine.TheTrack.Samples[sampid].WaveMachine.Generators[egen].Enabled = false; }
-					Engine.TheTrack.Samples[sampid].WaveMachine.Generators[egen].SampleRate = gensamplerate;
-					Engine.TheTrack.Samples[sampid].WaveMachine.Generators[egen].Frequency = (double)genfrequency;
-
-					int nochans = 0;
-					int wsamplerate = 0;
-					long wbitrate = 0;
-					long waudiolen = 0;
-					string wfilename = "";
-
-					if(!GrabInt(reader, out nochans, 1)
-					   || !GrabInt(reader, out wsamplerate, 6)
-					   || !GrabLong(reader, out wbitrate, 10)
-					   || !GrabLong(reader, out waudiolen, 19))
-					{
-						Console.WriteLine("Loading wave player in wave machine failed.");
-						return false;
-					}
-
-					((Machines.WavFile)Engine.TheTrack.Samples[sampid].WaveMachine.Generators[egen]).Channels = nochans;
-					((Machines.WavFile)Engine.TheTrack.Samples[sampid].WaveMachine.Generators[egen]).SampleRate = wsamplerate;
-					((Machines.WavFile)Engine.TheTrack.Samples[sampid].WaveMachine.Generators[egen]).BitRate = (int)wbitrate;
-					((Machines.WavFile)Engine.TheTrack.Samples[sampid].WaveMachine.Generators[egen]).AudioData = new short[waudiolen];
-					((Machines.WavFile)Engine.TheTrack.Samples[sampid].WaveMachine.Generators[egen]).Filename = wfilename;
-
-					for(long esh = 0; esh < waudiolen; esh++)
-					{
-						byte bone = reader.ReadByte();
-						byte btwo = reader.ReadByte();
-
-						((Machines.WavFile)Engine.TheTrack.Samples[sampid].WaveMachine.Generators[egen]).AudioData[esh] = ((Machines.WavFile)Engine.TheTrack.Samples[sampid].WaveMachine.Generators[egen]).ToShort(bone, btwo);
-					}
-				}
-
-
-			}
-
-			return true;
-		}
 
 		public static bool GrabInt(BinaryReader reader, out int intval, int length)
 		{
 			intval = 0;
-			byte[] buf = new byte[length];
-			buf = reader.ReadBytes (length);
+			byte[] buf = GrabFully(reader, length);
+		
 
-			if(buf.Length < length) { Console.WriteLine("Data not long enough to retrieve what was asked for."); return false; }
+			//if(buf.Length < length) { Console.WriteLine("Data not long enough to retrieve what was asked for."); return false; }
 
 			string tnm = Encoding.UTF8.GetString(buf);
 			if(!Int32.TryParse(tnm, out intval))
@@ -603,10 +490,9 @@ namespace gurumod.Serializers
 		public static bool GrabLong(BinaryReader reader, out long intval, int length)
 		{
 			intval = 0;
-			byte[] buf = new byte[length];
-			buf = reader.ReadBytes (length);
+			byte[] buf = GrabFully(reader, length);
 
-			if(buf.Length < length) { Console.WriteLine("Data not long enough to retrieve what was asked for."); return false; }
+			//if(buf.Length < length) { Console.WriteLine("Data not long enough to retrieve what was asked for."); return false; }
 
 			string tnm = Encoding.UTF8.GetString(buf);
 			if(!Int64.TryParse(tnm, out intval))
@@ -642,14 +528,9 @@ namespace gurumod.Serializers
 
 		public static string GrabString(BinaryReader reader, int strlen)
 		{
-			byte[] inb = new byte[1];
-			bool keepgoin = true;
-			string toret = "";
+			byte[] buf = GrabFully(reader, strlen);
 
-			inb = reader.ReadBytes (strlen);
-
-			if(inb.Length < strlen) { Console.WriteLine("GrabString failed."); return ""; }
-			toret = Encoding.UTF8.GetString(inb);
+			string toret = Encoding.UTF8.GetString(buf);
 
 
 			return toret;
@@ -657,11 +538,10 @@ namespace gurumod.Serializers
 
 		public static byte[] GrabBytes(BinaryReader reader, int strlen)
 		{
-			byte[] inb = new byte[1];
-			string toret = "";
+			byte[] buf = GrabFully(reader, strlen);
 
-			inb = reader.ReadBytes (strlen);
-			return inb;
+
+			return buf;
 		}
 
 		public static bool bGrabDouble(byte[] barray, out double doubval, int start, int length)
@@ -676,10 +556,13 @@ namespace gurumod.Serializers
 		public static bool GrabDouble(BinaryReader reader, out double doubval, int length)
 		{
 			doubval = 0;
-			byte[] buf = new byte[length];
-			buf = reader.ReadBytes (length);
+			byte[] buf = GrabFully(reader, length);
 
-			if(buf.Length < length) { Console.WriteLine("Data not long enough to retrieve what was asked for."); return false; }
+
+
+			//buf = reader.ReadBytes (length);
+
+			//if(buf.Length < length) { Console.WriteLine("Data not long enough to retrieve what was asked for."); return false; }
 
 			string tnm = Encoding.UTF8.GetString(buf);
 			if(!Double.TryParse(tnm, out doubval))
@@ -703,6 +586,50 @@ namespace gurumod.Serializers
 
 
 			return true;
+		}
+
+		public static byte[] GrabFully(BinaryReader reader, int len)
+		{
+			byte[] buf = new byte[len];
+
+			if (len < 1)
+		    {
+		        len = 1;
+		    }
+		    
+		    
+		    long read=0;
+		    
+		    int chunk;
+		    while ( (chunk = reader.Read(buf, (int)read, buf.Length-(int)read)) > 0)
+		    {
+		        read += chunk;
+		        
+		        // If we've reached the end of our buffer, check to see if there's
+		        // any more information
+		        if (read == buf.Length)
+		        {
+		            int nextByte = reader.ReadByte();
+		            
+		            // End of stream? If so, we're done
+		            if (nextByte==-1)
+		            {
+		                return buf;
+		            }
+		            
+		            // Nope. Resize the buffer, put in the byte we've just
+		            // read, and continue
+		            byte[] newBuffer = new byte[buf.Length*2];
+		            Array.Copy(buf, newBuffer, buf.Length);
+		            newBuffer[read]=(byte)nextByte;
+		            buf = newBuffer;
+		            read++;
+		        }
+		    }
+		    // Buffer is now too big. Shrink it.
+		    byte[] ret = new byte[read];
+		    Array.Copy(buf, ret, read);
+		    return ret;
 		}
 
 		public static bool GetTrackHeader(BinaryReader reader)
@@ -886,18 +813,18 @@ namespace gurumod.Serializers
 				if(!GetSampleHeader(reader, es)) { Console.WriteLine("Sample header could not be loaded."); return false; }
 				if(!GetSampleDetails (reader, es)) { Console.WriteLine("Sample data could not be loaded for {0}.", es); return false; }
 
-				/*if(Engine.TheTrack.Samples[es].UseWaveGenerator)
+				if(Engine.TheTrack.Samples[es].UseWaveGenerator)
 				{
-
+					Console.WriteLine("Sample {0} uses a WaveGenerator");
 				}
 				else if(Engine.TheTrack.Samples[es].UseWaveMachine)
 				{
-					GetWaveMachineGenerator(reader, es);
+					Serializers.GT0001.WaveMachineLoader.Load(reader, es);
 				}
 				else
 				{
 					Engine.TheTrack.Samples[es].SoundData = reader.ReadBytes (Engine.TheTrack.Samples[es].SoundData.Length);
-				}*/
+				}
 			}
 
 			return true;

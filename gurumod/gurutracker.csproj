@@ -112,6 +112,7 @@
     <Compile Include="Interfaces\WebInterface\Pages\Sampler\Actions\AddEnvelope.cs" />
     <Compile Include="Interfaces\WebInterface\Pages\Sampler\Actions\TweakEnvelope.cs" />
     <Compile Include="Tracks\Serializers\LoadGT-0001.cs" />
+    <Compile Include="Tracks\Serializers\0001\WaveMachineLoader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -130,6 +131,7 @@
     <Folder Include="Interfaces\WebInterface\Pages\Sampler\Generators\" />
     <Folder Include="Interfaces\WebInterface\Pages\Sampler\Actions\" />
     <Folder Include="Tracks\Serializers\" />
+    <Folder Include="Tracks\Serializers\0001\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Bin.tar" />
