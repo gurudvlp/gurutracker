@@ -23,11 +23,14 @@
 using System;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace gurumod.Machines
 {
+	[Serializable()]
 	public class Gate : Processor
 	{
 		// input[0]: audio in
@@ -43,6 +46,20 @@ namespace gurumod.Machines
 		
 		public Gate ()
 		{
+		}
+
+		public Gate(SerializationInfo info, StreamingContext ctxt)
+		{
+			base.Construct(info, ctxt);
+			MinGateManual = (double)info.GetValue("MinGateManual", typeof(double));
+			MaxGateManual = (double)info.GetValue("MaxGateManual", typeof(double));
+		}
+
+		public override void GetObjectData (SerializationInfo info, StreamingContext ctxt)
+		{
+			base.GetObjectData (info, ctxt);
+			info.AddValue("MinGateManual", MinGateManual);
+			info.AddValue("MaxGateManual", MaxGateManual);
 		}
 		
 		public override void Initialize ()

@@ -23,6 +23,8 @@
 using System;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -30,7 +32,8 @@ using System.IO;
 namespace gurumod.Machines
 {
 	[XmlRoot("Processor")]
-	public abstract class Processor
+	[Serializable()]
+	public abstract class Processor : ISerializable
 	{
 		[XmlElement("Inputs")] public InputData[] Inputs;
 		[XmlElement("InputCount")] public int InputCount = 4;
@@ -52,6 +55,25 @@ namespace gurumod.Machines
 		
 		public Processor ()
 		{
+		}
+
+		public Processor(SerializationInfo info, StreamingContext ctxt)
+		{
+			Construct(info, ctxt);
+		}
+
+		public virtual void Construct(SerializationInfo info, StreamingContext ctxt)
+		{
+			Inputs = (InputData[])info.GetValue("Inputs", typeof(InputData[]));
+			InputCount = (int)info.GetValue("InputCount", typeof(int));
+			ProcessorType = (int)info.GetValue("ProcessorType", typeof(int));
+		}
+
+		public virtual void GetObjectData(SerializationInfo info, StreamingContext ctxt)
+		{
+			info.AddValue("Inputs", Inputs);
+			info.AddValue("InputCount", InputCount);
+			info.AddValue("ProcessorType", ProcessorType);
 		}
 		
 		public virtual void InitInputs()

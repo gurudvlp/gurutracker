@@ -29,9 +29,12 @@ using OpenTK.Audio;
 using OpenTK.Audio.OpenAL;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace gurumod.Machines
 {
+	[Serializable()]
 	public class Osc : Generator
 	{
 		[XmlElement("WaveType")] public int WaveType = gurumod.Generator.TypeSine;
@@ -40,6 +43,20 @@ namespace gurumod.Machines
 		
 		public Osc ()
 		{
+		}
+
+		public Osc(SerializationInfo info, StreamingContext ctxt)
+		{
+			base.Construct(info, ctxt);
+			WaveType = (int)info.GetValue("WaveType", typeof(int));
+		}
+
+
+
+		public override void GetObjectData (SerializationInfo info, StreamingContext ctxt)
+		{
+			base.GetObjectData (info, ctxt);
+			info.AddValue("WaveType", WaveType);
 		}
 
 		public override byte[] GTString ()

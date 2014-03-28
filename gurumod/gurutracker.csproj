@@ -113,6 +113,7 @@
     <Compile Include="Interfaces\WebInterface\Pages\Sampler\Actions\TweakEnvelope.cs" />
     <Compile Include="Tracks\Serializers\LoadGT-0001.cs" />
     <Compile Include="Tracks\Serializers\0001\WaveMachineLoader.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Detailer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

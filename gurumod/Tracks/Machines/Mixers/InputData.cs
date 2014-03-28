@@ -23,11 +23,13 @@
 using System;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace gurumod.Machines
 {
-	
-	public class InputData
+	[Serializable()]
+	public class InputData : ISerializable
 	{
 		[XmlElement("SourceID")] public int SourceID = -1;
 		[XmlElement("SourceType")] public int SourceType = MixerSettings.SourceTypeOscillator;
@@ -38,6 +40,20 @@ namespace gurumod.Machines
 		
 		public InputData ()
 		{
+		}
+
+		public InputData(SerializationInfo info, StreamingContext ctxt)
+		{
+			SourceID = (int)info.GetValue("SourceID", typeof(int));
+			SourceType = (int)info.GetValue("SourceType", typeof(int));
+			Amplitude = (double)info.GetValue("Amplitude", typeof(double));
+		}
+
+		public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
+		{
+			info.AddValue("SourceID", SourceID);
+			info.AddValue("SourceType", SourceType);
+			info.AddValue("Amplitude", Amplitude);
 		}
 		
 		public string InputKey()

@@ -31,10 +31,14 @@ using OpenTK.Audio.OpenAL;
 using System.Xml;
 using System.Xml.Serialization;
 
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+
 namespace gurumod
 {
 	[XmlRoot("Sample")]
-	public class Sample
+	[Serializable()]
+	public class Sample : ISerializable
 	{
 		//[XmlIgnore()] public static Sample[] Samples = new Sample[32];
 		[XmlElement("Name")] public string Name = "unnamed";
@@ -78,6 +82,44 @@ namespace gurumod
 				//Logging.Log.Write("Loading the sample in the constructor...");
 				LoadSample();
 			}
+		}
+
+		public Sample(SerializationInfo info, StreamingContext ctxt)
+		{
+			Name = (string)info.GetValue("Name", typeof(string));
+			Artist = (string)info.GetValue("Artist", typeof(string));
+			Year = (int)info.GetValue("Year", typeof(int));
+			ID = (int)info.GetValue("ID", typeof(int));
+			Filename = (string)info.GetValue("Filename", typeof(string));
+			BitRate = (long)info.GetValue("BitRate", typeof(long));
+			SoundData = (byte[])info.GetValue("SoundData", typeof(byte[]));
+			channels = (int)info.GetValue("channels", typeof(int));
+			bits_per_sample = (int)info.GetValue("bits_per_sample", typeof(int));
+			sample_rate = (int)info.GetValue("sample_rate", typeof(int));
+			UseWaveGenerator = (bool)info.GetValue("UseWaveGenerator", typeof(bool));
+			UseWaveMachine = (bool)info.GetValue("UseWaveMachine", typeof(bool));
+			WaveMachine = (Machine)info.GetValue("WaveMachine", typeof(Machine));
+			WaveGenerator = (Generator)info.GetValue("WaveGenerator", typeof(Generator));
+		}
+
+
+		public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
+		{
+
+			info.AddValue("Name", Name);
+			info.AddValue("Artist", Artist);
+			info.AddValue("Year", Year);
+			info.AddValue("ID", ID);
+			info.AddValue("Filename", Filename);
+			info.AddValue("BitRate", BitRate);
+			info.AddValue("SoundData", SoundData);
+			info.AddValue("channels", channels);
+			info.AddValue("bits_per_sample", bits_per_sample);
+			info.AddValue("sample_rate", sample_rate);
+			info.AddValue("UseWaveGenerator", UseWaveGenerator);
+			info.AddValue("UseWaveMachine", UseWaveMachine);
+			info.AddValue("WaveMachine", WaveMachine);
+			info.AddValue("WaveGenerator", WaveGenerator);
 		}
 		
 		/*[XmlIgnore()]

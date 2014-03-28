@@ -24,11 +24,14 @@
 using System;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace gurumod.Machines
 {
+	[Serializable()]
 	public class Envelope : Processor
 	{
 		// input[0]: audio in
@@ -47,6 +50,28 @@ namespace gurumod.Machines
 		
 		public Envelope ()
 		{
+		}
+
+		public Envelope(SerializationInfo info, StreamingContext ctxt)
+		{
+			base.Construct(info, ctxt);
+			Attack = (double)info.GetValue("Attack", typeof(double));
+			AttackAmp = (double)info.GetValue("AttackAmp", typeof(double));
+			Decay = (double)info.GetValue("Decay", typeof(double));
+			DecayAmp = (double)info.GetValue("DecayAmp", typeof(double));
+			Sustain = (double)info.GetValue("Sustain", typeof(double));
+			Release = (double)info.GetValue("Release", typeof(double));
+		}
+
+		public override void GetObjectData (SerializationInfo info, StreamingContext ctxt)
+		{
+			base.GetObjectData (info, ctxt);
+			info.AddValue("Attack", Attack);
+			info.AddValue("AttackAmp", AttackAmp);
+			info.AddValue("Decay", Decay);
+			info.AddValue("DecayAmp", DecayAmp);
+			info.AddValue("Sustain", Sustain);
+			info.AddValue("Release", Release);
 		}
 
 		public override string GTString ()

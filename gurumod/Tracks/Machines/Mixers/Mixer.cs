@@ -23,6 +23,8 @@
 using System;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -34,6 +36,7 @@ namespace gurumod.Machines
 	//
 	
 	[XmlRoot("Mixer")]
+	[Serializable()]
 	public class Mixer : Processor
 	{
 		[XmlElement("CombineMethod")] public int CombineMethod = gurumod.Machines.Mixer.CombineMethodAdd;
@@ -55,6 +58,18 @@ namespace gurumod.Machines
 		public Mixer ()
 		{
 			
+		}
+
+		public Mixer(SerializationInfo info, StreamingContext ctxt)
+		{
+			base.Construct(info, ctxt);
+			CombineMethod = (int)info.GetValue("CombineMethod", typeof(int));
+		}
+
+		public override void GetObjectData (SerializationInfo info, StreamingContext ctxt)
+		{
+			base.GetObjectData (info, ctxt);
+			info.AddValue("CombineMethod", CombineMethod);
 		}
 
 		public override string GTString ()

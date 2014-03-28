@@ -25,12 +25,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using OpenTK.Audio;
 using OpenTK.Audio.OpenAL;
 
 namespace gurumod
 {
-	[XmlRoot("PatternChannel")] public class PatternChannel
+	[XmlRoot("PatternChannel")] 
+	[Serializable()]
+	public class PatternChannel : ISerializable
 	{
 		//	This class is a list of elements for one channel in a pattern.  It sequentially lists the things to
 		//	do for this channel.
@@ -57,6 +61,18 @@ namespace gurumod
 		public PatternChannel()
 		{
 			
+		}
+
+		public PatternChannel(SerializationInfo info, StreamingContext ctxt)
+		{
+			ChannelID = (int)info.GetValue("ChannelID", typeof(int));
+			Elements = (PatternElement[])info.GetValue("Elements", typeof(PatternElement[]));
+		}
+
+		public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
+		{
+			info.AddValue("ChannelID", ChannelID);
+			info.AddValue("Elements", Elements);
 		}
 		
 		[XmlElement("ElementCount")]

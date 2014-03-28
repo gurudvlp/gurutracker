@@ -2,13 +2,15 @@ using System;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using OpenTK.Audio;
 using OpenTK.Audio.OpenAL;
 
 namespace gurumod
 {
-	
-	public class Generator
+	[Serializable()]
+	public class Generator : ISerializable
 	{
 		[XmlIgnore()] public static int TypeSine = 0;
 		[XmlIgnore()] public static int TypeSilence = 4;
@@ -24,6 +26,22 @@ namespace gurumod
 		
 		public Generator ()
 		{
+		}
+
+		public Generator(SerializationInfo info, StreamingContext ctxt)
+		{
+			WaveType = (int)info.GetValue("WaveType", typeof(int));
+			Frequency = (double)info.GetValue("Frequency", typeof(double));
+			SampleRate = (int)info.GetValue("SampleRate", typeof(int));
+			Length = (int)info.GetValue("Length", typeof(int));
+		}
+
+		public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
+		{
+			info.AddValue("WaveType", WaveType);
+			info.AddValue("Frequency", Frequency);
+			info.AddValue("SampleRate", SampleRate);
+			info.AddValue("Length", Length);
 		}
 
 		public string GTString()

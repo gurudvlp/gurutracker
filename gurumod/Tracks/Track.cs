@@ -25,13 +25,16 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.Text;
 using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using ICSharpCode.SharpZipLib.Tar;
 using ICSharpCode.SharpZipLib.GZip;
 
 namespace gurumod
 {
 	[XmlRoot("Track")]
-	public class Track
+	[Serializable()]
+	public class Track : ISerializable
 	{
 		//	This class represents a track, or a full composed song/module
 		[XmlIgnore()] public static int MaxSamples
@@ -117,6 +120,43 @@ namespace gurumod
 			
 			if(!MyPath.EndsWith("/")) { MyPath = MyPath + "/"; }
 			Console.WriteLine("Track() MyPath {0}", MyPath);
+		}
+
+		public Track(SerializationInfo info, StreamingContext ctxt)
+		{
+			Author = (string)info.GetValue("Author", typeof(string));
+			Title = (string)info.GetValue("Title", typeof(string));
+			Tempo = (int)info.GetValue("Tempo", typeof(int));
+			Year = (int)info.GetValue("Year", typeof(int));
+			ChannelCount = (int)info.GetValue("ChannelCount", typeof(int));
+			ChannelMuted = (bool[])info.GetValue("ChannelMuted", typeof(bool[]));
+			DefaultPatternLength = (int)info.GetValue("DefaultPatternLength", typeof(int));
+			Genre = (string)info.GetValue("Genre", typeof(string));
+			WebSite = (string)info.GetValue("WebSite", typeof(string));
+			Email = (string)info.GetValue("Email", typeof(string));
+			Comments = (string)info.GetValue("Comments", typeof(string));
+			PatternSequence = (int[])info.GetValue("PatternSequence", typeof(int[]));
+
+			Samples = (Sample[])info.GetValue("Samples", typeof(Sample[]));
+			Patterns = (Pattern[])info.GetValue("Patterns", typeof(Pattern[]));
+		}
+
+		public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
+		{
+			info.AddValue("Author", Author);
+			info.AddValue("Title", Title);
+			info.AddValue("Tempo", Tempo);
+			info.AddValue("Year", Year);
+			info.AddValue("ChannelCount", ChannelCount);
+			info.AddValue("ChannelMuted", ChannelMuted);
+			info.AddValue("DefaultPatternLength", DefaultPatternLength);
+			info.AddValue("Genre", Genre);
+			info.AddValue("WebSite", WebSite);
+			info.AddValue("Email", Email);
+			info.AddValue("Comments", Comments);
+			info.AddValue("PatternSequence", PatternSequence);
+			info.AddValue("Samples", Samples);
+			info.AddValue("Patterns", Patterns);
 		}
 		
 		public void NewTrack()
@@ -354,7 +394,7 @@ namespace gurumod
 			//		wwwwwwwwwwdddddddddd
 			//			w: 10 digit delay
 			//			d: 10 digit decay
-
+			/*
 			MemoryStream gtstream = new MemoryStream();
 			StreamWriter gtwriter = new StreamWriter(gtstream);
 
@@ -445,6 +485,18 @@ namespace gurumod
 
 			gtstream.Flush();
 			File.WriteAllBytes(Engine.CommandFlags["-f"], gtstream.ToArray());
+			*/
+			//
+			//	Testing binary serialization.
+			FileStream fs = File.Create(Engine.CommandFlags["-f"]);
+			BinaryFormatter formatter = new BinaryFormatter();
+			StreamWriter gtwriter = new StreamWriter(fs);
+
+			gtwriter.Write("gt-" + this.GTVersion + "-");
+			gtwriter.Flush();
+
+			formatter.Serialize(fs, this);
+			fs.Close();
 
 			return true;
 		}
@@ -470,7 +522,7 @@ namespace gurumod
 
 		public static bool LoadGT(string filename)
 		{
-			if(!File.Exists(filename)) { return false; }
+			/*if(!File.Exists(filename)) { return false; }
 
 			FileStream lf = File.OpenRead(filename);
 			BinaryReader reader = new BinaryReader(lf);
@@ -495,7 +547,35 @@ namespace gurumod
 			{
 				Console.WriteLine("Track deserializer returned null.");
 				return false;
+			}*/
+
+			if(!File.Exists(filename)) { return false; }
+
+			FileStream fs = File.Open(filename, FileMode.Open);
+			BinaryFormatter bform = new BinaryFormatter();
+
+			BinaryReader reader = new BinaryReader(fs);
+			reader.BaseStream.Position = 0;
+			byte[] rbuf = reader.ReadBytes (8);
+			if(rbuf.Length < 8) { Console.WriteLine("File is too small to be valid."); return false; }
+			string headtag = Encoding.UTF8.GetString(rbuf);
+
+			if(headtag.Substring(0, 3) != "gt-" || headtag.Substring(7) != "-")
+			{
+				Console.WriteLine("File had an invalid header.");
+				return false;
 			}
+
+			string version = headtag.Substring(3, 4);
+			if(version != "0001") { Console.WriteLine("Version mismatch."); return false; }
+
+			try	{ Engine.TheTrack = (Track)bform.Deserialize(fs); }
+			catch(Exception ex)
+			{
+				Console.WriteLine("Exception while deserializing track.");
+				Console.WriteLine(ex.Message);
+			}
+			fs.Close();
 			return true;
 		}
 

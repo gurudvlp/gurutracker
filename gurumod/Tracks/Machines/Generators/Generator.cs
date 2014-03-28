@@ -24,6 +24,8 @@ using System;
 using System.Xml;
 using System.IO;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections;
 using System.Collections.Generic;
 using OpenTK.Audio;
@@ -32,7 +34,8 @@ using OpenTK.Audio.OpenAL;
 namespace gurumod.Machines
 {
 	[XmlRoot("SoundGenerator")]
-	public abstract class Generator
+	[Serializable()]
+	public abstract class Generator : ISerializable
 	{
 		[XmlElement("Enabled")] public bool Enabled = false;
 		//[XmlElement("WaveType")] public int WaveType = Generator.TypeSine;
@@ -51,6 +54,30 @@ namespace gurumod.Machines
 
 		public Generator ()
 		{
+		}
+
+		public Generator(SerializationInfo info, StreamingContext ctxt)
+		{
+			Construct(info, ctxt);
+		}
+
+		public void Construct(SerializationInfo info, StreamingContext ctxt)
+		{
+			Enabled = (bool)info.GetValue("Enabled", typeof(bool));
+			Frequency = (double)info.GetValue("Frequency", typeof(double));
+			Amplitude = (double)info.GetValue("Amplitude", typeof(double));
+			SampleRate = (int)info.GetValue("SampleRate", typeof(int));
+			GeneratorType = (int)info.GetValue("GeneratorType", typeof(int));
+		}
+
+		public virtual void GetObjectData(SerializationInfo info, StreamingContext ctxt)
+		{
+
+			info.AddValue("Enabled", Enabled);
+			info.AddValue("Frequency", Frequency);
+			info.AddValue("Amplitude", Amplitude);
+			info.AddValue("SampleRate", SampleRate);
+			info.AddValue("GeneratorType", GeneratorType);
 		}
 		
 		public abstract short[] GetData(int frames, double frequency);

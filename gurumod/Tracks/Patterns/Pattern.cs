@@ -23,13 +23,16 @@
 using System;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.IO;
 
 namespace gurumod
 {
 	[XmlRoot("Pattern")]
-	public class Pattern
+	[Serializable()]
+	public class Pattern : ISerializable
 	{
 		//	One pattern of the track
 		[XmlElement("Channels")] public PatternChannel[] Channels;
@@ -79,11 +82,26 @@ namespace gurumod
 		{
 			
 		}
+
 		
 		public Pattern (int channels, int length)
 		{
 			this.RowCount = length;
 			this.ChannelCount = channels;
+		}
+
+		public Pattern(SerializationInfo info, StreamingContext ctxt)
+		{
+			Channels = (PatternChannel[])info.GetValue("Channels", typeof(PatternChannel[]));
+			channelcnt = (int)info.GetValue("ChannelCount", typeof(int));
+			RowCount = (int)info.GetValue("RowCount", typeof(int));
+		}
+
+		public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
+		{
+			info.AddValue("RowCount", RowCount);
+			info.AddValue("Channels", Channels);
+			info.AddValue("ChannelCount", channelcnt);
 		}
 		
 		public void PlayRow(int row)

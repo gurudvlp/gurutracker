@@ -5,13 +5,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using OpenTK.Audio;
 using OpenTK.Audio.OpenAL;
 
 namespace gurumod
 {
-	
-	public class Machine
+	[Serializable()]
+	public class Machine : ISerializable
 	{
 		[XmlIgnore()] public int FramesIntoSample = 0;
 		[XmlElement()] public int SampleRate = 44100;
@@ -76,6 +78,31 @@ namespace gurumod
 			
 			Generators[0] = new Machines.Osc();
 			Processors[0] = new Machines.Mixer();
+		}
+
+		public Machine(SerializationInfo info, StreamingContext ctxt)
+		{
+
+			SampleRate = (int)info.GetValue("SampleRate", typeof(int));
+			Frequency = (double)info.GetValue("Frequency", typeof(double));
+			Amplitude = (double)info.GetValue("Amplitude", typeof(double));
+			WaveType = (int)info.GetValue("WaveType", typeof(int));
+			MaxGenerators = (int)info.GetValue("MaxGenerators", typeof(int));
+			MaxProcessors = (int)info.GetValue("MaxProcessors", typeof(int));
+			Generators = (gurumod.Machines.Generator[])info.GetValue("Generators", typeof(gurumod.Machines.Generator[]));
+			Processors = (gurumod.Machines.Processor[])info.GetValue("Processors", typeof(gurumod.Machines.Processor[]));
+		}
+
+		public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
+		{
+			info.AddValue("SampleRate", SampleRate);
+			info.AddValue("Frequency", Frequency);
+			info.AddValue("Amplitude", Amplitude);
+			info.AddValue("WaveType", WaveType);
+			info.AddValue("MaxGenerators", MaxGenerators);
+			info.AddValue("MaxProcessors", MaxProcessors);
+			info.AddValue("Generators", Generators);
+			info.AddValue("Processors", Processors);
 		}
 
 		public byte[] GTString()

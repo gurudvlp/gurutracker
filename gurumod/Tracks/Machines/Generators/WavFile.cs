@@ -26,11 +26,14 @@ using OpenTK.Audio;
 using OpenTK.Audio.OpenAL;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace gurumod.Machines
 {
+	[Serializable()]
 	public class WavFile : gurumod.Machines.Generator
 	{
 		[XmlElement("Filename")] public string Filename = "";
@@ -45,6 +48,21 @@ namespace gurumod.Machines
 			base.GeneratorType = gurumod.Machines.Generator.GeneratorTypeWavePlayer;
 		}
 
+		public WavFile(SerializationInfo info, StreamingContext ctxt)
+		{
+			base.Construct(info, ctxt);
+			Filename = (string)info.GetValue("Filename", typeof(string));
+			Channels = (int)info.GetValue("Channels", typeof(int));
+			BitRate = (int)info.GetValue("BitRate", typeof(int));
+		}
+
+		public override void GetObjectData (SerializationInfo info, StreamingContext ctxt)
+		{
+			base.GetObjectData (info, ctxt);
+			info.AddValue("Filename", Filename);
+			info.AddValue("Channels", Channels);
+			info.AddValue("BitRate", BitRate);
+		}
 	
 
 		public override byte[] GTString()

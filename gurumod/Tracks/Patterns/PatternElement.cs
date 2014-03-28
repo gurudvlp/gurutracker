@@ -23,11 +23,14 @@
 using System;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace gurumod
 {
 	[XmlRoot("PatternElement")]
-	public class PatternElement
+	[Serializable()]
+	public class PatternElement : ISerializable
 	{
 		//	Each element in a pattern.  This controls volume, what sample, whether to play or stop, etc.
 		[XmlElement("Octave")] public int Octave = 5;
@@ -38,6 +41,24 @@ namespace gurumod
 		
 		public PatternElement ()
 		{
+		}
+
+		public PatternElement(SerializationInfo info, StreamingContext ctxt)
+		{
+			Octave = (int)info.GetValue("Octave", typeof(int));
+			Note = (int)info.GetValue("Note", typeof(int));
+			Volume = (int)info.GetValue("Volume", typeof(int));
+			SpecialControl = (int)info.GetValue("Special", typeof(int));
+			SampleID = (int)info.GetValue("SampleID", typeof(int));
+		}
+
+		public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
+		{
+			info.AddValue("Octave", Octave);
+			info.AddValue("Note", Note);
+			info.AddValue("Volume", Volume);
+			info.AddValue("Special", SpecialControl);
+			info.AddValue("SampleID", SampleID);
 		}
 		
 		[XmlIgnore()]
