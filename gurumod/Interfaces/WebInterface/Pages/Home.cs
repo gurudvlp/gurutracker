@@ -23,6 +23,11 @@ namespace gurumod.WebPages
 					base.OutgoingBuffer = toret;
 					base.ContentType = "application/javascript";
 				} 
+				else if(base.RequestParts[1].ToLower() == "connection-test")
+				{
+					string toret = "gurutracker web interface";
+					base.OutgoingBuffer = toret;
+				}
 				else
 				{
 					base.OutgoingBuffer = "Unknown action";

@@ -60,7 +60,7 @@ namespace gurumod.WebPages.Actions
 					((Machines.Envelope)tmppr[tmppr.Length - 1]).Initialize();
 					
 					Engine.TheTrack.Samples[smpid].WaveMachine.Processors = tmppr;
-
+					Engine.TheTrack.Samples[smpid].WaveMachine.UpdateGenProcTypes();
 					OutgoingBuffer = "OK";
 					
 					/*MixerSettings[] tmposc = new MixerSettings[Engine.TheTrack.Samples[smpid].WaveMachine.Mixers.Length + 1];

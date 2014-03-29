@@ -33,6 +33,22 @@ namespace gurumod.WebPages
 			{
 				return this.RunSubPage(new WebPages.SampleData());
 			}
+			else if(base.RequestParts.Length > 1 && base.RequestParts[1].ToLower() == "sampledataxml")
+			{
+				return this.RunSubPage(new WebPages.SampleDataXML());
+			}
+			else if(base.RequestParts.Length > 2 && base.RequestParts[1].ToLower() == "machinedataxml")
+			{
+				return this.RunSubPage(new WebPages.MachineDataXML());
+			}
+			else if(base.RequestParts.Length > 3 && base.RequestParts[1].ToLower() == "machinegeneratorxml")
+			{
+				return this.RunSubPage(new WebPages.MachineGeneratorXML());
+			}
+			else if(base.RequestParts.Length > 3 && base.RequestParts[1].ToLower() == "machineprocessorxml")
+			{
+				return this.RunSubPage(new WebPages.MachineProcessorXML());
+			}
 			else
 			{
 				TerminateOnSend = false;
@@ -192,6 +208,16 @@ namespace gurumod.WebPages
 							{
 								Engine.TheTrack.Samples[sid].Name = base.PostVars["TITLE"];
 							}
+
+							if(base.PostVars.ContainsKey("ARTIST"))
+							{
+								Engine.TheTrack.Samples[sid].Artist = base.PostVars["ARTIST"];
+							}
+
+							if(base.PostVars.ContainsKey("YEAR"))
+							{
+								Engine.TheTrack.Samples[sid].Year = Int32.Parse(base.PostVars["YEAR"]);
+							}
 							
 							if(base.PostVars.ContainsKey("FILENAME"))
 							{
@@ -349,6 +375,10 @@ namespace gurumod.WebPages
 					else if(base.RequestParts[1] == "tweakenvelope")
 					{
 						return this.RunSubPage(new WebPages.Actions.TweakEnvelope());
+					}
+					else if(base.RequestParts[1] == "listwavsamples")
+					{
+						return this.RunSubPage(new WebPages.Actions.ListWavSamples());
 					}
 					else
 					{

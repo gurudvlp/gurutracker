@@ -26,7 +26,9 @@ namespace gurumod
 		
 		[XmlIgnore()] public Machines.Generator[] Generators;
 		[XmlIgnore()] public Machines.Processor[] Processors;
+		//[XmlIgnore()] private string[] _generatorTypes = new string[128];
 		[XmlElement("GeneratorTypes")] public string[] GeneratorTypes = new string[128];
+		
 		[XmlElement("ProcessorTypes")] public string[] ProcessorTypes = new string[128];
 		
 		[XmlElement("MaxGenerators")] public int MaxGenerators = 32;
@@ -77,7 +79,9 @@ namespace gurumod
 			Processors = new Machines.Processor[this.MaxProcessors];
 			
 			Generators[0] = new Machines.Osc();
+			GeneratorTypes[0] = Generators[0].GetType().ToString();
 			Processors[0] = new Machines.Mixer();
+			ProcessorTypes[0] = Processors[0].GetType().ToString();
 		}
 
 		public Machine(SerializationInfo info, StreamingContext ctxt)
@@ -89,8 +93,15 @@ namespace gurumod
 			WaveType = (int)info.GetValue("WaveType", typeof(int));
 			MaxGenerators = (int)info.GetValue("MaxGenerators", typeof(int));
 			MaxProcessors = (int)info.GetValue("MaxProcessors", typeof(int));
+			GeneratorTypes = (string[])info.GetValue("GeneratorTypes", typeof(string[]));
+			ProcessorTypes = (string[])info.GetValue("ProcessorTypes", typeof(string[]));
 			Generators = (gurumod.Machines.Generator[])info.GetValue("Generators", typeof(gurumod.Machines.Generator[]));
 			Processors = (gurumod.Machines.Processor[])info.GetValue("Processors", typeof(gurumod.Machines.Processor[]));
+
+			//Processors = new gurumod.Machines.Processor[32];
+			//Processors[0] = new Machines.Mixer();
+			//((Machines.Mixer)Processors[0]).InitInputs();
+
 		}
 
 		public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
@@ -101,6 +112,8 @@ namespace gurumod
 			info.AddValue("WaveType", WaveType);
 			info.AddValue("MaxGenerators", MaxGenerators);
 			info.AddValue("MaxProcessors", MaxProcessors);
+			info.AddValue("GeneratorTypes", GeneratorTypes);
+			info.AddValue("ProcessorTypes", ProcessorTypes);
 			info.AddValue("Generators", Generators);
 			info.AddValue("Processors", Processors);
 		}
@@ -357,7 +370,22 @@ namespace gurumod
 			return toret;
 		
 		}
-		
+
+		public void UpdateGenProcTypes()
+		{
+			for(int egen = 0; egen < this.Generators.Length; egen++)
+			{
+				if(Generators[egen] != null) { GeneratorTypes[egen] = Generators[egen].GetType().ToString(); }
+				else { GeneratorTypes[egen] = ""; }
+			}
+
+			for(int eproc = 0; eproc < this.Processors.Length; eproc++)
+			{
+				if(Processors[eproc] != null) { ProcessorTypes[eproc] = Processors[eproc].GetType().ToString(); }
+				else { ProcessorTypes[eproc] = ""; }
+			}
+		}
+
 		public void LoadGenerators(string trackpath, int sampleid)
 		{
 			Console.WriteLine("Attempting to load generators");
@@ -664,6 +692,8 @@ namespace gurumod
 			return -1;
 		}
 
+		
+		
 
 	}
 }

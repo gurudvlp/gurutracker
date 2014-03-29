@@ -100,7 +100,7 @@ namespace gurumod
 		//	The part that makes gurutracker go.
 		
 		[XmlIgnore()] public static string EngineName = "gurutracker";
-		[XmlIgnore()] public static string EngineVersion = "v0.14.0309";
+		[XmlIgnore()] public static string EngineVersion = "v0.14.0329";
 	
 		[XmlIgnore()] public static Config Configuration = new Config();
 		
@@ -112,7 +112,8 @@ namespace gurumod
 		[XmlIgnore()] public static long totalcycletime = 0;
 		[XmlIgnore()] public static long totalcycles = 0;
 
-		public static  Listeners[] TcpListeners = new Listeners[1];
+
+		public static  Listeners[] TcpListeners = new Listeners[2];
 		
 		public static int MaxIncomingConnections = 255;
 		public static IncomingConnections[] Connections = new IncomingConnections[MaxIncomingConnections];
@@ -343,7 +344,7 @@ namespace gurumod
 		{
 			
 			Engine.TcpListeners[0] = new Listeners(Engine.Configuration.WebListenPort, "Web Interface Listener", "HTTP");
-			
+			Engine.TcpListeners[1] = new Listeners(2000, "Debug Interface", "GTDBG");
 			
 			
 			for(int econ = 0; econ < Engine.MaxIncomingConnections; econ++)
@@ -401,6 +402,7 @@ namespace gurumod
 			//	This needs to check each interface for updates,
 			//	Check each object for needed operations
 			Engine.TcpListeners[0].Listen();
+			Engine.TcpListeners[1].Listen();
 			
 			int caught = 0;
 

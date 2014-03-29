@@ -114,6 +114,12 @@
     <Compile Include="Tracks\Serializers\LoadGT-0001.cs" />
     <Compile Include="Tracks\Serializers\0001\WaveMachineLoader.cs" />
     <Compile Include="Interfaces\WebInterface\Pages\Detailer.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Sampler\SampleDataXML.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Sampler\MachineDataXML.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Sampler\MachineGeneratorXML.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Sampler\Actions\ListWavSamples.cs" />
+    <Compile Include="Interfaces\WebInterface\Pages\Sampler\MachineProcessorXML.cs" />
+    <Compile Include="Interfaces\Debug\DebugInterface.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -133,6 +139,7 @@
     <Folder Include="Interfaces\WebInterface\Pages\Sampler\Actions\" />
     <Folder Include="Tracks\Serializers\" />
     <Folder Include="Tracks\Serializers\0001\" />
+    <Folder Include="Interfaces\Debug\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Bin.tar" />

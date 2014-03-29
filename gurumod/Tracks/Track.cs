@@ -78,7 +78,7 @@ namespace gurumod
 		[XmlElement("Author")] public string Author = "";
 		[XmlElement("Title")] public string Title = "Untitled";
 		[XmlElement("Tempo")] public int Tempo = 180;
-		[XmlElement("Year")] public int Year = 2012;
+		[XmlElement("Year")] public int Year = 2014;
 		[XmlElement("ChannelCount")] public int ChannelCount = 12;
 		[XmlElement("ChannelMuted")] public bool[] ChannelMuted;
 		[XmlIgnore()] public int[] PatternSequence;
@@ -137,8 +137,26 @@ namespace gurumod
 			Comments = (string)info.GetValue("Comments", typeof(string));
 			PatternSequence = (int[])info.GetValue("PatternSequence", typeof(int[]));
 
+			//Samples = new Sample[32];
+			//for(int es = 0; es < 32; es++) { Samples[es] = new Sample(); }
 			Samples = (Sample[])info.GetValue("Samples", typeof(Sample[]));
 			Patterns = (Pattern[])info.GetValue("Patterns", typeof(Pattern[]));
+
+			if(Patterns == null)
+			{
+				Patterns = new Pattern[32];
+				Patterns[0] = new Pattern(12, 128);
+			}
+
+			if(Samples == null)
+			{
+				Samples = new Sample[32];
+				for(int es = 0; es < Samples.Length; es++)
+				{
+					Samples[es] = new Sample();
+					Samples[es].ID = es;
+				}
+			}
 		}
 
 		public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
@@ -576,6 +594,55 @@ namespace gurumod
 				Console.WriteLine(ex.Message);
 			}
 			fs.Close();
+			/*
+			for(int ep = 0; ep < 5; ep++)
+			{
+				bool isnull = false;
+				if(Engine.TheTrack.Samples[ep] == null) { isnull = true; } else { isnull = false; }
+				Console.WriteLine("Samples {0} Null: {1}", ep, isnull);
+
+				if(Engine.TheTrack.Samples[ep] != null)
+				{
+					Console.WriteLine("\tSoundData Null: {0}", (Engine.TheTrack.Samples[ep].SoundData == null));
+					Console.WriteLine("\tUseWaveGenerator: {0}", Engine.TheTrack.Samples[ep].UseWaveGenerator);
+					Console.WriteLine("\tUseWaveMachine: {0}", Engine.TheTrack.Samples[ep].UseWaveMachine);
+
+					if(Engine.TheTrack.Samples[ep].UseWaveMachine)
+					{
+						Console.WriteLine("\t\tWaveMachine Null: {0}", (Engine.TheTrack.Samples[ep].WaveMachine == null));
+
+						Console.WriteLine("\t\tProcessors Null: {0}",  (Engine.TheTrack.Samples[ep].WaveMachine.Processors == null));
+						Console.WriteLine("\t\tGenerators Null: {0}",  (Engine.TheTrack.Samples[ep].WaveMachine.Generators == null));
+
+						for(int ex = 0; ex < Engine.TheTrack.Samples[ep].WaveMachine.Processors.Length; ex++)
+						{
+							Console.WriteLine("\t\t\tProcessor {0} Null: {1}", ex, (Engine.TheTrack.Samples[ep].WaveMachine.Processors[ex] == null));
+							if(Engine.TheTrack.Samples[ep].WaveMachine.Processors[ex] != null)
+							{
+								Console.WriteLine("\t\t\t\tInputs Null: {0}", (Engine.TheTrack.Samples[ep].WaveMachine.Processors[ex].Inputs == null));
+								Console.WriteLine("\t\t\t\tInput Count: {0}", (Engine.TheTrack.Samples[ep].WaveMachine.Processors[ex].InputCount));
+								Console.WriteLine("\t\t\t\tProcessor Type: {0}", Engine.TheTrack.Samples[ep].WaveMachine.Processors[ex].ProcessorType);
+
+								if(Engine.TheTrack.Samples[ep].WaveMachine.Processors[ex].Inputs != null)
+								{
+									for(int einp = 0; einp < Engine.TheTrack.Samples[ep].WaveMachine.Processors[ex].Inputs.Length; einp++)
+									{
+										Console.WriteLine("\t\t\t\t\tInput {0} Null: {1}", einp, (Engine.TheTrack.Samples[ep].WaveMachine.Processors[ex].Inputs[einp] == null));
+										if(Engine.TheTrack.Samples[ep].WaveMachine.Processors[ex].Inputs[einp] != null)
+										{
+											Console.WriteLine("\t\t\t\t\t\tSourceID: {0}", Engine.TheTrack.Samples[ep].WaveMachine.Processors[ex].Inputs[einp].SourceID);
+											Console.WriteLine("\t\t\t\t\t\tSourceType: {0}", Engine.TheTrack.Samples[ep].WaveMachine.Processors[ex].Inputs[einp].SourceType);
+											Console.WriteLine("\t\t\t\t\t\tAmplitude: {0}", Engine.TheTrack.Samples[ep].WaveMachine.Processors[ex].Inputs[einp].Amplitude);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			Environment.Exit(0);*/
 			return true;
 		}
 

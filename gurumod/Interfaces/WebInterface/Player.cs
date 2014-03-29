@@ -106,6 +106,7 @@ namespace gurumod.WebPages
 			else if(base.RequestParts[1] == "save")
 			{
 				Engine.TheTrack.Save();
+				base.OutgoingBuffer = "OK";
 			}
 			else if(base.RequestParts[1] == "new")
 			{

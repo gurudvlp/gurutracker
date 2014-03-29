@@ -101,7 +101,7 @@ namespace gurumod
 		{
 			info.AddValue("RowCount", RowCount);
 			info.AddValue("Channels", Channels);
-			info.AddValue("ChannelCount", channelcnt);
+			info.AddValue("ChannelCount", Channels.Length);
 		}
 		
 		public void PlayRow(int row)

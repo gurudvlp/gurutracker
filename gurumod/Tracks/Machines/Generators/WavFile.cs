@@ -37,7 +37,7 @@ namespace gurumod.Machines
 	public class WavFile : gurumod.Machines.Generator
 	{
 		[XmlElement("Filename")] public string Filename = "";
-		[XmlElement("SampleRate")] public int SampleRate = 44100;
+		//[XmlElement("SampleRate")] public int SampleRate = 44100;
 		[XmlElement("Channels")] public int Channels = 1;
 		[XmlElement("BitRate")] public int BitRate = 0;
 		
@@ -247,9 +247,9 @@ namespace gurumod.Machines
 		public void LoadFile()
 		{
 			string trackpath = Engine.TheTrack.MyPath;
-			if(File.Exists(Engine.PFP(trackpath + "Samples/Audio/" + Filename)))
+			if(File.Exists(Engine.PFP("/usr/share/gurutracker/samples/" + Filename)))
 			{
-				FileStream wavst = File.OpenRead(Engine.PFP(trackpath + "Samples/Audio/" + Filename));
+				FileStream wavst = File.OpenRead(Engine.PFP("/usr/share/gurutracker/samples/" + Filename));
 				BinaryReader reader = new BinaryReader(wavst);
 				
 				string signature = new string(reader.ReadChars(4));

@@ -68,6 +68,7 @@ namespace gurumod.WebPages.Actions
 					//	Test to see wtf why oscillators are all adding to the end ...
 					int nextoscid = Engine.TheTrack.Samples[smpid].WaveMachine.NextGeneratorID();
 					Engine.TheTrack.Samples[smpid].WaveMachine.Generators[nextoscid] = new gurumod.Machines.Osc();
+					Engine.TheTrack.Samples[smpid].WaveMachine.UpdateGenProcTypes();
 
 					OutgoingBuffer = "OK";
 				}

@@ -67,6 +67,7 @@ namespace gurumod
 		{
 			ChannelID = (int)info.GetValue("ChannelID", typeof(int));
 			Elements = (PatternElement[])info.GetValue("Elements", typeof(PatternElement[]));
+			_ElementCount = Elements.Length;
 		}
 
 		public void GetObjectData(SerializationInfo info, StreamingContext ctxt)

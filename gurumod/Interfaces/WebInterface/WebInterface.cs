@@ -471,7 +471,7 @@ namespace gurumod
 				{
 					int catid = GetCatID(IncomingHTTPRequest.Parts[0]);
 
-					if(catid < 0) { Console.WriteLine("CatID: {0}", catid); PageObject = new gurumod.WebPages.Home(); }
+					if(catid < 0) { Console.WriteLine("CatID: {0} {1}", catid, IncomingHTTPRequest.Parts[0]); PageObject = new gurumod.WebPages.Home(); }
 					else
 					{
 						Console.WriteLine("CatID: {0}", catid);

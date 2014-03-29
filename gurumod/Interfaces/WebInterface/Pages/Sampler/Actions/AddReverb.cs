@@ -58,6 +58,7 @@ namespace gurumod.WebPages.Actions
 					((Machines.Reverb)tmppr[tmppr.Length - 1]).Initialize();
 					
 					Engine.TheTrack.Samples[smpid].WaveMachine.Processors = tmppr;
+					Engine.TheTrack.Samples[smpid].WaveMachine.UpdateGenProcTypes();
 					OutgoingBuffer = "OK";
 				} else { OutgoingBuffer = "FAIL Sample id " + smpid.ToString() + " is null"; }
 			} else { OutgoingBuffer = "FAIL Failed to parse sample id"; }

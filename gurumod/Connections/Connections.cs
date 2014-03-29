@@ -131,7 +131,10 @@ namespace gurumod
 			//	bind an interface heyah
 			
 			//Console.WriteLine("btEngine: Connections: Assinging interface for incoming (" + this.RemoteIP + ").");
-			TheInterface = new WebInterface();
+
+			if(protocol.ToUpper() == "GTDBG") { TheInterface = new DebugInterface(); }
+			else { TheInterface = new WebInterface(); }
+
 			TheInterface.RemoteIP = this.RemoteIP;
 		}
 		

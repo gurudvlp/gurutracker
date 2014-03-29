@@ -1,4 +1,9 @@
 using System;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace gurumod.WebPages
 {
@@ -68,6 +73,45 @@ namespace gurumod.WebPages
 					if(toret.Length > 2 && toret.Substring(toret.Length - 2) == ",\n") { toret = toret.Substring(0, toret.Length - 2); }
 					toret = "{ \"patterns\": [\n" + toret + "\n]}";
 					base.OutgoingBuffer = toret;
+				}
+				else if(base.RequestParts[1].ToLower() == "patternbin")
+				{
+					string toret = "FAIL Unknown reason.";
+					if(Engine.TheTrack == null) { toret = "FAIL The Track is null."; }
+					else if(Engine.TheTrack.Patterns == null) { toret = "FAIL Patterns is null."; }
+					else
+					{
+						MemoryStream ms = new MemoryStream();
+						BinaryFormatter formatter = new BinaryFormatter();
+
+						formatter.Serialize(ms, Engine.TheTrack.Patterns);
+
+						base.UseAsciiOutput = false;
+						base.OutgoingByteBuffer = ms.ToArray();
+						base.TerminateOnSend = true;
+					}
+				}
+				else if(base.RequestParts[1].ToLower() == "patternxml")
+				{
+
+					XmlSerializer ser = new XmlSerializer(typeof(Pattern[]));
+					StringWriter writer = new StringWriter();
+					ser.Serialize(writer, Engine.TheTrack.Patterns);
+
+					base.OutgoingBuffer = writer.ToString();
+					/*XmlSerializer s = new XmlSerializer( typeof(Pattern[]) );
+					MemoryStream ms = new MemoryStream();
+					XmlTextWriter xw = new XmlTextWriter(ms, System.Text.Encoding.UTF8);
+
+
+					s.Serialize( xw, Engine.TheTrack.Patterns);
+					xw.Flush();
+					xw.Close();
+
+
+					base.OutgoingByteBuffer = ms.ToArray();
+					base.UseAsciiOutput = false;
+					base.TerminateOnSend = true;*/
 				}
 				else
 				{

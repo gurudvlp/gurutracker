@@ -60,6 +60,7 @@ namespace gurumod.WebPages.Actions
 					////	test of wth it adds thigns to the end for
 					int nextoscid = Engine.TheTrack.Samples[smpid].WaveMachine.NextGeneratorID();
 					Engine.TheTrack.Samples[smpid].WaveMachine.Generators[nextoscid] = new gurumod.Machines.WavFile();
+					Engine.TheTrack.Samples[smpid].WaveMachine.UpdateGenProcTypes();
 					OutgoingBuffer = "OK";
 				}
 				else { OutgoingBuffer = "FAIL Sample " + smpid.ToString() + " is null"; }
