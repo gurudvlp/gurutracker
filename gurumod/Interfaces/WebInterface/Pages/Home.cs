@@ -15,18 +15,21 @@ namespace gurumod.WebPages
 		public override bool Run ()
 		{
 			base.Template = System.IO.File.ReadAllText (Engine.PFP (Engine.Configuration.WebTemplateDir + "index.html"));
-			
-			if (base.RequestParts.Length > 1) {
+
+			if(base.RequestParts[0].ToLower() == "connection-test")
+			{
+				base.Template = "";
+				base.OutgoingBuffer = "gurutracker web interface";
+				base.TerminateOnSend = true;
+				
+			}
+			else if (base.RequestParts.Length > 1) 
+			{
 				if (base.RequestParts [1].ToLower () == "track.js") 
 				{
 					string toret = System.IO.File.ReadAllText (Engine.PFP (Engine.Configuration.WebTemplateDir + "track.js"));
 					base.OutgoingBuffer = toret;
 					base.ContentType = "application/javascript";
-				} 
-				else if(base.RequestParts[1].ToLower() == "connection-test")
-				{
-					string toret = "gurutracker web interface";
-					base.OutgoingBuffer = toret;
 				}
 				else
 				{

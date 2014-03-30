@@ -44,6 +44,8 @@ namespace gurumod.WebPages.Actions
 			string inputa = base.PostVars["INPUT0"];
 			int inputaid = 0;
 			int inputatype = 0;
+			double delay = double.Parse(base.PostVars["DELAY"]);
+			double decay = double.Parse(base.PostVars["DECAY"]);
 
 			if(inputa.IndexOf("gen") == 0)
 			{
@@ -62,6 +64,8 @@ namespace gurumod.WebPages.Actions
 
 			Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[processorid].Inputs[0].SourceID = inputaid;
 			Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[processorid].Inputs[0].SourceType = inputatype;
+			((Machines.Reverb)Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[processorid]).Delay = delay;
+			((Machines.Reverb)Engine.TheTrack.Samples[sampleid].WaveMachine.Processors[processorid]).Decay = decay;
 
 			OutgoingBuffer = "OK";
 			return true;

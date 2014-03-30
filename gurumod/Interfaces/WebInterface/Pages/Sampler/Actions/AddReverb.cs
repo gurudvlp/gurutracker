@@ -48,7 +48,7 @@ namespace gurumod.WebPages.Actions
 					//int nextoscid = Engine.TheTrack.Samples[smpid].WaveMachine.NextProcessorID();
 					//Engine.TheTrack.Samples[smpid].WaveMachine.Processors[nextoscid] = new gurumod.Machines.Reverb();
 
-					Machines.Processor[] tmppr = new gurumod.Machines.Processor[Engine.TheTrack.Samples[smpid].WaveMachine.Processors.Length + 1];
+					/*Machines.Processor[] tmppr = new gurumod.Machines.Processor[Engine.TheTrack.Samples[smpid].WaveMachine.Processors.Length + 1];
 					for(int eogo = 0; eogo < Engine.TheTrack.Samples[smpid].WaveMachine.Processors.Length; eogo++)
 					{
 						tmppr[eogo] = Engine.TheTrack.Samples[smpid].WaveMachine.Processors[eogo];
@@ -59,7 +59,15 @@ namespace gurumod.WebPages.Actions
 					
 					Engine.TheTrack.Samples[smpid].WaveMachine.Processors = tmppr;
 					Engine.TheTrack.Samples[smpid].WaveMachine.UpdateGenProcTypes();
+					OutgoingBuffer = "OK";*/
+
+					int nextid = Engine.TheTrack.Samples[smpid].WaveMachine.NextProcessorID();
+					Engine.TheTrack.Samples[smpid].WaveMachine.Processors[nextid] = new Machines.Reverb();
+					((Machines.Reverb)Engine.TheTrack.Samples[smpid].WaveMachine.Processors[nextid]).Initialize();
+					Engine.TheTrack.Samples[smpid].WaveMachine.UpdateGenProcTypes();
+
 					OutgoingBuffer = "OK";
+
 				} else { OutgoingBuffer = "FAIL Sample id " + smpid.ToString() + " is null"; }
 			} else { OutgoingBuffer = "FAIL Failed to parse sample id"; }
 

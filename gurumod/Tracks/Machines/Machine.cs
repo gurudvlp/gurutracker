@@ -31,8 +31,8 @@ namespace gurumod
 		
 		[XmlElement("ProcessorTypes")] public string[] ProcessorTypes = new string[128];
 		
-		[XmlElement("MaxGenerators")] public int MaxGenerators = 32;
-		[XmlElement("MaxProcessors")] public int MaxProcessors = 32;
+		[XmlElement("MaxGenerators")] public int MaxGenerators = 128;
+		[XmlElement("MaxProcessors")] public int MaxProcessors = 128;
 
 		[XmlIgnore()] public static ASCIIEncoding encoder = new ASCIIEncoding();
 
@@ -373,6 +373,9 @@ namespace gurumod
 
 		public void UpdateGenProcTypes()
 		{
+			Console.WriteLine("UpdateGenProcTypes: G {0} GT {1} P {2} PT {3}",
+			                  Generators.Length, this.GeneratorTypes.Length,
+			                  this.Processors.Length, this.ProcessorTypes.Length);
 			for(int egen = 0; egen < this.Generators.Length; egen++)
 			{
 				if(Generators[egen] != null) { GeneratorTypes[egen] = Generators[egen].GetType().ToString(); }
@@ -430,7 +433,7 @@ namespace gurumod
 			
 			//GeneratorTypes = new string[128];
 			if(ProcessorTypes == null) { return; }
-			Processors = new Machines.Processor[ProcessorTypes.Length];
+			Processors = new Machines.Processor[MaxProcessors];
 			
 			for(int eg = 0; eg < Processors.Length; eg++)
 			{
@@ -676,7 +679,7 @@ namespace gurumod
 		{
 			for(int eg = 0; eg < this.Generators.Length; eg++)
 			{
-				if(this.Generators[eg] == null) { return eg; }
+				if(this.Generators[eg] == null || this.GeneratorTypes[eg] == "") { return eg; }
 			}
 
 			return -1;
@@ -686,7 +689,8 @@ namespace gurumod
 		{
 			for(int eg = 0; eg < this.Processors.Length; eg++)
 			{
-				if(this.Processors[eg] == null) { return eg; }
+				if(this.Processors[eg] == null
+			    || (this.Processors[eg] != null && this.ProcessorTypes[eg] == "")) { return eg; }
 			}
 
 			return -1;

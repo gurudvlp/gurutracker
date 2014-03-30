@@ -50,7 +50,7 @@ namespace gurumod.WebPages.Actions
 				
 				if(Engine.TheTrack.Samples[smpid] != null)
 				{
-					Machines.Processor[] tmppr = new gurumod.Machines.Processor[Engine.TheTrack.Samples[smpid].WaveMachine.Processors.Length + 1];
+					/*Machines.Processor[] tmppr = new gurumod.Machines.Processor[Engine.TheTrack.Samples[smpid].WaveMachine.Processors.Length + 1];
 					for(int eogo = 0; eogo < Engine.TheTrack.Samples[smpid].WaveMachine.Processors.Length; eogo++)
 					{
 						tmppr[eogo] = Engine.TheTrack.Samples[smpid].WaveMachine.Processors[eogo];
@@ -59,7 +59,11 @@ namespace gurumod.WebPages.Actions
 					tmppr[tmppr.Length - 1] = new gurumod.Machines.Mixer();
 					((Machines.Mixer)tmppr[tmppr.Length - 1]).Initialize();
 					
-					Engine.TheTrack.Samples[smpid].WaveMachine.Processors = tmppr;
+					Engine.TheTrack.Samples[smpid].WaveMachine.Processors = tmppr;*/
+
+					int nextid = Engine.TheTrack.Samples[smpid].WaveMachine.NextProcessorID();
+					Engine.TheTrack.Samples[smpid].WaveMachine.Processors[nextid] = new Machines.Mixer();
+					((Machines.Mixer)Engine.TheTrack.Samples[smpid].WaveMachine.Processors[nextid]).Initialize();
 					Engine.TheTrack.Samples[smpid].WaveMachine.UpdateGenProcTypes();
 					OutgoingBuffer = "OK";
 					

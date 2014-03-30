@@ -594,6 +594,16 @@ namespace gurumod
 				Console.WriteLine(ex.Message);
 			}
 			fs.Close();
+
+			for(int es = 0; es < Engine.TheTrack.Samples.Length; es++)
+			{
+				if(Engine.TheTrack.Samples[es] != null && Engine.TheTrack.Samples[es].WaveMachine != null)
+				{
+					Console.WriteLine("Sample: {0}, ProcLen {1}  ProcTypeLen {2}", es,
+					                  Engine.TheTrack.Samples[es].WaveMachine.Processors.Length,
+					                  Engine.TheTrack.Samples[es].WaveMachine.ProcessorTypes.Length);
+				}
+			}
 			/*
 			for(int ep = 0; ep < 5; ep++)
 			{
