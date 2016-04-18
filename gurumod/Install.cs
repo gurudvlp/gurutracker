@@ -187,14 +187,21 @@ namespace gurumod.Installer
 				System.Diagnostics.Process proc = new System.Diagnostics.Process();
 				proc.EnableRaisingEvents=false; 
 				proc.StartInfo.FileName = "ln";
-				proc.StartInfo.Arguments = "-s " + Installer.DataFolder + "bin/gurutracker " + Installer.BinFolder + "gurutracker";
+				proc.StartInfo.Arguments = "-s " + Installer.DataFolder + "bin/gurutracker.sh " + Installer.BinFolder + "gurutracker";
 				proc.Start();
 				proc.WaitForExit();
 				
 				proc = new System.Diagnostics.Process();
 				proc.EnableRaisingEvents = false;
 				proc.StartInfo.FileName = "chmod";
-				proc.StartInfo.Arguments = "ugo+x " + Installer.DataFolder + "bin/Debug/gurutracker*";
+				proc.StartInfo.Arguments = "ugo+x " + Installer.DataFolder + "bin/gurutracker.exe";
+				proc.Start();
+				proc.WaitForExit();
+
+				proc = new System.Diagnostics.Process();
+				proc.EnableRaisingEvents = false;
+				proc.StartInfo.FileName = "chmod";
+				proc.StartInfo.Arguments = "ugo+x " + Installer.DataFolder + "bin/gurutracker.sh";
 				proc.Start();
 				proc.WaitForExit();
 			}

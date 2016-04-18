@@ -43,6 +43,10 @@ namespace gurumod
 					Environment.Exit(0);
 				}
 			}
+			else
+			{
+				Environment.CurrentDirectory = "/usr/share/gurutracker/bin";
+			}
 			
 			//Engine.ConfigPath = Installer.Installer.DataFolder;
 			//Engine.ConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Engine.EngineName) + "/";
