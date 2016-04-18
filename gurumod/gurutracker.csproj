@@ -25,7 +25,7 @@
     <Commandlineparameters>-f /home/guru/gurutracker/Tracks/betatezt.gt</Commandlineparameters>
     <CustomCommands>
       <CustomCommands>
-        <Command type="BeforeBuild" command="../build.sh" workingdir="${SolutionDir}" />
+        <Command type="BeforeBuild" command="../Resources/build-resources.sh" workingdir="${SolutionDir}" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>

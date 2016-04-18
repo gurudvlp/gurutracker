@@ -6,16 +6,6 @@
 #
 ########################################################################
 
-mkdir -p gurumod/Resources/bin
-cd Resources
-tar -cvf ../gurumod/Resources/Samples.tar samples
-tar -cvf ../gurumod/Resources/Interfaces.tar Interfaces
-tar -cvf ../gurumod/Resources/Tracks.tar Tracks
+./Resources/build-resources.sh
 
-cd ..
-rm gurumod/Resources/bin/* -rf
-cp bin/Debug gurumod/Resources/bin
-
-tar -cvf gurumod/Resources/Bin.tar bin
-
-#mdtool build gurutracker.sln > buildlog.txt
+mdtool build gurutracker.sln > buildlog.txt

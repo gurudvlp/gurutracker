@@ -8,7 +8,7 @@
       <File FileName="gurumod/Interfaces/WebInterface/WebInterface.cs" Line="327" Column="6" />
       <File FileName="gurumod/Interfaces/Debug/DebugInterface.cs" Line="1" Column="1" />
       <File FileName="gurumod/Interfaces/WebInterface/Pages/Sequencer.cs" Line="130" Column="62" />
-      <File FileName="gurumod/Install.cs" Line="150" Column="1" />
+      <File FileName="gurumod/Install.cs" Line="154" Column="4" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
