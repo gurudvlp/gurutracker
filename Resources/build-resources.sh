@@ -10,7 +10,7 @@ cd Resources
 tar -cvf ../gurumod/Resources/Samples.tar samples
 tar -cvf ../gurumod/Resources/Interfaces.tar Interfaces
 tar -cvf ../gurumod/Resources/Tracks.tar Tracks
-tar -cvf ../gurumod/Resources/Libraries.tar Libraries
+
 
 cd ..
 rm gurumod/Resources/bin/* -rf

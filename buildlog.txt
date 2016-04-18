@@ -1,0 +1,273 @@
+MonoDevelop Build Tool
+Loading solution: /home/guru/Projects/gurutracker/gurutracker.sln
+   Loading solution: /home/guru/Projects/gurutracker/gurutracker.sln
+      Loading projects ..
+Building Solution: gurutracker (Debug|x86)
+   Building: gurutracker (Debug|x86)
+      Executing: /home/guru/Projects/gurutracker/Resources/build-resources.sh 
+      samples/
+      samples/goodsnare-old1.wav
+      samples/hihat16.wav
+      samples/goodsnare.wav
+      samples/gtest.wav
+      samples/hihat18.wav
+      samples/drum.wav
+      samples/trianglebass.wav
+      samples/blastin.wav
+      samples/Alarm.wav
+      samples/conga9.wav
+      samples/yeah.wav
+      samples/ohman.wav
+      samples/Acid.wav
+      samples/blownout.wav
+      samples/zluttiqueqs.wav
+      Interfaces/
+      Interfaces/Web/
+      Interfaces/Web/templates/
+      Interfaces/Web/templates/detailer.js
+      Interfaces/Web/templates/index-cutdown.html
+      Interfaces/Web/templates/index-real.html
+      Interfaces/Web/templates/sampler.js
+      Interfaces/Web/templates/index-old.html
+      Interfaces/Web/templates/images/
+      Interfaces/Web/templates/images/media-playback-start.png
+      Interfaces/Web/templates/images/emoticons/
+      Interfaces/Web/templates/images/emoticons/face-angel.png
+      Interfaces/Web/templates/images/emoticons/face-crying.png
+      Interfaces/Web/templates/images/emoticons/face-plain.png
+      Interfaces/Web/templates/images/emoticons/face-angry.png
+      Interfaces/Web/templates/images/emoticons/face-sick.png
+      Interfaces/Web/templates/images/emoticons/face-uncertain.png
+      Interfaces/Web/templates/images/emoticons/face-cool.png
+      Interfaces/Web/templates/images/emoticons/face-wink.png
+      Interfaces/Web/templates/images/emoticons/face-smile-big.png
+      Interfaces/Web/templates/images/emoticons/face-smile.png
+      Interfaces/Web/templates/images/emoticons/face-worried.png
+      Interfaces/Web/templates/images/emoticons/face-sad.png
+      Interfaces/Web/templates/images/emoticons/face-smirk.png
+      Interfaces/Web/templates/images/emoticons/face-raspberry.png
+      Interfaces/Web/templates/images/emoticons/face-devilish.png
+      Interfaces/Web/templates/images/emoticons/face-tired.png
+      Interfaces/Web/templates/images/emoticons/face-glasses.png
+      Interfaces/Web/templates/images/emoticons/face-kiss.png
+      Interfaces/Web/templates/images/emoticons/face-monkey.png
+      Interfaces/Web/templates/images/emoticons/face-surprise.png
+      Interfaces/Web/templates/images/emoticons/face-embarrassed.png
+      Interfaces/Web/templates/images/emoticons/face-laugh.png
+      Interfaces/Web/templates/images/on.png
+      Interfaces/Web/templates/images/toolicons/
+      Interfaces/Web/templates/images/toolicons/help-faq.png
+      Interfaces/Web/templates/images/toolicons/changes-prevent.png
+      Interfaces/Web/templates/images/toolicons/mail-unread.png
+      Interfaces/Web/templates/images/toolicons/mail-reply-sender.png
+      Interfaces/Web/templates/images/toolicons/list-remove.png
+      Interfaces/Web/templates/images/toolicons/mail-attachment.png
+      Interfaces/Web/templates/images/toolicons/applications-multimedia.png
+      Interfaces/Web/templates/images/toolicons/document-save.png
+      Interfaces/Web/templates/images/toolicons/go-next.png
+      Interfaces/Web/templates/images/toolicons/dialog-warning.png
+      Interfaces/Web/templates/images/toolicons/format-text-underline.png
+      Interfaces/Web/templates/images/toolicons/format-text-strikethrough.png
+      Interfaces/Web/templates/images/toolicons/mail-mark-important.png
+      Interfaces/Web/templates/images/toolicons/document-new.png
+      Interfaces/Web/templates/images/toolicons/application-exit.png
+      Interfaces/Web/templates/images/toolicons/mail-send-receive.png
+      Interfaces/Web/templates/images/toolicons/help-contents.png
+      Interfaces/Web/templates/images/toolicons/format-text-italic.png
+      Interfaces/Web/templates/images/toolicons/go-previous.png
+      Interfaces/Web/templates/images/toolicons/insert-image.png
+      Interfaces/Web/templates/images/toolicons/gtk-edit.svg
+      Interfaces/Web/templates/images/toolicons/list-add.png
+      Interfaces/Web/templates/images/toolicons/mail-mark-junk.png
+      Interfaces/Web/templates/images/toolicons/mail-read.png
+      Interfaces/Web/templates/images/toolicons/format-text-bold.png
+      Interfaces/Web/templates/images/toolicons/dialog-error.png
+      Interfaces/Web/templates/images/toolicons/insert-link.png
+      Interfaces/Web/templates/images/toolicons/changes-allow.png
+      Interfaces/Web/templates/images/media-record.png
+      Interfaces/Web/templates/images/gurumod.png
+      Interfaces/Web/templates/images/view-restore.png
+      Interfaces/Web/templates/images/audio-volume-muted.png
+      Interfaces/Web/templates/images/media-seek-backward.png
+      Interfaces/Web/templates/images/off.png
+      Interfaces/Web/templates/images/processors/
+      Interfaces/Web/templates/images/processors/divide.png
+      Interfaces/Web/templates/images/processors/minus.png
+      Interfaces/Web/templates/images/processors/multiply.png
+      Interfaces/Web/templates/images/processors/plus.png
+      Interfaces/Web/templates/images/media-skip-forward.png
+      Interfaces/Web/templates/images/view-refresh.png
+      Interfaces/Web/templates/images/view-fullscreen.png
+      Interfaces/Web/templates/images/media-skip-backward.png
+      Interfaces/Web/templates/images/audio-volume-low.png
+      Interfaces/Web/templates/images/audio-volume-high.png
+      Interfaces/Web/templates/images/oscillators/
+      Interfaces/Web/templates/images/oscillators/newwaveplayer.png
+      Interfaces/Web/templates/images/oscillators/square.png
+      Interfaces/Web/templates/images/oscillators/sawtooth.png
+      Interfaces/Web/templates/images/oscillators/oscillator-icons.xcf
+      Interfaces/Web/templates/images/oscillators/sine.png
+      Interfaces/Web/templates/images/oscillators/newosc.png
+      Interfaces/Web/templates/images/oscillators/triangle.png
+      Interfaces/Web/templates/images/media-playback-stop.png
+      Interfaces/Web/templates/images/media-seek-forward.png
+      Interfaces/Web/templates/images/media-playback-pause.png
+      Interfaces/Web/templates/images/media-eject.png
+      Interfaces/Web/templates/images/smilies/
+      Interfaces/Web/templates/images/smilies/icon_razz.gif
+      Interfaces/Web/templates/images/smilies/icon_biggrin.gif
+      Interfaces/Web/templates/images/smilies/icon_lol.gif
+      Interfaces/Web/templates/images/smilies/icon_sad.gif
+      Interfaces/Web/templates/images/smilies/icon_cry.gif
+      Interfaces/Web/templates/images/smilies/icon_rolleyes.gif
+      Interfaces/Web/templates/images/smilies/icon_twisted.gif
+      Interfaces/Web/templates/images/smilies/icon_redface.gif
+      Interfaces/Web/templates/images/smilies/icon_smile.gif
+      Interfaces/Web/templates/images/smilies/icon_wink.gif
+      Interfaces/Web/templates/images/smilies/icon_surprised.gif
+      Interfaces/Web/templates/images/smilies/icon_mad.gif
+      Interfaces/Web/templates/images/smilies/icon_evil.gif
+      Interfaces/Web/templates/images/smilies/icon_cool.gif
+      Interfaces/Web/templates/images/smilies/icon_confused.gif
+      Interfaces/Web/templates/images/smilies/icon_eek.gif
+      Interfaces/Web/templates/track.js
+      Interfaces/Web/templates/admin/
+      Interfaces/Web/templates/admin/index.html
+      Interfaces/Web/templates/pattern-editor.js
+      Interfaces/Web/templates/index.html
+      Interfaces/Web/templates/detailer/
+      Interfaces/Web/templates/detailer/main.html
+      Interfaces/Web/templates/sampler/
+      Interfaces/Web/templates/sampler/details.html
+      Interfaces/Web/templates/sampler/eachmixer-eachgatesrc.html
+      Interfaces/Web/templates/sampler/generators/
+      Interfaces/Web/templates/sampler/generators/gurumod.machines.wavfile.html
+      Interfaces/Web/templates/sampler/generators/gurumod.machines.osc.html
+      Interfaces/Web/templates/sampler/eachmixer.html
+      Interfaces/Web/templates/sampler/importfile.html
+      Interfaces/Web/templates/sampler/eachsample.html
+      Interfaces/Web/templates/sampler/eachosc.html
+      Interfaces/Web/templates/sampler/generator.html
+      Interfaces/Web/templates/sampler/processors/
+      Interfaces/Web/templates/sampler/processors/inputoption.html
+      Interfaces/Web/templates/sampler/processors/inputselect.html
+      Interfaces/Web/templates/sampler/processors/gurumod.machines.envelope.html
+      Interfaces/Web/templates/sampler/processors/gurumod.machines.gate.html
+      Interfaces/Web/templates/sampler/processors/gurumod.machines.reverb.html
+      Interfaces/Web/templates/sampler/processors/copy of gurumod.machines.mixer.html
+      Interfaces/Web/templates/sampler/processors/gurumod.machines.mixer.html
+      Interfaces/Web/templates/sampler/main.html
+      Interfaces/Web/templates/sampler/genmachine.html
+      Interfaces/Web/templates/sampler/samplelist.html
+      Interfaces/Web/templates/sequencer/
+      Interfaces/Web/templates/sequencer/header.html
+      Interfaces/Web/templates/sequencer/eachpatterncell.html
+      Interfaces/Web/templates/sequencer/eachrow.html
+      Interfaces/Web/templates/sequencer/eachelement.html
+      Interfaces/Web/templates/sequencer/main.html
+      Interfaces/Web/templates/sequencer/patternoptions.html
+      Interfaces/Web/templates/sequencer/eachchannel.html
+      Interfaces/Web/PageCat/
+      Interfaces/Web/PageCat/0.xml
+      Interfaces/Web/PageCat/1.xml
+      Interfaces/Web/PageCat/2.xml
+      Interfaces/Web/PageCat/5.xml
+      Interfaces/Web/PageCat/4.xml
+      Interfaces/Web/PageCat/3.xml
+      Interfaces/Web/PageCat/6.xml
+      Tracks/
+      Tracks/track4.xml
+      Tracks/track3.xml
+      Tracks/track2.xml
+      Tracks/copy of track.xml
+      Tracks/track1.xml
+      Tracks/osc.xml
+      Tracks/track-og.xml
+      Tracks/track.xml
+      Tracks/pattern.xml
+      Libraries/
+      Libraries/SdlDotNet.dll
+      Libraries/OpenTK.Compatibility.dll
+      Libraries/Tao.Sdl.dll
+      Libraries/OpenTK.dll
+      Libraries/OpenTK.dll.config
+      Libraries/OpenTK.GLControl.dll
+      cp: omitting directory ‘bin/Debug’
+      bin/
+      bin/Debug/
+      bin/Debug/SdlDotNet.dll
+      bin/Debug/gurutracker.exe
+      bin/Debug/OpenTK.Compatibility.dll
+      bin/Debug/Tao.Sdl.dll
+      bin/Debug/OpenTK.dll
+      bin/Debug/OpenTK.dll.config
+      bin/Debug/OpenTK.GLControl.dll
+      bin/Debug/gurutracker.exe.mdb
+      Performing main compilation...
+      /usr/bin/mcs /noconfig "/r:/usr/lib/mono/4.0/mscorlib.dll" -nostdlib "/out:/home/guru/Projects/gurutracker/bin/Debug/gurutracker.exe" "/r:/usr/lib/mono/4.0/System.dll" "/r:/usr/lib/mono/4.0/System.Xml.dll" "/r:/home/guru/Projects/gurutracker/Resources/Libraries/OpenTK.dll" "/r:/usr/lib/mono/4.0/System.Data.dll" "/r:/home/guru/Projects/gurutracker/Resources/Libraries/SdlDotNet.dll" "/r:/home/guru/Projects/gurutracker/Resources/Libraries/Tao.Sdl.dll" "/r:/usr/lib/mono/4.0/ICSharpCode.SharpZipLib.dll" "/r:/usr/lib/mono/4.0/System.Core.dll" /nologo /warn:4 /debug:full /optimize- /codepage:utf8 /platform:x86 "/define:DEBUG"  /t:exe "/home/guru/Projects/gurutracker/gurumod/AssemblyInfo.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/Interface.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/BBCode.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Categories.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/IncomingRequest.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/WebInterface.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Home.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Image.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/WebPage.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Admin/Admin.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Admin/EngineConfig.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Admin/PageCat.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/StatusCodes/301MovedPermanently.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/StatusCodes/404NotFound.cs" "/home/guru/Projects/gurutracker/gurumod/Connections/Connections.cs" "/home/guru/Projects/gurutracker/gurumod/Connections/Listeners.cs" "/home/guru/Projects/gurutracker/gurumod/Connections/Multicast.cs" "/home/guru/Projects/gurutracker/gurumod/Tracks/Patterns/Pattern.cs" "/home/guru/Projects/gurutracker/gurumod/Tracks/Patterns/PatternChannel.cs" "/home/guru/Projects/gurutracker/gurumod/Tracks/Patterns/PatternElement.cs" "/home/guru/Projects/gurutracker/gurumod/Tracks/Samples/Sample.cs" "/home/guru/Projects/gurutracker/gurumod/Tracks/Track.cs" "/home/guru/Projects/gurutracker/gurumod/Player.cs" "/home/guru/Projects/gurutracker/gurumod/Engine.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sequencer.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/UpdatePattern.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Player.cs" "/home/guru/Projects/gurutracker/gurumod/Tracks/Samples/Generator.cs" "/home/guru/Projects/gurutracker/gurumod/Logging.cs" "/home/guru/Projects/gurutracker/gurumod/Install.cs" "/home/guru/Projects/gurutracker/gurumod/Config.cs" "/home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Machine.cs" "/home/guru/Projects/gurutracker/gurumod/Tracks/Machines/MixerSettings.cs" "/home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Mixers/Mixer.cs" "/home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Mixers/InputData.cs" "/home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Mixers/Processor.cs" "/home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Generators/Oscilator.cs" "/home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Generators/Generator.cs" "/home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Generators/Osc.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/Processors/Mixer.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/Generators/Oscillator.cs" "/home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Mixers/Gate.cs" "/home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Generators/WavFile.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/Processors/Gate.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/Generators/WavPlayer.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Scripts.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Templates.cs" "/home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Mixers/Reverb.cs" "/home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Mixers/Envelope.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/SampleData.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/Actions/AddOsc.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/Actions/AddMixer.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/Actions/AddWavePlayer.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/Actions/AddReverb.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/Actions/AddGate.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/Actions/TweakWavePlayer.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/Actions/TweakReverb.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/Actions/TweakGate.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/Actions/TweakMachine.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/Actions/AddEnvelope.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/Actions/TweakEnvelope.cs" "/home/guru/Projects/gurutracker/gurumod/Tracks/Serializers/LoadGT-0001.cs" "/home/guru/Projects/gurutracker/gurumod/Tracks/Serializers/0001/WaveMachineLoader.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Detailer.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/SampleDataXML.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/MachineDataXML.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/MachineGeneratorXML.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/Actions/ListWavSamples.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/MachineProcessorXML.cs" "/home/guru/Projects/gurutracker/gurumod/Interfaces/Debug/DebugInterface.cs" "/res:/home/guru/Projects/gurutracker/gurumod/Resources/Bin.tar,gurumod.Resources.Bin.tar" "/res:/home/guru/Projects/gurutracker/gurumod/Resources/Interfaces.tar,gurumod.Resources.Interfaces.tar" "/res:/home/guru/Projects/gurutracker/gurumod/Resources/Samples.tar,gurumod.Resources.Samples.tar" "/res:/home/guru/Projects/gurutracker/gurumod/Resources/version.txt,gurumod.Resources.version.txt" "/res:/home/guru/Projects/gurutracker/gurumod/Resources/Tracks.tar,gurumod.Resources.Tracks.tar" 
+      Compilation succeeded - 59 warning(s)
+      
+      /home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/StatusCodes/301MovedPermanently.cs(30,15): warning CS0114: `gurumod.WebPages.StatusCodes.MovedPermanently.TakeTurn()' hides inherited member `gurumod.WebPages.WebPage.TakeTurn()'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword
+      /home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/WebPage.cs(40,23): (Location of the symbol related to previous warning)
+      /home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/StatusCodes/404NotFound.cs(30,15): warning CS0114: `gurumod.WebPages.StatusCodes.NotFound.TakeTurn()' hides inherited member `gurumod.WebPages.WebPage.TakeTurn()'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword
+      /home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/WebPage.cs(40,23): (Location of the symbol related to previous warning)
+      /home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/BBCode.cs(172,20): warning CS0168: The variable `ex' is declared but never used
+      /home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/IncomingRequest.cs(92,11): warning CS0219: The variable `delmforlist' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/IncomingRequest.cs(93,11): warning CS0219: The variable `delmforvar' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/IncomingRequest.cs(94,11): warning CS0219: The variable `delmforcookie' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/WebInterface.cs(129,9): warning CS0219: The variable `onefound' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/WebInterface.cs(470,60): warning CS0429: Unreachable expression code detected
+      /home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/WebInterface.cs(496,6): warning CS0162: Unreachable code detected
+      /home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Admin/EngineConfig.cs(23,8): warning CS0219: The variable `catid' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Admin/PageCat.cs(97,13): warning CS0219: The variable `typetype' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Admin/PageCat.cs(103,23): warning CS0168: The variable `ex' is declared but never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Patterns/PatternChannel.cs(300,9): warning CS0219: The variable `forcenewbuffer' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Samples/Sample.cs(252,21): warning CS0219: The variable `riff_chunck_size' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Samples/Sample.cs(263,21): warning CS0219: The variable `format_chunk_size' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Samples/Sample.cs(264,21): warning CS0219: The variable `audio_format' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Samples/Sample.cs(267,21): warning CS0219: The variable `byte_rate' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Samples/Sample.cs(268,21): warning CS0219: The variable `block_align' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Samples/Sample.cs(275,21): warning CS0219: The variable `data_chunk_size' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Track.cs(234,12): warning CS0219: The variable `rowoffset' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sequencer.cs(79,13): warning CS0219: The variable `toret' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sequencer.cs(211,20): warning CS0168: The variable `ex' is declared but never used
+      /home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Player.cs(136,11): warning CS0219: The variable `newpid' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Install.cs(78,10): warning CS0219: The variable `binfexists' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Machine.cs(180,11): warning CS0219: The variable `noprocs' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Machine.cs(317,11): warning CS0219: The variable `timeperrow' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Generators/Oscilator.cs(72,8): warning CS0219: The variable `wavelen' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Generators/Oscilator.cs(73,11): warning CS0219: The variable `sinsin' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Generators/Generator.cs(124,11): warning CS0219: The variable `toret' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Generators/Osc.cs(105,11): warning CS0219: The variable `freq' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Generators/Osc.cs(138,8): warning CS0219: The variable `wavelen' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Generators/Osc.cs(139,11): warning CS0219: The variable `sinsin' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/Processors/Mixer.cs(119,8): warning CS0219: The variable `incount' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/Processors/Mixer.cs(122,11): warning CS0219: The variable `keyval' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Generators/WavFile.cs(151,22): warning CS0168: The variable `blah' is declared but never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Generators/WavFile.cs(162,22): warning CS0168: The variable `blah' is declared but never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Generators/WavFile.cs(213,11): warning CS0219: The variable `freq' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Generators/WavFile.cs(331,11): warning CS0472: The result of comparing value type `short' with null is always `false'
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Generators/WavFile.cs(331,25): warning CS0162: Unreachable code detected
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Generators/WavFile.cs(249,11): warning CS0219: The variable `trackpath' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Generators/WavFile.cs(259,21): warning CS0219: The variable `riff_chunck_size' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Generators/WavFile.cs(270,21): warning CS0219: The variable `format_chunk_size' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Generators/WavFile.cs(271,21): warning CS0219: The variable `audio_format' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Generators/WavFile.cs(274,21): warning CS0219: The variable `byte_rate' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Generators/WavFile.cs(275,21): warning CS0219: The variable `block_align' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Generators/WavFile.cs(286,21): warning CS0219: The variable `data_chunk_size' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Generators/WavFile.cs(308,13): warning CS0219: The variable `ad' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/Processors/Gate.cs(97,8): warning CS0219: The variable `incount' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/Processors/Gate.cs(100,11): warning CS0219: The variable `keyval' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/Generators/WavPlayer.cs(60,11): warning CS0219: The variable `timelenofsound' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Machines/Mixers/Reverb.cs(132,12): warning CS0219: The variable `realout' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Interfaces/WebInterface/Pages/Sampler/SampleData.cs(166,25): warning CS0168: The variable `ex' is declared but never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Serializers/0001/WaveMachineLoader.cs(405,9): warning CS0219: The variable `keepgoin' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Tracks/Serializers/0001/WaveMachineLoader.cs(420,11): warning CS0219: The variable `toret' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Connections/Connections.cs(28,7): warning CS0414: The private field `gurumod.IncomingConnections.clientloggedin' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Connections/Connections.cs(33,8): warning CS0414: The private field `gurumod.IncomingConnections.clientstillconnected' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Connections/Connections.cs(35,8): warning CS0414: The private field `gurumod.IncomingConnections.alreadypinged' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Connections/Connections.cs(36,8): warning CS0414: The private field `gurumod.IncomingConnections.pingtimeforwebsite' is assigned but its value is never used
+      /home/guru/Projects/gurutracker/gurumod/Connections/Connections.cs(43,7): warning CS0414: The private field `gurumod.IncomingConnections.connectionid' is assigned but its value is never used
+      
+      
+      Build complete -- 0 errors, 59 warnings
