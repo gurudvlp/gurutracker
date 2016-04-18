@@ -125,6 +125,7 @@ namespace gurumod.Installer
 				//Console.WriteLine("Data: {0}  :: Bin: {1}", Installer.DataFolder, Installer.BinFolder);
 				try
 				{
+					Console.WriteLine("Data folder located at {0}", Installer.DataFolder);
 					System.IO.Directory.CreateDirectory(Installer.DataFolder);
 					InstallResources();
 					
@@ -145,7 +146,7 @@ namespace gurumod.Installer
 					
 					Environment.Exit(0);
 					
-					
+
 				}
 			//}
 			

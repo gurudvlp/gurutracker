@@ -23,6 +23,11 @@
     <PlatformTarget>x86</PlatformTarget>
     <Externalconsole>true</Externalconsole>
     <Commandlineparameters>-f /home/guru/gurutracker/Tracks/betatezt.gt</Commandlineparameters>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="BeforeBuild" command="../build.sh" workingdir="${SolutionDir}" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>none</DebugType>
