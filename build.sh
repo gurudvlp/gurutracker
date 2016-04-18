@@ -6,6 +6,7 @@
 #
 ########################################################################
 
+mkdir -p gurumod/Resources/bin
 tar -cvf gurumod/Resources/Samples.tar samples
 tar -cvf gurumod/Resources/Interfaces.tar Interfaces
 tar -cvf gurumod/Resources/Tracks.tar Tracks
