@@ -152,6 +152,5 @@
     <EmbeddedResource Include="Resources\Samples.tar" />
     <EmbeddedResource Include="Resources\version.txt" />
     <EmbeddedResource Include="Resources\Tracks.tar" />
-    <EmbeddedResource Include="Resources\Libraries.tar" />
   </ItemGroup>
 </Project>

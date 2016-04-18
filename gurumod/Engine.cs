@@ -27,10 +27,21 @@ namespace gurumod
 			Config.Load();
 			
 
-			if(!Installer.Installer.IsInstalled()
-			|| (args.Length > 0 && args[0].ToLower() == "install"))
+			if(!Installer.Installer.IsInstalled())
 			{
-				Installer.Installer.Install();
+				if(args.Length > 0 && 
+				   (args[0].ToLower() == "install"
+				 	|| args[0].ToLower() == "--install"
+				 	|| args[0].ToLower() == "-install"))
+				{
+
+					Installer.Installer.Install();
+				}
+				else
+				{
+					Console.WriteLine("Please run with --install flag");
+					Environment.Exit(0);
+				}
 			}
 			
 			//Engine.ConfigPath = Installer.Installer.DataFolder;
@@ -41,7 +52,7 @@ namespace gurumod
 			{
 				Console.WriteLine(Engine.EngineName + " " + Engine.EngineVersion);
 				Console.WriteLine("Copyright 2012 - 2014 Brian Murphy");
-				Console.WriteLine(" www.gurudigitalsolutions.com");
+				Console.WriteLine(" www.gurutronik.com");
 				Console.WriteLine(" ");
 				Console.WriteLine(Engine.EngineName + " could not find the configuration directory.");
 				Console.WriteLine("All of the config files need to be placed in");
@@ -229,8 +240,8 @@ namespace gurumod
 							|| args[earg].ToLower() == "-help")
 							{
 								Console.WriteLine(Engine.EngineName + " " + Engine.EngineVersion);
-								Console.WriteLine("Copyright 2012 - 2014 Brian Murphy");
-								Console.WriteLine(" www.gurudigitalsolutions.com");
+								Console.WriteLine("Copyright 2012 - 2016 Brian Murphy");
+								Console.WriteLine(" www.gurutronik.com");
 								Console.WriteLine(" ");
 								Console.WriteLine("USAGE:  gurutracker.exe [FLAGS]");
 								Console.WriteLine("FLAGS:");

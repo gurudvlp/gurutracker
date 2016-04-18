@@ -185,13 +185,6 @@ Building Solution: gurutracker (Debug|x86)
       Tracks/track-og.xml
       Tracks/track.xml
       Tracks/pattern.xml
-      Libraries/
-      Libraries/SdlDotNet.dll
-      Libraries/OpenTK.Compatibility.dll
-      Libraries/Tao.Sdl.dll
-      Libraries/OpenTK.dll
-      Libraries/OpenTK.dll.config
-      Libraries/OpenTK.GLControl.dll
       cp: omitting directory ‘bin/Debug’
       bin/
       bin/Debug/

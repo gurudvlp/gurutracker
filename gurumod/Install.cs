@@ -81,7 +81,7 @@ namespace gurumod.Installer
 				if(!datafexists)
 				{
 					Console.WriteLine(Engine.EngineName + " does not appear to be installed.");
-					Console.WriteLine("Please run with the flag --install");
+					//Console.WriteLine("Please run with the flag --install");
 					
 					return false;
 					//Install("/usr/share/" + Engine.EngineName + "/", Installer.BinFolder); 
@@ -137,7 +137,7 @@ namespace gurumod.Installer
 				{
 					Console.WriteLine("Installation failed.");
 					Console.WriteLine(ex.Message);
-					Console.WriteLine(ex.StackTrace);
+					//Console.WriteLine(ex.StackTrace);
 					
 					if(ex.Message.IndexOf("Access to the path") == 0)
 					{
@@ -168,16 +168,19 @@ namespace gurumod.Installer
 			//ExtractTar("version.txt", Installer.DataFolder);
 			ExtractTar("Bin.tar", Installer.DataFolder);
 			ExtractTar("Tracks.tar", Installer.datafolder);
+
+
 			
 			//Console.WriteLine("Initializing Configuration, in {0}", Environment.CurrentDirectory);
 			//Console.WriteLine(System.AppDomain.CurrentDomain.FriendlyName)
 			string exename = System.AppDomain.CurrentDomain.FriendlyName;
 			string exeloc = Environment.CurrentDirectory;
-			Console.WriteLine("exeloc, name {0} {1}", exeloc, exename);
+			//Console.WriteLine("exeloc, name {0} {1}", exeloc, exename);
 			
 			
 			File.Copy(Engine.PFP(exeloc + "/" + exename), Engine.PFP(Engine.Configuration.SharedConfigPath + "bin/gurutracker.exe"), true);
-			
+
+
 			if(Environment.OSVersion.Platform == PlatformID.Unix)
 			{
 				//	Create a link from /usr/bin/gurutracker to /usr/share/gurutracker/bin/Debug/gurutracker.exe
@@ -191,7 +194,7 @@ namespace gurumod.Installer
 				proc = new System.Diagnostics.Process();
 				proc.EnableRaisingEvents = false;
 				proc.StartInfo.FileName = "chmod";
-				proc.StartInfo.Arguments = "ugo+x " + Installer.DataFolder + "bin/gurutracker*";
+				proc.StartInfo.Arguments = "ugo+x " + Installer.DataFolder + "bin/Debug/gurutracker*";
 				proc.Start();
 				proc.WaitForExit();
 			}

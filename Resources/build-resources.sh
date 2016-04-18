@@ -15,6 +15,7 @@ tar -cvf ../gurumod/Resources/Tracks.tar Tracks
 cd ..
 rm gurumod/Resources/bin/* -rf
 cp Resources/Libraries/* bin/Debug
-cp bin/Debug gurumod/Resources/bin
+cp bin/Debug/* gurumod/Resources/bin
 
-tar -cvf gurumod/Resources/Bin.tar bin
+cd gurumod/Resources
+tar -cvf Bin.tar bin
