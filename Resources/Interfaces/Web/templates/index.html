@@ -335,6 +335,27 @@
 			left: 32px;
 			right: 32px;
 			top: 8px;
+			background: #000000;
+		}
+		
+		#page_header_buttons
+		{
+			
+			float: left;
+		}
+		
+		#page_header_playbackloop
+		{
+			float: left;
+			vertical-align: middle;
+		}
+		
+		#page_header_gurutracker
+		{
+			float: right;
+			font-size: 1.4em;
+			font-weight: bold;
+			color: #C0C0C0;
 		}
 		
 		#page_topnav
@@ -345,6 +366,7 @@
 			left: 32px;
 			right: 32px;
 			top: 42px;
+			background: #A0A0A0;
 		}
 		
 		#page_content
@@ -369,17 +391,25 @@
 </head>
 <body>
 	<div id="page_header">
-		<a href="javascript:Track.SaveTrack();" title="Save"><img src="/images/toolicons/document-save.png" border="0" alt="Save"></a>
-		<a href="javascript:Track.NewTrack();" title="New"><img src="/images/toolicons/document-new.png" border="0" alt="New"></a>
-		<a href="javascript:Track.StopPlayback();" title="Stop"><img src="/images/media-playback-stop.png" border="0" alt="Stop"></a>
-		<a href="javascript:Track.StartPlayback();" title="Play"><img src="/images/media-playback-start.png" border="0" alt="Play"></a>
-		<a href="javascript:Track.PausePlayback();" title="Pause"><img src="/images/media-playback-pause.png" border="0" alt="Pause"></a>
+		<div id="page_header_buttons">
+			<a href="javascript:Track.SaveTrack();" title="Save"><img src="/images/toolicons/document-save.png" border="0" alt="Save"></a>
+			<a href="javascript:Track.NewTrack();" title="New"><img src="/images/toolicons/document-new.png" border="0" alt="New"></a>
+			<a href="javascript:Track.StopPlayback();" title="Stop"><img src="/images/media-playback-stop.png" border="0" alt="Stop"></a>
+			<a href="javascript:Track.StartPlayback();" title="Play"><img src="/images/media-playback-start.png" border="0" alt="Play"></a>
+			<a href="javascript:Track.PausePlayback();" title="Pause"><img src="/images/media-playback-pause.png" border="0" alt="Pause"></a>
+		</div>
 		
-		<select onChange="Track.PlaybackLoopChange(this.options[this.selectedIndex].value)" name="playbackloopselect" id="playbackloopselect">
-			<option value="off">Loop Off</option>
-			<option value="pattern">Loop Pattern</option>
-			<option value="track">Loop Track</option>
-		</select>
+		<div id="page_header_playbackloop">
+			<select onChange="Track.PlaybackLoopChange(this.options[this.selectedIndex].value)" name="playbackloopselect" id="playbackloopselect">
+				<option value="off">Loop Off</option>
+				<option value="pattern">Loop Pattern</option>
+				<option value="track">Loop Track</option>
+			</select>
+		</div>
+		
+		<div id="page_header_gurutracker">
+			gurutracker
+		</div>
 	</div>
 	<div id="page_topnav">
 		<a href="javascript:ShowSequencer();" title="Show Sequencer" target="_top">Sequencer</a>

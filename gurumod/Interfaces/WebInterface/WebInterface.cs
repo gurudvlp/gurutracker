@@ -360,10 +360,10 @@ namespace gurumod
 				}
 			}
 			
-			if(TryLogin()) { /*CurrentUser.Save();*/ }
+			//if(TryLogin()) { /*CurrentUser.Save();*/ }
 			
 			//WebPage PageObject;
-			Console.WriteLine("Init page object...");
+			//Console.WriteLine("Init page object...");
 			InitPageObject();
 			//
 			//	Determine what page to load
@@ -474,7 +474,7 @@ namespace gurumod
 					if(catid < 0) { Console.WriteLine("CatID: {0} {1}", catid, IncomingHTTPRequest.Parts[0]); PageObject = new gurumod.WebPages.Home(); }
 					else
 					{
-						Console.WriteLine("CatID: {0}", catid);
+						//Console.WriteLine("CatID: {0}", catid);
 						try
 						{
 							

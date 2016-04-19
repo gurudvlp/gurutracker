@@ -258,18 +258,49 @@ namespace gurumod
 			{
 				try
 				{
-					clientStream.Write(encoder.GetBytes(TheInterface.OutgoingBuffer), 0, encoder.GetBytes(TheInterface.OutgoingBuffer).Length);
-					clientStream.Write(TheInterface.OutgoingByteBuffer, 0, TheInterface.OutgoingByteBuffer.Length);
-					clientStream.Flush();
-					
-					TheInterface.OutgoingBuffer = "";
-					TheInterface.OutgoingByteBuffer = null;
+
+					if(TheInterface.OutgoingBuffer.Length > 0)
+					{
+						clientStream.Write(encoder.GetBytes(TheInterface.OutgoingBuffer), 0, encoder.GetBytes(TheInterface.OutgoingBuffer).Length);
+					}
 				}
 				catch(Exception ex)
 				{
-					Console.WriteLine("btEngine: Connections: Binary output just failed!!");
-					Console.WriteLine("\t" + ex.Message);
+					Console.WriteLine("Binary output failed during ascii encoding");
 				}
+
+				try
+				{
+					if(!tcpClient.Connected)
+					{
+						//	no connection is present here
+					}
+					else
+					{
+						if(TheInterface.OutgoingByteBuffer != null && TheInterface.OutgoingByteBuffer.Length > 0)
+						{
+							clientStream.Write(TheInterface.OutgoingByteBuffer, 0, TheInterface.OutgoingByteBuffer.Length);
+
+						}
+					}
+
+				}
+				catch(Exception ex)
+				{
+					if(ex.GetBaseException().Message != "The socket has been shut down")
+					{
+						Console.WriteLine("Binary output failed during binary write.");
+						Console.WriteLine("\t{0}", ex.Message);
+						Console.WriteLine("\t{0}", ex.GetBaseException().Message);
+						Console.WriteLine("\t{0}", ((WebInterface)TheInterface).PageObject.RequestParts[1]);
+					}
+				}
+
+				clientStream.Flush();
+					
+				TheInterface.OutgoingBuffer = "";
+				TheInterface.OutgoingByteBuffer = null;
+
 			}
 			
 			if(TheInterface.TerminateAfterSend)

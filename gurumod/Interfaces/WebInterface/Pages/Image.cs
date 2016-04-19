@@ -19,7 +19,9 @@ namespace gurumod.WebPages
 			//
 			//	To send an image back to the client, we basically just need to
 			//	open the file and send it.
-			
+
+			base.TerminateOnSend = true;
+
 			string requestedfile = "";
 			
 			if(base.RequestParts.Length > 1)
