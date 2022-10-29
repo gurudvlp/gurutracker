@@ -2,9 +2,9 @@
 //  Sample.cs
 //  
 //  Author:
-//       guru <${AuthorEmail}>
+//       Brian Murphy <gurudvlp@gmail.com>
 // 
-//  Copyright (c) 2012 guru
+//  Copyright (c) 2012 - 2022 Brian Murphy
 // 
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ namespace gurumod
         [XmlIgnore()] int state;
 		//[XmlIgnore()] public static AudioContext context;// = new AudioContext();
 		[XmlIgnore()] public static OpenTK.Audio.OpenAL.ALContext context;
-		
+		[XmlIgnore()] public static OpenTK.Audio.OpenAL.ALDevice alDevice;
 
         [XmlIgnore()] public int channels;
 		[XmlIgnore()] public int bits_per_sample;
@@ -63,18 +63,35 @@ namespace gurumod
 		
 		[XmlIgnore()] public bool Loaded = false;
 		[XmlElement("WaveGenerator")] public Generator WaveGenerator = new Generator();
-		//[XmlIgnore()] public Generator WaveGenerator = new Generator();
 		[XmlElement("UseWaveGenerator")] public bool UseWaveGenerator = false;
 		[XmlElement("WaveMachine")] public Machine WaveMachine = new Machine();
-		//[XmlIgnore()] public Machine WaveMachine = new Machine();
 		[XmlElement("UseWaveMachine")] public bool UseWaveMachine = false;
 		
 		public Sample ()
 		{
-			//Logging.Log.Write("Constructing instance of Sample");
+			Console.WriteLine("Sample initializing.  Setting up sound device.");
 			
-			//if(Sample.context == null) { Sample.context = new AudioContext(); }
-			if(Sample.context == null) { Sample.context = new OpenTK.Audio.OpenAL.ALContext(); }
+
+			//	Check if a sound device has already been opened, and if a
+			//	context for it already exists.  If not, we need to set that up
+			//	now.
+			if(Sample.context == OpenTK.Audio.OpenAL.ALContext.Null) 
+			{
+				Console.WriteLine("Sound device not set up yet.  Doing so now.");
+				Sample.alDevice = OpenTK.Audio.OpenAL.ALC.OpenDevice(null);
+				
+				if(Sample.alDevice == OpenTK.Audio.OpenAL.ALDevice.Null)
+				{
+					Console.WriteLine("There was a problem opening the default device.");
+					Environment.Exit(1);
+				}
+				
+				//	Set up the audio context and assign it's device back to the
+				//	original device.  I'm not entirely sure why we need to
+				//	reassign the device, but it is shown in the documentation.
+				Sample.context = OpenTK.Audio.OpenAL.ALC.CreateContext(alDevice, OpenTK.Audio.OpenAL.ALC.GetAttributeArray(alDevice));
+				OpenTK.Audio.OpenAL.ALC.MakeContextCurrent(Sample.context);
+			}
 			
 			//Console.WriteLine("CurrentDevice:");
 			//Console.WriteLine(Sample.context.CurrentDevice);

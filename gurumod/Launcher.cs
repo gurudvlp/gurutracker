@@ -93,9 +93,21 @@ namespace gurumod
 				OpenTK.Audio.OpenAL.ALDevice.Null, 
 				OpenTK.Audio.OpenAL.AlcGetString.DeviceSpecifier
 			);
-			
+
 			Console.WriteLine("Available devices: {0}", devices);
 
+			var alDevice = OpenTK.Audio.OpenAL.ALC.OpenDevice(null);
+			if(alDevice == null)
+			{
+				Console.WriteLine("There was a problem opening the default device.");
+				Environment.Exit(1);
+			}
+
+			//	Set up an audio context so that we can test a sound.
+			var context = OpenTK.Audio.OpenAL.ALC.GetCurrentContext();
+			Console.WriteLine("Context successfully opened.");
+
+			
 			return;
 		}
 	}
