@@ -25,6 +25,8 @@ using System.Diagnostics;
 using System.Threading;
 using System.IO;
 
+using gurumod.Logging;
+
 using OpenTK.Audio;
 using OpenTK.Audio.OpenAL;
 
@@ -74,13 +76,12 @@ namespace gurumod
 			//	now.
 			if(Sample.context == OpenTK.Audio.OpenAL.ALContext.Null) 
 			{
-				Console.WriteLine("Sound device not set up yet.  Doing so now.");
+				Log.lInfo("Sound device not set up yet.  Doing so now...", "Sample", "Sample");
 				Sample.alDevice = OpenTK.Audio.OpenAL.ALC.OpenDevice(null);
 				
 				if(Sample.alDevice == OpenTK.Audio.OpenAL.ALDevice.Null)
 				{
-					Console.WriteLine("There was a problem opening the default device.");
-					Environment.Exit(1);
+					Log.lError("There was a problem opening the default device.", "Sample", "Sample");
 				}
 				
 				//	Set up the audio context and assign it's device back to the
@@ -90,19 +91,17 @@ namespace gurumod
 				OpenTK.Audio.OpenAL.ALC.MakeContextCurrent(Sample.context);
 			}
 			
-			//Console.WriteLine("CurrentDevice:");
-			//Console.WriteLine(Sample.context.CurrentDevice);
-			
 			buffer = AL.GenBuffer();
-			//source = AL.GenSource();
 			
+			//	Not sure how this is supposed to work exactly.  Maybe this is
+			//	called when the object is deserialized from a saved state?
 			if(Filename != null && Filename != "") 
 			{
-				//Logging.Log.Write("Loading the sample in the constructor...");
 				LoadSample();
 			}
 		}
 
+		//	Initialize a sample from a serialized version.
 		public Sample(SerializationInfo info, StreamingContext ctxt)
 		{
 			Name = (string)info.GetValue("Name", typeof(string));
@@ -140,21 +139,7 @@ namespace gurumod
 			info.AddValue("WaveMachine", WaveMachine);
 			info.AddValue("WaveGenerator", WaveGenerator);
 		}
-		
-		/*[XmlIgnore()]
-		public static int NextID
-		{
-			get
-			{
-				for(int esamp = 0; esamp < Samples.Length; esamp++)
-				{
-					if(Sample.Samples[esamp] == null) { return esamp; }
-				}
-				
-				return 0;
-			}
-			
-		}*/
+
 		
 		public void LoadSample()
 		{
@@ -174,7 +159,7 @@ namespace gurumod
 		
 		public void LoadSample(string filename)
 		{
-			Logging.Log.Write("Loading sample " + filename);
+			Log.lInfo("Loading sample: " + filename, "Sample", "LoadSample");
 			if(this.Loaded) { return; }
 			
 			if(UseWaveGenerator)
@@ -188,13 +173,13 @@ namespace gurumod
 				{
 					if(this.Filename == null || this.Filename == "") { this.Filename = filename; }
 					
-					//this.SoundData = LoadWave(File.OpenRead(Engine.PFP(Engine.ConfigPath + "samples/" + filename), FileMode.Open), out channels, out bits_per_sample, out sample_rate);
-		            //Console.WriteLine(Engine.PFP(Engine.ConfigPath + "samples/" + filename));
-					//string fname = Engine.CommandFlags["-f"];
-					//if(!fname.EndsWith("/")) { fname = fname + "/"; }
-					//fname = fname + "Samples/Audio/" + filename;
 					string fname = filename;
-					this.SoundData = LoadWave(File.OpenRead(Engine.PFP(Engine.TheTrack.MyPath + "Samples/Audio/" + fname)), out channels, out bits_per_sample, out sample_rate);
+					this.SoundData = LoadWave(
+						File.OpenRead(Engine.PFP(Engine.TheTrack.MyPath + "Samples/Audio/" + fname)), 
+						out channels, 
+						out bits_per_sample, 
+						out sample_rate
+					);
 					
 					//
 					//	This next line originally loaded the sameple data
@@ -207,8 +192,8 @@ namespace gurumod
 				}
 				catch(Exception ex)
 				{
-					Console.WriteLine("Exception Loading sample:");
-					Console.WriteLine(ex.Message);
+					Log.lWarning("Exception loading sample.", "Sample", "LoadSample");
+					Log.lWarning(ex.Message, "Sample", "LoadSample");
 				}
 			}
             /*AL.SourcePlay(source);
@@ -261,7 +246,10 @@ namespace gurumod
 			
 		}
 		
-		// Loads a wave/riff audio file.
+		//	Loads a wave/riff audio file.
+		//	This method was written about 10 years before this comment.  From
+		//	the bit of research that I have been doing recently, I strongly
+		//	believe that this may have come from Stack Overflow.
         public static byte[] LoadWave(Stream stream, out int channels, out int bits, out int rate)
         {
             if (stream == null)
@@ -452,8 +440,8 @@ namespace gurumod
 			}
 			catch(Exception ex)
 			{
-				Console.WriteLine("There was an exception while saving the track's metadata.");
-				Console.WriteLine(ex.Message);
+				Log.lWarning("There was an exception while saving the track's metadata.", "Sample", "SaveSample");
+				Log.lWarning(ex.Message, "Sample", "SaveSample");
 			}
 			
 			
@@ -602,8 +590,7 @@ namespace gurumod
 			sampwr.Flush();
 			sampstr.Flush();
 
-			Console.WriteLine("Length of wavemachout: {0}", wavemachout.Length);
-
+			//Log.lInfo("Length of wavemachout: " + wavemachout.Length.ToString(), "Sample", "GTString");
 
 			byte[] outtr = sampstr.ToArray();
 			File.WriteAllBytes("/tmp/gt-sample-"+this.ID.ToString()+".sm", outtr);
