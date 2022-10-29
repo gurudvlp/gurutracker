@@ -182,8 +182,7 @@ namespace gurumod
 				Samples[es] = new Sample();
 			}
 
-			//	I'm honestly not sure wtf this is supposed to be doing.  Looks											<<<<<<<
-			//	like an array is set but never used anywhere...
+			//	Set all channels as not muted by default.
 			ChannelMuted = new bool[ChannelCount];
 			for(int ec = 0; ec < ChannelCount; ec++)
 			{
@@ -196,13 +195,12 @@ namespace gurumod
 		//	It is called pretty much as frequently as possible from the Engine.
 		public void TakeTurn()
 		{
-			//	A quick look at this makes this seem like it loads samples on											<<<<<<<
-			//	every loop.  I'm not sure if this was intentional, or if this
-			//	is something that is ridiculous.  It will need to be
-			//	investigated.
 			if(Samples == null) { Log.lWarning("Samples[] is null!", "Track", "TakeTurn"); }
 			else
 			{
+				//	Loop through each sample and make sure it's loaded.
+				//	Sample.LoadSample will return immediately if the sample has
+				//	already been loaded, so this is not much of a time penalty.
 				for(int es = 0; es < Track.MaxSamples; es++)
 				{
 					if(Samples[es] == null) { Log.lWarning("Sample " + es.ToString() + " is null!", "Track", "TakeTurn"); }

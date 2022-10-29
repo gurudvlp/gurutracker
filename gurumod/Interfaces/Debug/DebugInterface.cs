@@ -4,7 +4,7 @@
 //  Author:
 //       Brian Murphy <gurudvlp@gmail.com>
 //
-//  Copyright (c) 2014 Brian Murphy
+//  Copyright (c) 2014-2022 Brian Murphy
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by

@@ -77,7 +77,8 @@ namespace gurumod.Logging
 		{
 			DateTime dt = DateTime.Now;
 			
-			string currentTime = String.Format("{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}.{ffff}", dt);
+			string currentTime = String.Format("{0:s}", dt);
+
 			return currentTime;
 		}
 	}

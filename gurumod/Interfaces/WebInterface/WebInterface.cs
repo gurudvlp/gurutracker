@@ -6,7 +6,7 @@
  * 	another project, as I have been doing for a couple years with it.  Some changes along the
  * 	way, to the point of me wishing I had always done source control with it :)
  * 
- * 	Copyright 2012 Brian Murphy
+ * 	Copyright 2012-2022 Brian Murphy
  * 	www.gurudigitalsolutions.com
  * 
  * 

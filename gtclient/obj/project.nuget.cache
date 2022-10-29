@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "dgSpecHash": "/w7wregZR5kKZ/pQrmKigj3eytIfbUauZTOswlmX3ggk+lnC4rsFZWoc9ugav7E1vvsCxZp6p/CmFIxaA6fpag==",
+  "success": true,
+  "projectFilePath": "/home/bmurphy/Code/gurutracker/gtclient/gtclient.csproj",
+  "expectedPackageFiles": [
+    "/home/bmurphy/.nuget/packages/atksharp/3.24.24.38/atksharp.3.24.24.38.nupkg.sha512",
+    "/home/bmurphy/.nuget/packages/cairosharp/3.24.24.38/cairosharp.3.24.24.38.nupkg.sha512",
+    "/home/bmurphy/.nuget/packages/gdksharp/3.24.24.38/gdksharp.3.24.24.38.nupkg.sha512",
+    "/home/bmurphy/.nuget/packages/giosharp/3.24.24.38/giosharp.3.24.24.38.nupkg.sha512",
+    "/home/bmurphy/.nuget/packages/glibsharp/3.24.24.38/glibsharp.3.24.24.38.nupkg.sha512",
+    "/home/bmurphy/.nuget/packages/gtksharp/3.24.24.38/gtksharp.3.24.24.38.nupkg.sha512",
+    "/home/bmurphy/.nuget/packages/pangosharp/3.24.24.38/pangosharp.3.24.24.38.nupkg.sha512"
+  ],
+  "logs": []
+}

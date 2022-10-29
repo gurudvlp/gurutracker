@@ -348,7 +348,7 @@ namespace gurumod
 			Signals = new Dictionary<string, short[]>();
 			
 			
-			Console.WriteLine("Adding signals from generators.");
+			//Console.WriteLine("Adding signals from generators.");
 			for(int egen = 0; egen < Generators.Length; egen++)
 			{
 				if(Generators[egen] != null)
@@ -357,7 +357,7 @@ namespace gurumod
 				}
 			}
 			
-			Console.WriteLine("Creating output from processor chain.");
+			//Console.WriteLine("Creating output from processor chain.");
 			bool newnote = this.IsNoteNew;
 			for(int ep = 0; ep < this.Processors.Length; ep++)
 			{
@@ -613,7 +613,7 @@ namespace gurumod
 	
 		public short[] Process(int processorid)
 		{
-			Console.WriteLine("Processing id: {0}", processorid);
+			//Console.WriteLine("Processing id: {0}", processorid);
 			
 			try
 			{
@@ -645,7 +645,7 @@ namespace gurumod
 			}
 			for(int ein = 0; ein < Processors[processorid].Inputs.Length; ein++)
 			{
-				Console.WriteLine("Processing {0} input {1}", processorid, ein);
+				//Console.WriteLine("Processing {0} input {1}", processorid, ein);
 				if(Processors[processorid].Inputs[ein].SourceType == Machines.InputData.SourceTypeProcessor
 			    && Processors[processorid].Inputs[ein].SourceID > -1)
 				{
@@ -656,7 +656,7 @@ namespace gurumod
 						{
 							int nproc = Processors[processorid].Inputs[ein].SourceID;
 							
-							Console.WriteLine("Adding signal {0}", "proc" + nproc.ToString());
+							//Console.WriteLine("Adding signal {0}", "proc" + nproc.ToString());
 							
 							Signals.Add("proc" + nproc.ToString(), Process(nproc));
 							

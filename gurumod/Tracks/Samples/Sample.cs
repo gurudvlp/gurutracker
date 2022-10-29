@@ -92,6 +92,7 @@ namespace gurumod
 			}
 			
 			buffer = AL.GenBuffer();
+			source = AL.GenSource();
 			
 			//	Not sure how this is supposed to work exactly.  Maybe this is
 			//	called when the object is deserialized from a saved state?
