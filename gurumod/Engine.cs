@@ -13,6 +13,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 
+using gurumod.Logging;
 
 namespace gurumod
 {
@@ -23,7 +24,7 @@ namespace gurumod
 		//	The part that makes gurutracker go.
 		
 		[XmlIgnore()] public static string EngineName = "gurutracker";
-		[XmlIgnore()] public static string EngineVersion = "v0.14.0329";
+		[XmlIgnore()] public static string EngineVersion = "v0.22.1029";
 	
 		[XmlIgnore()] public static Config Configuration = new Config();
 		
@@ -48,6 +49,7 @@ namespace gurumod
 			
 		}
 		
+		//	Initialize the gurutracker engine with the specified arguments.
 		public Engine(string[] args)
 		{
 			
@@ -56,7 +58,6 @@ namespace gurumod
 				bool skipnext = false;
 				for(int earg = 0; earg < args.Length; earg++)
 				{
-					//Console.WriteLine("Argument {0}: {1}", earg, args[earg]);
 					if(!skipnext)
 					{
 						if(args.Length > earg + 1)
@@ -81,7 +82,11 @@ namespace gurumod
 								int tmpport = 6789;
 								if(!Int32.TryParse(args[earg + 1], out tmpport))
 								{
-									Console.WriteLine("Port {0} does not appear numeric.", args[earg + 1]);
+									Log.lWarning(
+										"Port " + args[earg + 1] + "does not appear to be numeric", 
+										"Engine", 
+										"Engine"
+									);
 								}
 								else
 								{
@@ -93,7 +98,11 @@ namespace gurumod
 									}
 									else
 									{
-										Console.WriteLine("Port {0} is out of range.", tmpport);
+										Log.lWarning(
+											"Port " + tmpport.ToString() + " is out of range.",
+											"Engine", 
+											"Engine"
+										);
 										skipnext = true;
 									}
 									
@@ -110,9 +119,12 @@ namespace gurumod
 								}
 								else
 								{
-									Console.WriteLine("Could not find the weblogpath {0}", wlp);
+									Log.lWarning(
+										"Could not find the weblogpath: " + wlp, 
+										"Engine", 
+										"Engine"
+									);
 								}
-								
 								skipnext = true;
 							}
 							else
@@ -134,13 +146,12 @@ namespace gurumod
 								Installer.Installer.IsInstalled();
 								if(Installer.Installer.Install())
 								{
-									Console.WriteLine("Reinstall successful.");
+									Log.lInfo("Reinstall successful.", "Engine", "Engine");
 									Environment.Exit(0);
 								}
 								else
 								{
-									Console.WriteLine("Reinstall failed.");
-									Environment.Exit(0);
+									Log.lError("Reinstall failed.", "Engine", "Engine");
 								}
 							}
 						}
@@ -152,7 +163,7 @@ namespace gurumod
 							|| args[earg].ToLower() == "-help")
 							{
 								Console.WriteLine(Engine.EngineName + " " + Engine.EngineVersion);
-								Console.WriteLine("Copyright 2012 - 2016 Brian Murphy");
+								Console.WriteLine("Copyright 2012 - 2022 Brian Murphy");
 								Console.WriteLine(" www.gurutronik.com");
 								Console.WriteLine(" ");
 								Console.WriteLine("USAGE:  gurutracker.exe [FLAGS]");
@@ -214,26 +225,18 @@ namespace gurumod
 			}
 		}
 		
+		//	I'm not sure if this method is specifically needed or if this is
+		//	some ancient redundancy...
+		//	This method will write a line to the debug device if it is requested
 		public void WriteLine(string linetowrite)
 		{
-			//	This method will write a line to the debug device if it is requested
+			Log.lWarning("Call to Engine.WriteLine...", "Engine", "WriteLine");
 			if(gurumod.Engine.Configuration.DisplayDebug) { Console.WriteLine(linetowrite); }
 		}
 		
 		
-		public static long TimeStamp()
-		{
-
-			
-			return (long)UnixTimeStamp();
-		}
-		
-		public static double UnixTimeStamp()
-		{
-		    //TimeSpan unix_time = (System.DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));
-		    //return unix_time.TotalSeconds;
-			return UnixTimeStamp(System.DateTime.UtcNow);
-		}
+		public static long TimeStamp() { return (long)UnixTimeStamp(); }
+		public static double UnixTimeStamp() { return UnixTimeStamp(System.DateTime.UtcNow); }
 		
 		public static double UnixTimeStamp(System.DateTime datetime)
 		{
@@ -252,6 +255,7 @@ namespace gurumod
 		
 		public static string MD5(string password)
 		{
+			Log.lWarning("Call to Engine.MD5", "Engine", "MD5");
 			System.Security.Cryptography.MD5CryptoServiceProvider x = new System.Security.Cryptography.MD5CryptoServiceProvider();
 			byte[] bs = System.Text.Encoding.UTF8.GetBytes(password);
 			bs = x.ComputeHash(bs);
@@ -263,12 +267,12 @@ namespace gurumod
 			return s.ToString();
 		}
 		
+		//	Initialize the state of the gurutracker engine.
 		public void Initialize()
 		{
-			
+			//	Initialize any listeners
 			Engine.TcpListeners[0] = new Listeners(Engine.Configuration.WebListenPort, "Web Interface Listener", "HTTP");
 			Engine.TcpListeners[1] = new Listeners(2000, "Debug Interface", "GTDBG");
-			
 			
 			for(int econ = 0; econ < Engine.MaxIncomingConnections; econ++)
 			{
@@ -293,15 +297,16 @@ namespace gurumod
 				}*/
 				if(System.IO.File.Exists(Engine.CommandFlags["-f"]))
 				{
-					Console.WriteLine("Loading track {0}", Engine.CommandFlags["-f"]);
+					Log.lInfo("Loading track: " + Engine.CommandFlags["-f"], "Engine", "Initialize");
+
 					Engine.TheTrack = new Track();
 					Engine.TheTrack.NewTrack();
 					Track.Load(Engine.CommandFlags["-f"]);
 				}
 				else
 				{
-					Console.WriteLine("Track name specified, but the file was not found.");
-					Console.WriteLine(Engine.CommandFlags["-f"]);
+					Log.lWarning("Track not found: " + Engine.CommandFlags["-f"], "Engine", "Initialize");
+
 					Engine.TheTrack = new Track();
 					Engine.TheTrack.NewTrack();
 					Engine.TheTrack.Save();
@@ -309,7 +314,8 @@ namespace gurumod
 			}
 			else
 			{
-				Console.WriteLine("No track specified, so using a blank one.");
+				Log.lInfo("Creating new track.", "Engine", "Initialize");
+
 				Engine.TheTrack = new Track();
 				Engine.TheTrack.NewTrack();
 			}
@@ -319,11 +325,14 @@ namespace gurumod
 			
 		}
 		
+		//	This method is the main heart loop of this program.  It will run
+		//	forever until it either crashes or is shut down.
+		//
+		//	This needs to handle all of the things, including:
+		//		Check each interface for updates
+		//		Check each object for needed operations
 		public void Run()
 		{
-			//	This method needs to maintain the main loop of the program.
-			//	This needs to check each interface for updates,
-			//	Check each object for needed operations
 			Engine.TcpListeners[0].Listen();
 			Engine.TcpListeners[1].Listen();
 			
@@ -344,19 +353,21 @@ namespace gurumod
 				theminute = System.DateTime.Now.Minute;
 				
 				starttime = (TimeStamp() * 1000) + System.DateTime.Now.Millisecond;
+				
+				//	Loop through each connected client.
 				for(int econnection = 0; econnection < MaxIncomingConnections; econnection++)
 				{
-					//string tconnectiontype = "";
-					
+					//	Check if the connection is null.  If so we really can't
+					//	do anything with it.
 					if(Connections[econnection] != null)
 					{
 						try
 						{
+							//	Check if the client connection is still marked
+							//	internally as active.  If so, we need to hand
+							//	over control to it for processing.
 							if(Connections[econnection].IsActive() == true)
 							{
-								//	This connection is currently active, so we should hand action
-								//	over to this object.
-								//
 								Connections[econnection].TakeTurn();
 							}
 						}
@@ -387,10 +398,14 @@ namespace gurumod
 					
 					
 				}
+
+				//	Play nice with the underlying OS.  This will happily consume
+				//	100% of the CPU if we don't do short sleeps.
 				Thread.Sleep(1);
 				
 				
-				//	And to check if any servers have special shit to do
+				//	Check if there are any actions that need to be completed
+				//	each minute.
 				if(lastminute != theminute)
 				{
 					/*
@@ -401,6 +416,8 @@ namespace gurumod
 					 */
 				}
 				
+				//	Hand over control to the track.  That is where playback is
+				//	processed.
 				Engine.TheTrack.TakeTurn();
 				
 				endtime = (TimeStamp() * 1000) + System.DateTime.Now.Millisecond;
@@ -412,12 +429,11 @@ namespace gurumod
 			}
 		}
 		
+		//	Return a platform-independent path and filename from what is inputted.
+		//	IE, if "/home/foo/yo" is input, on a Windows machine it will return
+		//	"\home\foo\yo", and "/home/foo/yo" on Linux machines.
 		public static string PFP(string path)
 		{
-			//	Return a platform-independent path and filename from what is inputted.
-			//	IE, if "/home/foo/yo" is input, on a Windows machine it will return
-			//	"\home\foo\yo", and "/home/foo/yo" on Linux machines.
-			
 			return path.Replace("/", Path.DirectorySeparatorChar.ToString());
 		}
 		

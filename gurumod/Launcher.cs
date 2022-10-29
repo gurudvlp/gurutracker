@@ -86,7 +86,7 @@ namespace gurumod
 		//	Perform some checks of the audio systems.  This is useful for debugging.
 		public static void soundTest(string[] args)
 		{
-			Console.WriteLine("Running sound diagnostics...");
+			Logging.Log.lInfo("Running sound diagnostics...", "Launcher", "soundTest");
 
 			//	Enumerate available devices.
 			string devices = OpenTK.Audio.OpenAL.ALC.GetString(
@@ -97,16 +97,14 @@ namespace gurumod
 			Console.WriteLine("Available devices: {0}", devices);
 
 			var alDevice = OpenTK.Audio.OpenAL.ALC.OpenDevice(null);
-			if(alDevice == null)
+			if(alDevice == OpenTK.Audio.OpenAL.ALDevice.Null)
 			{
-				Console.WriteLine("There was a problem opening the default device.");
-				Environment.Exit(1);
+				Logging.Log.lError("There was a problem opening the default device.", "Launcher", "soundTest");
 			}
 
 			//	Set up an audio context so that we can test a sound.
 			var context = OpenTK.Audio.OpenAL.ALC.GetCurrentContext();
-			Console.WriteLine("Context successfully opened.");
-
+			Logging.Log.lInfo("Context successfully created.", "Launcher", "soundTest");
 			
 			return;
 		}
