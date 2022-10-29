@@ -69,9 +69,6 @@ namespace gurumod
 		
 		public Sample ()
 		{
-			Console.WriteLine("Sample initializing.  Setting up sound device.");
-			
-
 			//	Check if a sound device has already been opened, and if a
 			//	context for it already exists.  If not, we need to set that up
 			//	now.

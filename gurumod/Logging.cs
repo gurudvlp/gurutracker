@@ -34,6 +34,52 @@ namespace gurumod.Logging
 		{
 			if(Engine.Configuration.DisplayDebug) { Console.WriteLine(instring); }
 		}
+
+		public static void lInfo(string message)
+		{
+			string msgstr = String.Format("{0} INFO {1}", logTimestamp(), message);
+			Write(msgstr);
+		}
+		
+		public static void lInfo(string message, string tclass, string tfunction)
+		{
+			string msgstr = String.Format("{0}: {1}: {2}", tclass, tfunction, message);
+			lInfo(msgstr);
+		}
+
+		public static void lWarning(string message)
+		{
+			string msgstr = String.Format("{0} INFO {1}", logTimestamp(), message);
+			Write(msgstr);
+		}
+		
+		public static void lWarning(string message, string tclass, string tfunction)
+		{
+			string msgstr = String.Format("{0}: {1}: {2}", tclass, tfunction, message);
+			lWarning(msgstr);
+		}
+
+		public static void lError(string message)
+		{
+			string msgstr = String.Format("{0} INFO {1}", logTimestamp(), message);
+			Write(msgstr);
+
+			Environment.Exit(1);
+		}
+		
+		public static void lError(string message, string tclass, string tfunction)
+		{
+			string msgstr = String.Format("{0}: {1}: {2}", tclass, tfunction, message);
+			lError(msgstr);
+		}
+
+		private static string logTimestamp()
+		{
+			DateTime dt = DateTime.Now;
+			
+			string currentTime = String.Format("{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}.{ffff}", dt);
+			return currentTime;
+		}
 	}
 }
 
