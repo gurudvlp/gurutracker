@@ -253,17 +253,24 @@ namespace gurumod
 		}
 
 		
+		//	I'm honestly not sure why this has an MD5 hashing method.  The fact
+		//	that the only argument is 'password' actually frightens me a bit.
+		//	I have a feeling that it's not actually used anywhere...
 		public static string MD5(string password)
 		{
 			Log.lWarning("Call to Engine.MD5", "Engine", "MD5");
-			System.Security.Cryptography.MD5CryptoServiceProvider x = new System.Security.Cryptography.MD5CryptoServiceProvider();
+			//System.Security.Cryptography.MD5CryptoServiceProvider x = new System.Security.Cryptography.MD5CryptoServiceProvider();
+			
+			System.Security.Cryptography.MD5 hasher = System.Security.Cryptography.MD5.Create();
 			byte[] bs = System.Text.Encoding.UTF8.GetBytes(password);
-			bs = x.ComputeHash(bs);
+			byte[] hash = hasher.ComputeHash(bs);
+
 			System.Text.StringBuilder s = new System.Text.StringBuilder();
 			foreach (byte b in bs)
 			{
 			   s.Append(b.ToString("x2").ToLower());
 			}
+
 			return s.ToString();
 		}
 		
