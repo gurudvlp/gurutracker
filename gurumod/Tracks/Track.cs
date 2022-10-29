@@ -2,9 +2,9 @@
 //  Track.cs
 //  
 //  Author:
-//       guru <${AuthorEmail}>
+//       Brian Murphy <gurudvlp@gmail.com>
 // 
-//  Copyright (c) 2012 - 2014 guru
+//  Copyright (c) 2012 - 2022 Brian Murphy
 // 
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -29,6 +29,8 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using ICSharpCode.SharpZipLib.Tar;
 using ICSharpCode.SharpZipLib.GZip;
+
+using gurumod.Logging;
 
 namespace gurumod
 {
@@ -73,7 +75,6 @@ namespace gurumod
 			}
 		}
 
-		//[XmlElement("Samples")] public Sample[] Samples;
 		[XmlIgnore()] public Sample[] Samples;
 		[XmlElement("Author")] public string Author = "";
 		[XmlElement("Title")] public string Title = "Untitled";
@@ -82,7 +83,6 @@ namespace gurumod
 		[XmlElement("ChannelCount")] public int ChannelCount = 12;
 		[XmlElement("ChannelMuted")] public bool[] ChannelMuted;
 		[XmlIgnore()] public int[] PatternSequence;
-		//[XmlElement("Patterns")] public Pattern[] Patterns;// = new Pattern[Track.MaxPatterns];
 		[XmlIgnore()] public Pattern[] Patterns;
 		[XmlElement("DefaultPatternLength")] public int DefaultPatternLength = 128;
 		
@@ -103,19 +103,10 @@ namespace gurumod
 		
 		public Track ()
 		{
-			//Console.WriteLine("Constructing Track");
 			if(MyPath == "")
 			{
-				if(Engine.CommandFlags.ContainsKey("-f"))
-				{
-					MyPath = Engine.CommandFlags["-f"];
-				}
-				else
-				{
-					MyPath = Engine.Configuration.TracksPath + "Untitled";
-				}
-				
-				
+				if(Engine.CommandFlags.ContainsKey("-f")) { MyPath = Engine.CommandFlags["-f"]; }
+				else { MyPath = Engine.Configuration.TracksPath + "Untitled"; }
 			}
 			
 			if(!MyPath.EndsWith("/")) { MyPath = MyPath + "/"; }
@@ -177,9 +168,11 @@ namespace gurumod
 			info.AddValue("Patterns", Patterns);
 		}
 		
+		//	Generate a brand new, empty track.
 		public void NewTrack()
 		{
-			Console.WriteLine("Generating an empty track.");
+			Log.lInfo("Generating an empty track.", "Track", "NewTrack");
+
 			Patterns = new Pattern[Engine.Configuration.MaxPatterns];
 			Patterns[0] = new Pattern(ChannelCount, this.DefaultPatternLength);
 			Samples = new Sample[Engine.Configuration.MaxSamples];
@@ -189,24 +182,30 @@ namespace gurumod
 				Samples[es] = new Sample();
 			}
 
+			//	I'm honestly not sure wtf this is supposed to be doing.  Looks											<<<<<<<
+			//	like an array is set but never used anywhere...
 			ChannelMuted = new bool[ChannelCount];
 			for(int ec = 0; ec < ChannelCount; ec++)
 			{
 				ChannelMuted[ec] = false;
 			}
 
-			Console.WriteLine("Empty track generated.");
-			Console.WriteLine("End of newTrack()");
 		}
 		
+		//	TakeTurn() is where the actually processing for this track happens.
+		//	It is called pretty much as frequently as possible from the Engine.
 		public void TakeTurn()
 		{
-			if(Samples == null) { Console.WriteLine("Samples[] is null"); }
+			//	A quick look at this makes this seem like it loads samples on											<<<<<<<
+			//	every loop.  I'm not sure if this was intentional, or if this
+			//	is something that is ridiculous.  It will need to be
+			//	investigated.
+			if(Samples == null) { Log.lWarning("Samples[] is null!", "Track", "TakeTurn"); }
 			else
 			{
 				for(int es = 0; es < Track.MaxSamples; es++)
 				{
-					if(Samples[es] == null) { Console.WriteLine("Samples[{0}] is null", es); }
+					if(Samples[es] == null) { Log.lWarning("Sample " + es.ToString() + " is null!", "Track", "TakeTurn"); }
 					else { Samples[es].LoadSample(); }
 				}
 			}
@@ -228,6 +227,7 @@ namespace gurumod
 				}
 			}
 			
+			//	Process playing the track if it is enabled (ie Play was pressed)
 			if(PlayerEnabled)
 			{
 				double rowtime = (double)(60f / ((float)Tempo) / 8f);
@@ -292,15 +292,10 @@ namespace gurumod
 		
 		public void Save()
 		{
-			Console.WriteLine("Saving track as {0}", Engine.CommandFlags["-f"]);
-			if(this.SaveAsGT())
-			{
-				Console.WriteLine("Save successful.");
-			}
-			else
-			{
-				Console.WriteLine("Save failed.");
-			}
+			Log.lInfo("Saving track as: " + Engine.CommandFlags["-f"], "Track", "Save");
+
+			if(this.SaveAsGT()) { Log.lInfo("Save successful.", "Track", "Save"); }
+			else { Log.lInfo("Save failed.", "Track", "Save"); }
 		}
 		
 
@@ -530,8 +525,9 @@ namespace gurumod
 			}
 			catch(Exception ex)
 			{
-				Console.WriteLine("Exceptiong while serializing the track.");
-				Console.WriteLine(ex.Message);
+				Log.lWarning("Exception while serializing the track.", "Track", "Serialize");
+				Log.lWarning(ex.Message, "Track", "Serialize");
+				
 				return null;
 			}
 			
@@ -657,22 +653,10 @@ namespace gurumod
 		}
 
 
-		
+		//	Load a track that is already saved to disk.
 		public static void Load(string trackpath)
 		{
-			//Track.LoadGT("/tmp/test.gt");
-			if(!Track.LoadGT(trackpath))
-			{
-				Console.WriteLine("Failed to load track {0}", trackpath);
-				Environment.Exit(0);
-			}
-			else
-			{
-				Console.WriteLine("Loaded track {0}", trackpath);
-			}
-
-
-
+			if(!Track.LoadGT(trackpath)) { Log.lError("Failed to load track: " + trackpath, "Track", "Load"); }
 		}
 		
 		public int AddPattern()
