@@ -53,7 +53,9 @@ namespace gurumod
 		[XmlIgnore()] public int buffer;// = AL.GenBuffer();
         [XmlIgnore()] int source;// = AL.GenSource();
         [XmlIgnore()] int state;
-		[XmlIgnore()] public static AudioContext context;// = new AudioContext();
+		//[XmlIgnore()] public static AudioContext context;// = new AudioContext();
+		[XmlIgnore()] public static OpenTK.Audio.OpenAL.ALContext context;
+		
 
         [XmlIgnore()] public int channels;
 		[XmlIgnore()] public int bits_per_sample;
@@ -70,7 +72,10 @@ namespace gurumod
 		public Sample ()
 		{
 			//Logging.Log.Write("Constructing instance of Sample");
-			if(Sample.context == null) { Sample.context = new AudioContext(); }
+			
+			//if(Sample.context == null) { Sample.context = new AudioContext(); }
+			if(Sample.context == null) { Sample.context = new OpenTK.Audio.OpenAL.ALContext(); }
+			
 			//Console.WriteLine("CurrentDevice:");
 			//Console.WriteLine(Sample.context.CurrentDevice);
 			
@@ -176,8 +181,14 @@ namespace gurumod
 					//fname = fname + "Samples/Audio/" + filename;
 					string fname = filename;
 					this.SoundData = LoadWave(File.OpenRead(Engine.PFP(Engine.TheTrack.MyPath + "Samples/Audio/" + fname)), out channels, out bits_per_sample, out sample_rate);
-					AL.BufferData(buffer, GetSoundFormat(channels, bits_per_sample), this.SoundData, this.SoundData.Length, sample_rate);
 					
+					//
+					//	This next line originally loaded the sameple data
+					//	to OpenAL.  Doesn't seem to work with modern C#
+					//
+					//	This will need to be revisited.
+					//AL.BufferData(buffer, GetSoundFormat(channels, bits_per_sample), this.SoundData, this.SoundData.Length, sample_rate);
+
 		            AL.Source(source, ALSourcei.Buffer, buffer);
 				}
 				catch(Exception ex)
@@ -295,7 +306,11 @@ namespace gurumod
 		public bool ImportSample(short[] audiodata, ALFormat format, int samplerate)
 		{
 			buffer = AL.GenBuffer();
-			AL.BufferData(buffer, format, audiodata, audiodata.Length * 2, samplerate);
+			
+			//	Import the sample data to OpenAL.  This does not work
+			//	with modern C#.  It will need to be revisited!
+			//
+			//AL.BufferData(buffer, format, audiodata, audiodata.Length * 2, samplerate);
 			this.sample_rate = samplerate;
 			return true;
 		}

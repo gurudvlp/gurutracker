@@ -318,16 +318,39 @@ namespace gurumod
 					}
 				}*/
 				
-				short[] segment = Engine.TheTrack.Samples[CurrentSample].WaveMachine.GetSignal(null, note, octave);
+				var segment = Engine.TheTrack.Samples[CurrentSample].WaveMachine.GetSignal(null, note, octave);
 				
 				if(segment == null) { outputobtained = false; }
 				else
 				{
 					outputobtained = true;
 					int samplerate = Engine.TheTrack.Samples[CurrentSample].WaveMachine.SampleRate;
-					AL.BufferData(buffer, Engine.TheTrack.Samples[CurrentSample].WaveMachine.Format, segment, segment.Length * 2, samplerate);
+					
+					//	This was the original method for how to add sample
+					//	data to OpenAL.  This does not appear to work with
+					//	modern C# and will need to be revisited!!
+					//
+					System.Runtime.InteropServices.GCHandle pinnedArray = 
+						System.Runtime.InteropServices.GCHandle.Alloc(
+							segment, 
+							System.Runtime.InteropServices.GCHandleType.Pinned
+						);
+
+					IntPtr pointer = pinnedArray.AddrOfPinnedObject();
+
+					AL.BufferData(
+						buffer, 
+						Engine.TheTrack.Samples[CurrentSample].WaveMachine.Format, 
+						pointer, 
+						segment.Length * 2, 
+						samplerate
+					);
+					
+					
 					AL.SourceQueueBuffer(Source, buffer);
 					MachineSoundBuffers.Enqueue(buffer);
+
+					pinnedArray.Free();
 				}
 				
 				for(int ebuf = 0; ebuf < buffersprocessed; ebuf++)
