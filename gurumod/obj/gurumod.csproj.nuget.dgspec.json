@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/guru/Code/gurutracker/gurumod/gurumod.csproj": {}
+    "/home/bmurphy/Code/gurutracker/gurumod/gurumod.csproj": {}
   },
   "projects": {
-    "/home/guru/Code/gurutracker/gurumod/gurumod.csproj": {
+    "/home/bmurphy/Code/gurutracker/gurumod/gurumod.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/guru/Code/gurutracker/gurumod/gurumod.csproj",
+        "projectUniqueName": "/home/bmurphy/Code/gurutracker/gurumod/gurumod.csproj",
         "projectName": "gurumod",
-        "projectPath": "/home/guru/Code/gurutracker/gurumod/gurumod.csproj",
-        "packagesPath": "/home/guru/.nuget/packages/",
-        "outputPath": "/home/guru/Code/gurutracker/gurumod/obj/",
+        "projectPath": "/home/bmurphy/Code/gurutracker/gurumod/gurumod.csproj",
+        "packagesPath": "/home/bmurphy/.nuget/packages/",
+        "outputPath": "/home/bmurphy/Code/gurutracker/gurumod/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/guru/.nuget/NuGet/NuGet.Config"
+          "/home/bmurphy/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
@@ -57,22 +57,17 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[6.0.10, 6.0.10]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/6.0.110/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/6.0.402/RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -1,23 +1,22 @@
 {
   "version": 2,
-  "dgSpecHash": "h00jwccCdvEGPYBoxqpZc4gdWLJ3WyZHcyThMSoxdJEd3DvEbohg3ONyjB4L/kCHO/tPYTFoea4sla4xWyPxkQ==",
+  "dgSpecHash": "8ScjauzO2O/VbWAeQvfVsb+YwzhcOaoZ/cmPrfow+pXa4AqxvO3OqWWcgZEQqpksePc657sTtMLJLuJeFRDKSA==",
   "success": true,
-  "projectFilePath": "/home/guru/Code/gurutracker/gurumod/gurumod.csproj",
+  "projectFilePath": "/home/bmurphy/Code/gurutracker/gurumod/gurumod.csproj",
   "expectedPackageFiles": [
-    "/home/guru/.nuget/packages/opentk/4.7.5/opentk.4.7.5.nupkg.sha512",
-    "/home/guru/.nuget/packages/opentk.compute/4.7.5/opentk.compute.4.7.5.nupkg.sha512",
-    "/home/guru/.nuget/packages/opentk.core/4.7.5/opentk.core.4.7.5.nupkg.sha512",
-    "/home/guru/.nuget/packages/opentk.graphics/4.7.5/opentk.graphics.4.7.5.nupkg.sha512",
-    "/home/guru/.nuget/packages/opentk.input/4.7.5/opentk.input.4.7.5.nupkg.sha512",
-    "/home/guru/.nuget/packages/opentk.mathematics/4.7.5/opentk.mathematics.4.7.5.nupkg.sha512",
-    "/home/guru/.nuget/packages/opentk.openal/4.7.5/opentk.openal.4.7.5.nupkg.sha512",
-    "/home/guru/.nuget/packages/opentk.redist.glfw/3.3.8.30/opentk.redist.glfw.3.3.8.30.nupkg.sha512",
-    "/home/guru/.nuget/packages/opentk.windowing.common/4.7.5/opentk.windowing.common.4.7.5.nupkg.sha512",
-    "/home/guru/.nuget/packages/opentk.windowing.desktop/4.7.5/opentk.windowing.desktop.4.7.5.nupkg.sha512",
-    "/home/guru/.nuget/packages/opentk.windowing.graphicslibraryframework/4.7.5/opentk.windowing.graphicslibraryframework.4.7.5.nupkg.sha512",
-    "/home/guru/.nuget/packages/sharpziplib/1.4.0/sharpziplib.1.4.0.nupkg.sha512",
-    "/home/guru/.nuget/packages/system.runtime.compilerservices.unsafe/5.0.0/system.runtime.compilerservices.unsafe.5.0.0.nupkg.sha512",
-    "/home/guru/.nuget/packages/microsoft.aspnetcore.app.ref/6.0.10/microsoft.aspnetcore.app.ref.6.0.10.nupkg.sha512"
+    "/home/bmurphy/.nuget/packages/opentk/4.7.5/opentk.4.7.5.nupkg.sha512",
+    "/home/bmurphy/.nuget/packages/opentk.compute/4.7.5/opentk.compute.4.7.5.nupkg.sha512",
+    "/home/bmurphy/.nuget/packages/opentk.core/4.7.5/opentk.core.4.7.5.nupkg.sha512",
+    "/home/bmurphy/.nuget/packages/opentk.graphics/4.7.5/opentk.graphics.4.7.5.nupkg.sha512",
+    "/home/bmurphy/.nuget/packages/opentk.input/4.7.5/opentk.input.4.7.5.nupkg.sha512",
+    "/home/bmurphy/.nuget/packages/opentk.mathematics/4.7.5/opentk.mathematics.4.7.5.nupkg.sha512",
+    "/home/bmurphy/.nuget/packages/opentk.openal/4.7.5/opentk.openal.4.7.5.nupkg.sha512",
+    "/home/bmurphy/.nuget/packages/opentk.redist.glfw/3.3.8.30/opentk.redist.glfw.3.3.8.30.nupkg.sha512",
+    "/home/bmurphy/.nuget/packages/opentk.windowing.common/4.7.5/opentk.windowing.common.4.7.5.nupkg.sha512",
+    "/home/bmurphy/.nuget/packages/opentk.windowing.desktop/4.7.5/opentk.windowing.desktop.4.7.5.nupkg.sha512",
+    "/home/bmurphy/.nuget/packages/opentk.windowing.graphicslibraryframework/4.7.5/opentk.windowing.graphicslibraryframework.4.7.5.nupkg.sha512",
+    "/home/bmurphy/.nuget/packages/sharpziplib/1.4.0/sharpziplib.1.4.0.nupkg.sha512",
+    "/home/bmurphy/.nuget/packages/system.runtime.compilerservices.unsafe/5.0.0/system.runtime.compilerservices.unsafe.5.0.0.nupkg.sha512"
   ],
   "logs": []
 }
