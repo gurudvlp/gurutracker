@@ -1,6 +1,8 @@
 
 using System;
 
+using gurumod.Logging;
+
 namespace gurumod.WebPages
 {
 	
@@ -102,6 +104,8 @@ namespace gurumod.WebPages
 						}
 						catch(Exception ex)
 						{
+							Log.lWarning("Invalid type: " + ntype, "PageCat", "Run");
+							Log.lWarning(ex.Message, "PageCat", "Run");
 							toret = "FAIL Invalid Type (" + ntype + ")";
 						}
 					}

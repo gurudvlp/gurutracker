@@ -2,9 +2,9 @@
 //  SampleData.cs
 //
 //  Author:
-//       guru <${AuthorEmail}>
+//       Brian Murphy <gurudvlp@gmail.com>
 //
-//  Copyright (c) 2013 guru
+//  Copyright (c) 2013-2022 Brian Murphy
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+using gurumod.Logging;
 
 namespace gurumod.WebPages
 {
@@ -165,8 +166,9 @@ namespace gurumod.WebPages
 								}
 								catch(Exception ex)
 								{
-									Console.WriteLine("Exception looping processor data.");
-									Console.WriteLine("Sample: {0}  :: Processor: {1}", es, ep);
+									Log.lWarning("Exception looping processor data.", "SampleData", "Run");
+									Log.lWarning(ex.Message, "SampleData", "Run");
+									
 									if(Engine.TheTrack.Samples[es].WaveMachine == null) { Console.WriteLine("WaveMachine is null."); }
 									else
 									{
@@ -175,13 +177,13 @@ namespace gurumod.WebPages
 										{
 											if(Engine.TheTrack.Samples[es].WaveMachine.Processors[ep] == null)
 											{
-												Console.WriteLine("Processors[ep:{0}] is null", ep);
+												Log.lWarning("Processor is null: " + ep.ToString(), "SampleData", "Run");
 											}
 											else
 											{
 												if(Engine.TheTrack.Samples[es].WaveMachine.Processors[ep].Inputs == null)
 												{
-													Console.WriteLine("Processor Inputs are null");
+													Log.lWarning("Processor inputs are null.", "SampleData", "Run");
 												}
 											}
 										}

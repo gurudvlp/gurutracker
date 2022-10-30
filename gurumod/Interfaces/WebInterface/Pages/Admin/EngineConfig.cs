@@ -20,7 +20,6 @@ namespace gurumod.WebPages
 			base.Template = "";
 			
 			string toret = "";
-			int catid = -1;
 			
 			if(RequestParts.Length == 2)
 			{

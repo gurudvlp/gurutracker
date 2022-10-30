@@ -4,7 +4,7 @@
 //  Author:
 //       Brian Murphy <gurudvlp@gmail.com>
 // 
-//  Copyright (c) 2012 Brian Murphy
+//  Copyright (c) 2012-2022 Brian Murphy
 // 
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ namespace gurumod.WebPages.Samples.Generators
 			
 			WavPlayerTemplate = WavPlayerTemplate.Replace("[FILENAME]", ((Machines.WavFile)Engine.TheTrack.Samples[SampleID].WaveMachine.Generators[GeneratorID]).Filename);
 			
-			double timelenofsound = 0.0;
+			//double timelenofsound = 0.0;
 			int channels = ((Machines.WavFile)Engine.TheTrack.Samples[SampleID].WaveMachine.Generators[GeneratorID]).Channels;
 			int bitrate = ((Machines.WavFile)Engine.TheTrack.Samples[SampleID].WaveMachine.Generators[GeneratorID]).BitRate;
 			int samplerate = ((Machines.WavFile)Engine.TheTrack.Samples[SampleID].WaveMachine.Generators[GeneratorID]).SampleRate;
