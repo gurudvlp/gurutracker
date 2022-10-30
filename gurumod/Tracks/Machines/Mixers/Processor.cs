@@ -23,6 +23,8 @@
 using System;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections;
@@ -35,23 +37,30 @@ namespace gurumod.Machines
 	[Serializable()]
 	public abstract class Processor : ISerializable
 	{
-		[XmlElement("Inputs")] public InputData[] Inputs;
-		[XmlElement("InputCount")] public int InputCount = 4;
+		[XmlElement("Inputs")] [JsonInclude]
+		public InputData[] Inputs;
 
-		[XmlElement("ProcessorType")] public int ProcessorType = 0;
+		[XmlElement("InputCount")] [JsonInclude]
+		public int InputCount = 4;
+
+		[XmlElement("ProcessorType")] [JsonInclude]
+		public int ProcessorType = 0;
 		//	The inputs in this class:
 		//		0 - Audio Input A
 		//		1 - Audio Input B
 		//		2 - Gate Control Low
 		//		3 - Gate Control High
 		
-		[XmlIgnore()] public static int MaxInputs = 32;
-		[XmlIgnore()] public bool IsNoteNew = false;
+		[XmlIgnore()] [JsonInclude]
+		public static int MaxInputs = 32;
 
-		[XmlIgnore()] public static int ProcTypeMixer = 0;
-		[XmlIgnore()] public static int ProcTypeGate = 1;
-		[XmlIgnore()] public static int ProcTypeEnvelope = 2;
-		[XmlIgnore()] public static int ProcTypeReverb = 3;
+		[XmlIgnore()] [JsonInclude]
+		public bool IsNoteNew = false;
+
+		[XmlIgnore()] [JsonIgnore] public static int ProcTypeMixer = 0;
+		[XmlIgnore()] [JsonIgnore] public static int ProcTypeGate = 1;
+		[XmlIgnore()] [JsonIgnore] public static int ProcTypeEnvelope = 2;
+		[XmlIgnore()] [JsonIgnore] public static int ProcTypeReverb = 3;
 		
 		public Processor ()
 		{

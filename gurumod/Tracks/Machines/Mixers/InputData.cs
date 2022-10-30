@@ -4,7 +4,7 @@
 //  Author:
 //       Brian Murphy <gurudvlp@gmail.com>
 // 
-//  Copyright (c) 2012 Brian Murphy
+//  Copyright (c) 2012-2022 Brian Murphy
 // 
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@
 using System;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -31,12 +33,17 @@ namespace gurumod.Machines
 	[Serializable()]
 	public class InputData : ISerializable
 	{
-		[XmlElement("SourceID")] public int SourceID = -1;
-		[XmlElement("SourceType")] public int SourceType = MixerSettings.SourceTypeOscillator;
-		[XmlElement("Amplitude")] public double Amplitude = 1.0;
+		[XmlElement("SourceID")] [JsonInclude]
+		public int SourceID = -1;
+
+		[XmlElement("SourceType")] [JsonInclude]
+		public int SourceType = MixerSettings.SourceTypeOscillator;
+
+		[XmlElement("Amplitude")] [JsonInclude]
+		public double Amplitude = 1.0;
 		
-		[XmlIgnore()] public static int SourceTypeGenerator = 0;
-		[XmlIgnore()] public static int SourceTypeProcessor = 1;
+		[XmlIgnore()] [JsonIgnore] public static int SourceTypeGenerator = 0;
+		[XmlIgnore()] [JsonIgnore] public static int SourceTypeProcessor = 1;
 		
 		public InputData ()
 		{

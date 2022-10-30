@@ -4,7 +4,7 @@
 //  Author:
 //       Brian Murphy <gurudvlp@gmail.com>
 // 
-//  Copyright (c) 2012 Brian Murphy
+//  Copyright (c) 2012-2022 Brian Murphy
 // 
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@
 // 
 using System;
 using System.Xml;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.IO;
 using System.Xml.Serialization;
 using System.Runtime.Serialization;
@@ -37,19 +39,35 @@ namespace gurumod.Machines
 	[Serializable()]
 	public abstract class Generator : ISerializable
 	{
-		[XmlElement("Enabled")] public bool Enabled = false;
-		//[XmlElement("WaveType")] public int WaveType = Generator.TypeSine;
-		[XmlElement("Frequency")] public double Frequency = 440;
-		[XmlIgnore()] public int FramesIntoSample = 0;
-		[XmlElement("Amplitude")] public double Amplitude = 0.75;
-		[XmlElement("SampleRate")] public int SampleRate = 44100;
-		[XmlElement("GeneratorType")] public int GeneratorType = 0;
-		[XmlElement("Format")] public ALFormat Format = ALFormat.Mono16;
+		[XmlElement("Enabled")] [JsonInclude]
+		public bool Enabled = false;
+		
+		[XmlElement("Frequency")] [JsonInclude]
+		public double Frequency = 440;
 
-		[XmlIgnore()] public static int GeneratorTypeOscillator = 0;
-		[XmlIgnore()] public static int GeneratorTypeWavePlayer = 1;
-		[XmlIgnore()] public int LastNote = 0;
-		[XmlIgnore()] public int LastOctave = 5;
+		[XmlIgnore()] [JsonInclude] 
+		public int FramesIntoSample = 0;
+
+		[XmlElement("Amplitude")] [JsonInclude]
+		public double Amplitude = 0.75;
+
+		[XmlElement("SampleRate")] [JsonInclude]
+		public int SampleRate = 44100;
+
+		[XmlElement("GeneratorType")] [JsonInclude]
+		public int GeneratorType = 0;
+
+		[XmlElement("Format")] [JsonInclude]
+		public ALFormat Format = ALFormat.Mono16;
+
+		[XmlIgnore()] [JsonIgnore] public static int GeneratorTypeOscillator = 0;
+		[XmlIgnore()] [JsonIgnore] public static int GeneratorTypeWavePlayer = 1;
+		
+		[XmlIgnore()] [JsonInclude]
+		public int LastNote = 0;
+
+		[XmlIgnore()] [JsonInclude]
+		public int LastOctave = 5;
 
 
 		public Generator ()
@@ -121,7 +139,6 @@ namespace gurumod.Machines
 			StreamWriter wr = new StreamWriter(ms);
 			wr.AutoFlush = true;
 
-			string toret = "";
 			string gentype = this.GeneratorType.ToString();
 			string enabled = "0"; if(this.Enabled) { enabled = "1"; }
 			string samplerate = this.SampleRate.ToString("D6");

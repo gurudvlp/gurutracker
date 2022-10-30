@@ -4,7 +4,7 @@
 //  Author:
 //       Brian Murphy <gurudvlp@gmail.com>
 //
-//  Copyright (c) 2013 Brian Murphy
+//  Copyright (c) 2013-2022 Brian Murphy
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -24,6 +24,8 @@
 using System;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections;
@@ -36,17 +38,35 @@ namespace gurumod.Machines
 	{
 		// input[0]: audio in
 
-		[XmlElement("Attack")] public double Attack = 100;
-		[XmlElement("AttackAmp")] public double AttackAmp = 1;
-		[XmlElement("Decay")] public double Decay = 200;
-		[XmlElement("DecayAmp")] public double DecayAmp = 0.7;
-		[XmlElement("Sustain")] public double Sustain = 500.0;
-		[XmlElement("Release")] public double Release = 50;
+		[XmlElement("Attack")] [JsonInclude]
+		public double Attack = 100;
 
-		[XmlIgnore()] public double CurrentAmp = 0;
-		[XmlIgnore()] public int CurrentStep = 0;
-		[XmlIgnore()] public double TimeIntoStep = 0;
-		[XmlIgnore()] public int FramesIntoStep = 0;
+		[XmlElement("AttackAmp")] [JsonInclude]
+		public double AttackAmp = 1;
+
+		[XmlElement("Decay")] [JsonInclude]
+		public double Decay = 200;
+
+		[XmlElement("DecayAmp")] [JsonInclude]
+		public double DecayAmp = 0.7;
+
+		[XmlElement("Sustain")] [JsonInclude]
+		public double Sustain = 500.0;
+
+		[XmlElement("Release")] [JsonInclude]
+		public double Release = 50;
+
+		[XmlIgnore()] [JsonInclude] 
+		public double CurrentAmp = 0;
+
+		[XmlIgnore()] [JsonInclude]
+		public int CurrentStep = 0;
+
+		[XmlIgnore()] [JsonInclude]
+		public double TimeIntoStep = 0;
+
+		[XmlIgnore()] [JsonInclude]
+		public int FramesIntoStep = 0;
 		
 		public Envelope ()
 		{

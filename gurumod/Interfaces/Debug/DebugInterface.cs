@@ -114,7 +114,7 @@ namespace gurumod
 
 				string jsonString = JsonSerializer.Serialize(Engine.TheTrack.Samples);
 
-				base.OutgoingBuffer = jsonString + "\n";
+				base.OutgoingBuffer = _formatJson(jsonString);
 
 				return;
 			}
@@ -131,6 +131,7 @@ namespace gurumod
 					if(!Int32.TryParse(commandParts[1], out sampleID))
 					{
 						Log.lWarning("Supplied sample ID was not an integer.", "DebugInterface", "ParseCommand");
+						base.OutgoingBuffer = _formatJson(JsonSerializer.Serialize("Error: Sample ID was not an integer"));
 						return;
 					}
 
@@ -138,16 +139,30 @@ namespace gurumod
 					|| sampleID > Engine.TheTrack.Samples.Length - 1)
 					{
 						Log.lWarning("Supplied sample ID is out of range.", "DebugInterface", "ParseCommand");
+						base.OutgoingBuffer = _formatJson(JsonSerializer.Serialize("Error: Sample ID is out of range."));
 						return;
 					}
 
 					if(Engine.TheTrack.Samples[sampleID] == null)
 					{
 						Log.lWarning("Supplied sample ID is null.", "DebugInterface", "ParseCommand");
+						base.OutgoingBuffer = _formatJson(JsonSerializer.Serialize("Error: Sample is null."));
 						return;
 					}
 
-					base.OutgoingBuffer = JsonSerializer.Serialize(Engine.TheTrack.Samples[sampleID]);
+					if(commandParts[2] == "full.json")
+					{
+						base.OutgoingBuffer = _formatJson(JsonSerializer.Serialize(Engine.TheTrack.Samples[sampleID]));
+					}
+					else if(commandParts[2] == "generator.json")
+					{
+						base.OutgoingBuffer = _formatJson(JsonSerializer.Serialize(Engine.TheTrack.Samples[sampleID].WaveGenerator));
+					}
+					else if(commandParts[2] == "wavemachine.json")
+					{
+						base.OutgoingBuffer = _formatJson(JsonSerializer.Serialize(Engine.TheTrack.Samples[sampleID].WaveMachine));
+					}
+
 					return;
 				}
 			}
@@ -169,6 +184,14 @@ namespace gurumod
 
 			base.OutgoingBuffer = toret;
 			base.TerminateAfterSend = false;
+		}
+
+		private string _formatJson(string jsonstring)
+		{
+			string prettyJson = jsonstring.Length.ToString() + "\n" +
+				jsonstring + "\n";
+
+			return prettyJson;
 		}
 	}
 }

@@ -4,7 +4,7 @@
 //  Author:
 //       Brian Murphy <gurudvlp@gmail.com>
 // 
-//  Copyright (c) 2012 Brian Murphy
+//  Copyright (c) 2012-2022 Brian Murphy
 // 
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@
 using System;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections;
@@ -37,12 +39,11 @@ namespace gurumod.Machines
 		// input[1]: gate min
 		// input[2]: gate max
 		
-		//[XmlElement("MinGateSource")] public int MinGateSource = -1;
-		//[XmlElement("MaxGateSource")] public int MaxGateSource = -1;
-		//[XmlElement("MinGateSourceType")] public int MinGateSourceType = -1;
-		//[XmlElement("MaxGateSourceType")] public int MaxGateSourceType = -1;
-		[XmlElement("MinGateManual")] public double MinGateManual = 0.0;
-		[XmlElement("MaxGateManual")] public double MaxGateManual = 1.0;
+		[XmlElement("MinGateManual")] [JsonInclude]
+		public double MinGateManual = 0.0;
+
+		[XmlElement("MaxGateManual")] [JsonInclude]
+		public double MaxGateManual = 1.0;
 		
 		public Gate ()
 		{

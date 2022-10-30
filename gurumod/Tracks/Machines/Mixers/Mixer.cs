@@ -4,7 +4,7 @@
 //  Author:
 //       Brian Murphy <gurudvlp@gmail.com>
 // 
-//  Copyright (c) 2012 Brian Murphy
+//  Copyright (c) 2012-2022 Brian Murphy
 // 
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@
 using System;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections;
@@ -39,22 +41,14 @@ namespace gurumod.Machines
 	[Serializable()]
 	public class Mixer : Processor
 	{
-		[XmlElement("CombineMethod")] public int CombineMethod = gurumod.Machines.Mixer.CombineMethodAdd;
+		[XmlElement("CombineMethod")] [JsonInclude]
+		public int CombineMethod = gurumod.Machines.Mixer.CombineMethodAdd;
 		
-		[XmlIgnore()] public static int CombineMethodAdd = 0;
-		[XmlIgnore()] public static int CombineMethodSubtract = 1;
-		[XmlIgnore()] public static int CombineMethodMultiply = 2;
-		[XmlIgnore()] public static int CombineMethodDivide = 3;
-		//[XmlElement("Inputs")] public InputData[] Inputs;
-		//[XmlElement("InputCount")] public int InputCount = 4;
-		//	The inputs in this class:
-		//		0 - Audio Input A
-		//		1 - Audio Input B
-		
-		//[XmlIgnore()] public static int MaxInputs = 32;
+		[XmlIgnore()] [JsonIgnore] public static int CombineMethodAdd = 0;
+		[XmlIgnore()] [JsonIgnore] public static int CombineMethodSubtract = 1;
+		[XmlIgnore()] [JsonIgnore] public static int CombineMethodMultiply = 2;
+		[XmlIgnore()] [JsonIgnore] public static int CombineMethodDivide = 3;
 
-	
-		
 		public Mixer ()
 		{
 			
