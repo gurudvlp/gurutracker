@@ -26,11 +26,17 @@ namespace gurumod
 		
 	  	byte[] message = new byte[4096];
 	  	int bytesRead;
-		int clientloggedin = 0;
 		string currentmsgin;
-		bool clientstillconnected = true;
+
+		private bool _clientStillConnected = true;
+		public bool clientStillConnected 
+		{
+			get { return _clientStillConnected; }
+			set { _clientStillConnected = value; }
+		}
+
 				
-		bool alreadypinged = false;
+		//bool alreadypinged = false;
 		long pingtimeforwebsite = 0;		
 	
 		int threadloops = 0;
@@ -128,8 +134,8 @@ namespace gurumod
 	 		clientStream = tcpClient.GetStream();
 			
 			isactive = true;
-			clientloggedin = 0;
-			clientstillconnected = true;
+			
+			clientStillConnected = true;
 			lastmessagetime = Engine.TimeStamp();
 			
 			//	The protocol specifies what interface we need to attach to this
@@ -157,7 +163,7 @@ namespace gurumod
 			isactive = false;
 			turnssincemessage = 0;
 			
-			clientstillconnected = false;
+			clientStillConnected = false;
 
 			
 			return true;
@@ -217,7 +223,7 @@ namespace gurumod
 					return;
 				}
 				
-				alreadypinged = false;
+				//alreadypinged = false;
 				
 				currentmsgin = encoder.GetString(message, 0, bytesRead);
 
