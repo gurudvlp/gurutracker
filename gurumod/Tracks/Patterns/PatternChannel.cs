@@ -2,9 +2,9 @@
 //  PatternChannel.cs
 //  
 //  Author:
-//       guru <${AuthorEmail}>
+//       Brian Murphy <gurudvlp@gmail.com>
 // 
-//  Copyright (c) 2012 guru
+//  Copyright (c) 2012-2022 guru
 // 
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using OpenTK.Audio;
@@ -39,13 +41,27 @@ namespace gurumod
 		//	This class is a list of elements for one channel in a pattern.  It sequentially lists the things to
 		//	do for this channel.
 		
-		[XmlElement("Elements")] public PatternElement[] Elements;
-		[XmlIgnore()] private int _ElementCount = 0;
-		[XmlIgnore()] public int CurrentSample  = -1;
-		[XmlIgnore()] private int Source = -1;
-		[XmlIgnore()] private int SourceState = -1;
-		[XmlIgnore()] public float Volume = 1.0f;
-		[XmlElement("ChannelID")] public int ChannelID = 0;
+		[XmlElement("Elements")] [JsonInclude]
+		public PatternElement[] Elements;
+
+		[XmlIgnore()] [JsonIgnore] 
+		private int _ElementCount = 0;
+
+		[XmlIgnore()] [JsonInclude]
+		public int CurrentSample  = -1;
+
+		[XmlIgnore()] [JsonIgnore]
+		private int Source = -1;
+
+		[XmlIgnore()] [JsonIgnore]
+		private int SourceState = -1;
+
+		[XmlIgnore()] [JsonInclude]
+		public float Volume = 1.0f;
+
+		[XmlElement("ChannelID")] [JsonInclude]
+		public int ChannelID = 0;
+
 		[XmlIgnore()] public Queue<int> MachineSoundBuffers = new Queue<int>();
 		
 		public PatternChannel (int elementcnt)
@@ -297,7 +313,7 @@ namespace gurumod
 			
 			int buffer = AL.GenBuffer();
 			int buffersprocessed = 0;
-			bool forcenewbuffer = false;
+			//bool forcenewbuffer = false;
 		
 			AL.GetSource(Source, ALGetSourcei.SourceState, out SourceState);
 			AL.GetSource(Source, ALGetSourcei.BuffersProcessed, out buffersprocessed);

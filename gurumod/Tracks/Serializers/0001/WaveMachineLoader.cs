@@ -4,7 +4,7 @@
 //  Author:
 //       Brian Murphy <gurudvlp@gmail.com>
 //
-//  Copyright (c) 2014 Brian Murphy
+//  Copyright (c) 2014-2022 Brian Murphy
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -402,7 +402,7 @@ namespace gurumod.Serializers.GT0001
 		public static string GrabString(BinaryReader reader, int strlen)
 		{
 			byte[] inb = new byte[1];
-			bool keepgoin = true;
+			//bool keepgoin = true;
 			string toret = "";
 
 			inb = reader.ReadBytes (strlen);
@@ -417,7 +417,7 @@ namespace gurumod.Serializers.GT0001
 		public static byte[] GrabBytes(BinaryReader reader, int strlen)
 		{
 			byte[] inb = new byte[1];
-			string toret = "";
+			//string toret = "";
 
 			inb = reader.ReadBytes (strlen);
 			return inb;
