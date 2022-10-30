@@ -21,6 +21,7 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 using System;
+using System.Text.Json;
 
 namespace gurumod
 {
@@ -92,6 +93,20 @@ namespace gurumod
 				Engine.TheTrack.PlayerEnabled = false;
 				base.OutgoingBuffer = "playback stopped\n";
 				return;
+			}
+
+			if(IncomingCommand == "/samples/list.json")
+			{
+				string[] sampleList = new string[Engine.TheTrack.Samples.Length];
+
+				for(int eSample = 0; eSample < Engine.TheTrack.Samples.Length; eSample++)
+				{
+					sampleList[eSample] = Engine.TheTrack.Samples[eSample].Name;
+				}
+
+				string jsonString = JsonSerializer.Serialize(sampleList);
+
+				base.OutgoingBuffer = jsonString + "\n";
 			}
 		}
 

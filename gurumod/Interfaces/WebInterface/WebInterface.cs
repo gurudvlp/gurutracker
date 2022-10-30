@@ -126,8 +126,8 @@ namespace gurumod
 		
 		public bool LoadShellCommands()
 		{
-			bool onefound = false;
-			/*WebInterface.ShCommands = new gurumod.WebPages.ShellCommand[50];
+			/*bool onefound = false;
+			WebInterface.ShCommands = new gurumod.WebPages.ShellCommand[50];
 			for(int eCat = 0; eCat < WebInterface.ShCommands.Length; eCat++)
 			{
 				if(LoadShellCommand(eCat)) { onefound = true; };

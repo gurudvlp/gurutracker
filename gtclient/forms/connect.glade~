@@ -4,8 +4,6 @@
   <requires lib="gtk+" version="3.24"/>
   <object class="GtkWindow" id="ConnectWindow">
     <property name="can-focus">False</property>
-    <property name="default_width">480</property>
-    <property name="default_height">240</property>
     <child>
       <object class="GtkBox">
         <property name="name">ConnectWindow</property>
