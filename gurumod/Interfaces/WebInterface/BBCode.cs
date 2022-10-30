@@ -1,10 +1,15 @@
 
 using System;
 
+using gurumod.Logging;
+
 namespace gurumod.WebPages
 {
 
-
+	//	This was included with this project in an early release.  Probably 2012.
+	//	The web server for this was originally created for another purpose,
+	//	which is the only reason I can imagine that BBCode support is even
+	//	included.  This will likely be removed in the future.
 	public class BBCode
 	{
 
@@ -171,8 +176,8 @@ namespace gurumod.WebPages
 			}
 			catch(Exception ex)
 			{
-				
-				//Logging.Write("btEngine: WebInterface: BBCode: Color: " + ex.Message);
+				Log.lWarning("Exception processing BBCode color.", "BBCode", "EncodeColor");
+				Log.lWarning(ex.Message);
 			}
 			
 			return EncodeColor(message);
