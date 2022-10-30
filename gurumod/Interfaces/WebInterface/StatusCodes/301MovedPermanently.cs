@@ -27,9 +27,9 @@ namespace gurumod.WebPages.StatusCodes
 			return true;
 		}
 		
-		public bool TakeTurn()
+		/*public bool TakeTurn()
 		{
 			return true;
-		}
+		}*/
 	}
 }

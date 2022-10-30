@@ -4,6 +4,10 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+using gurumod.Logging;
 
 namespace gurumod.WebPages
 {
@@ -81,15 +85,18 @@ namespace gurumod.WebPages
 					else if(Engine.TheTrack.Patterns == null) { toret = "FAIL Patterns is null."; }
 					else
 					{
-						MemoryStream ms = new MemoryStream();
+						/*MemoryStream ms = new MemoryStream();
 						BinaryFormatter formatter = new BinaryFormatter();
 
 						formatter.Serialize(ms, Engine.TheTrack.Patterns);
 
 						base.UseAsciiOutput = false;
 						base.OutgoingByteBuffer = ms.ToArray();
-						base.TerminateOnSend = true;
+						base.TerminateOnSend = true;*/
+						toret = "FAIL Binary Serialization is obsolete";
 					}
+
+					if(toret.Length > 0) { base.OutgoingBuffer = toret;}
 				}
 				else if(base.RequestParts[1].ToLower() == "patternxml")
 				{
@@ -210,8 +217,8 @@ namespace gurumod.WebPages
 			}
 			catch(Exception ex)
 			{
-				Console.WriteLine("Exception building row");
-				//toret = "";
+				Log.lWarning("Exception building row.", "Sequencer", "BuildRow");
+				Log.lWarning(ex.Message, "Sequencer", "BuildRow");
 			}
 			
 			return RowTemplate.Replace("[ELEMENTS]", toret).Replace("[ROW]", row.ToString());
