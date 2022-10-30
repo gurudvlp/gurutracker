@@ -32,6 +32,8 @@ using OpenTK.Audio.OpenAL;
 
 using System.Xml;
 using System.Xml.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -42,32 +44,98 @@ namespace gurumod
 	[Serializable()]
 	public class Sample : ISerializable
 	{
-		//[XmlIgnore()] public static Sample[] Samples = new Sample[32];
-		[XmlElement("Name")] public string Name = "unnamed";
-		[XmlElement("Artist")] public string Artist = "Unknown Artist";
-		[XmlElement("Year")] public int Year = 2014;
-		[XmlElement("ID")] public int ID = 0;
-		[XmlElement("Filename")] public string Filename = "";
+		[XmlElement("Name")] [JsonInclude]
+		public string Name 
+		{
+			get { return _name; }
+			set { _name = value; }
+		}
+		private string _name = "unnamed";
 		
-		[XmlIgnore()] public long BitRate = 0;
-		[XmlIgnore()] public byte[] SoundData;
-		
-		[XmlIgnore()] public int buffer;// = AL.GenBuffer();
-        [XmlIgnore()] int source;// = AL.GenSource();
-        [XmlIgnore()] int state;
-		//[XmlIgnore()] public static AudioContext context;// = new AudioContext();
-		[XmlIgnore()] public static OpenTK.Audio.OpenAL.ALContext context;
-		[XmlIgnore()] public static OpenTK.Audio.OpenAL.ALDevice alDevice;
+		[XmlElement("Artist")] [JsonInclude]
+		public string Artist 
+		{
+			get { return _artist; }
+			set { _artist = value; }
+		}
+		private string _artist = "Unknown Artist";
 
-        [XmlIgnore()] public int channels;
-		[XmlIgnore()] public int bits_per_sample;
-		[XmlIgnore()] public int sample_rate;
+		[XmlElement("Year")] [JsonInclude]
+		public int Year 
+		{
+			get { return _year; }
+			set { _year = value; }
+		}
+		private int _year = 2022;
+
+		[XmlElement("ID")] [JsonInclude]
+		public int ID 
+		{
+			get { return _id; }
+			set { _id = value; }
+		}
+		private int _id = 0;
 		
-		[XmlIgnore()] public bool Loaded = false;
-		[XmlElement("WaveGenerator")] public Generator WaveGenerator = new Generator();
-		[XmlElement("UseWaveGenerator")] public bool UseWaveGenerator = false;
-		[XmlElement("WaveMachine")] public Machine WaveMachine = new Machine();
-		[XmlElement("UseWaveMachine")] public bool UseWaveMachine = false;
+
+		[XmlElement("Filename")] [JsonInclude]
+		public string Filename 
+		{
+			get { return _filename; }
+			set { _filename = value; }
+		}
+		private string _filename = "";
+		
+		[XmlIgnore()] [JsonIgnore]
+		private long _bitRate = 0;
+		
+		[XmlIgnore()] [JsonInclude]
+		public long BitRate 
+		{
+			get { return _bitRate; }
+			set { _bitRate = value; }
+		}
+
+		[XmlIgnore()] [JsonIgnore]
+		public byte[] SoundData;
+		
+		[XmlIgnore()] [JsonIgnore]
+		public int buffer;
+
+        [XmlIgnore()] [JsonIgnore]
+		int source;
+
+        [XmlIgnore()] [JsonIgnore]
+		int state;
+
+		[XmlIgnore()] [JsonIgnore]
+		public static OpenTK.Audio.OpenAL.ALContext context;
+
+		[XmlIgnore()] [JsonIgnore]
+		public static OpenTK.Audio.OpenAL.ALDevice alDevice;
+
+        [XmlIgnore()] [JsonInclude]
+		public int channels;
+
+		[XmlIgnore()] [JsonInclude]
+		public int bits_per_sample;
+
+		[XmlIgnore()] [JsonInclude]
+		public int sample_rate;
+		
+		[XmlIgnore()] [JsonIgnore]
+		public bool Loaded = false;
+
+		[XmlElement("WaveGenerator")] [JsonInclude]
+		public Generator WaveGenerator = new Generator();
+
+		[XmlElement("UseWaveGenerator")] [JsonInclude]
+		public bool UseWaveGenerator = false;
+
+		[XmlElement("WaveMachine")] [JsonInclude]
+		public Machine WaveMachine = new Machine();
+
+		[XmlElement("UseWaveMachine")] [JsonInclude]
+		public bool UseWaveMachine = false;
 		
 		public Sample ()
 		{

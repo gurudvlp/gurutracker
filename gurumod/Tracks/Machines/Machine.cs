@@ -5,6 +5,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using OpenTK.Audio;
@@ -15,30 +17,53 @@ namespace gurumod
 	[Serializable()]
 	public class Machine : ISerializable
 	{
-		[XmlIgnore()] public int FramesIntoSample = 0;
-		[XmlElement()] public int SampleRate = 44100;
-		[XmlElement()] public double Frequency = 440;
-		[XmlElement()] public double Amplitude = 0.75;
-		[XmlElement()] public int WaveType = Generator.TypeSine;
-		[XmlElement()] public ALFormat Format = ALFormat.Mono16;
-		//[XmlElement()] public Oscilator[] Oscs = new Oscilator[3];
-		//[XmlElement()] public MixerSettings[] Mixers = new MixerSettings[2];
-		
-		[XmlIgnore()] public Machines.Generator[] Generators;
-		[XmlIgnore()] public Machines.Processor[] Processors;
-		//[XmlIgnore()] private string[] _generatorTypes = new string[128];
-		[XmlElement("GeneratorTypes")] public string[] GeneratorTypes = new string[128];
-		
-		[XmlElement("ProcessorTypes")] public string[] ProcessorTypes = new string[128];
-		
-		[XmlElement("MaxGenerators")] public int MaxGenerators = 128;
-		[XmlElement("MaxProcessors")] public int MaxProcessors = 128;
+		[XmlIgnore()] [JsonInclude]
+		public int FramesIntoSample = 0;
 
-		[XmlIgnore()] public static ASCIIEncoding encoder = new ASCIIEncoding();
+		[XmlElement()] [JsonInclude]
+		public int SampleRate = 44100;
 
-		[XmlIgnore()] private int _lastnote = -2;
-		[XmlIgnore()] private bool _newnote = false;
-		[XmlIgnore()] public int LastNote 
+		[XmlElement()] [JsonInclude]
+		public double Frequency = 440;
+
+		[XmlElement()] [JsonInclude]
+		public double Amplitude = 0.75;
+
+		[XmlElement()] [JsonInclude]
+		public int WaveType = Generator.TypeSine;
+
+		[XmlElement()] [JsonInclude]
+		public ALFormat Format = ALFormat.Mono16;
+		
+		[XmlIgnore()] [JsonInclude]
+		public Machines.Generator[] Generators;
+
+		[XmlIgnore()] [JsonInclude]
+		public Machines.Processor[] Processors;
+
+		[XmlElement("GeneratorTypes")] [JsonInclude]
+		public string[] GeneratorTypes = new string[128];
+		
+		[XmlElement("ProcessorTypes")] [JsonInclude]
+		public string[] ProcessorTypes = new string[128];
+		
+		[XmlElement("MaxGenerators")] [JsonInclude]
+		public int MaxGenerators = 128;
+
+		[XmlElement("MaxProcessors")] [JsonInclude]
+		public int MaxProcessors = 128;
+
+		[XmlIgnore()] [JsonIgnore]
+		public static ASCIIEncoding encoder = new ASCIIEncoding();
+
+		[XmlIgnore()] [JsonIgnore]
+		private int _lastnote = -2;
+
+		[XmlIgnore()] [JsonIgnore]
+		private bool _newnote = false;
+
+		[XmlIgnore()] [JsonInclude]
+		public int LastNote 
 		{
 			get
 			{
@@ -51,7 +76,8 @@ namespace gurumod
 			}
 		}
 
-		[XmlIgnore()] public bool IsNoteNew
+		[XmlIgnore()] [JsonInclude]
+		public bool IsNoteNew
 		{
 			get
 			{
@@ -64,17 +90,16 @@ namespace gurumod
 			}
 		}
 
+		[XmlIgnore()] [JsonInclude]
+		public int LastOctave = 5;
 
-			//= -2;
-		[XmlIgnore()] public int LastOctave = 5;
-		[XmlIgnore()] public bool Running = false;
-		//[XmlIgnore()] public short[,] Signals;
+		[XmlIgnore()] [JsonInclude]
+		public bool Running = false;
+
 		[XmlIgnore()] public Dictionary<string, short[]> Signals = new Dictionary<string, short[]>();
 		
 		public Machine ()
 		{
-			
-			
 			Generators = new Machines.Generator[this.MaxGenerators];
 			Processors = new Machines.Processor[this.MaxProcessors];
 			

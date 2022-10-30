@@ -23,6 +23,8 @@
 using System;
 using System.Text.Json;
 
+using gurumod.Logging;
+
 namespace gurumod
 {
 	public class DebugInterface : Interface
@@ -65,6 +67,12 @@ namespace gurumod
 
 		public void ParseCommand()
 		{
+			if(IncomingCommand == "/ping")
+			{
+				base.OutgoingBuffer = JsonSerializer.Serialize("pong");
+				return;
+			}
+
 			if(IncomingCommand == "beat")
 			{
 				if(DebugMode == DebugModeHeartbeat) { DebugMode = DebugModeListen; }
@@ -104,9 +112,51 @@ namespace gurumod
 					sampleList[eSample] = Engine.TheTrack.Samples[eSample].Name;
 				}
 
-				string jsonString = JsonSerializer.Serialize(sampleList);
+				string jsonString = JsonSerializer.Serialize(Engine.TheTrack.Samples);
 
 				base.OutgoingBuffer = jsonString + "\n";
+
+				return;
+			}
+
+			//	Handle any sample related commands
+			if(IncomingCommand.StartsWith("/samples/"))
+			{
+				string tCommand = IncomingCommand.Substring(1);
+				string[] commandParts = tCommand.Split('/', StringSplitOptions.None);
+
+				if(commandParts.Length == 3)
+				{
+					int sampleID = -1;
+					if(!Int32.TryParse(commandParts[1], out sampleID))
+					{
+						Log.lWarning("Supplied sample ID was not an integer.", "DebugInterface", "ParseCommand");
+						return;
+					}
+
+					if(sampleID < 0
+					|| sampleID > Engine.TheTrack.Samples.Length - 1)
+					{
+						Log.lWarning("Supplied sample ID is out of range.", "DebugInterface", "ParseCommand");
+						return;
+					}
+
+					if(Engine.TheTrack.Samples[sampleID] == null)
+					{
+						Log.lWarning("Supplied sample ID is null.", "DebugInterface", "ParseCommand");
+						return;
+					}
+
+					base.OutgoingBuffer = JsonSerializer.Serialize(Engine.TheTrack.Samples[sampleID]);
+					return;
+				}
+			}
+
+			//	Handle any sequencer releated commands
+			if(IncomingCommand.StartsWith("/sequencer"))
+			{
+
+				return;
 			}
 		}
 

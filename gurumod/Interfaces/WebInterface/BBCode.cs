@@ -153,26 +153,15 @@ namespace gurumod.WebPages
 				string precolor = message.Substring(0, message.IndexOf("[color="));
 				string postcolor = message.Substring(message.IndexOf("[/color]"));
 				
-				//int coloredstartpoint = precolor.Length + 7;
-				//int coloredlength = message.
 				string coloredtext = message.Substring(precolor.Length + 7, message.Length - (precolor.Length + 7) - (message.Length - message.IndexOf("[/color]")));
 				
-				//postcolor = postcolor.Replace("[/color]", "");
 				postcolor = postcolor.Substring(8);
-				
-				//precolor = EncodeColor(precolor);
-				//postcolor = EncodeColor(postcolor);
 				
 				string colortouse = coloredtext.Substring(0, coloredtext.IndexOf("]"));
 				coloredtext = coloredtext.Substring(coloredtext.IndexOf("]") + 1);
 				
 				message = precolor + "<span style=\"color: " + colortouse + "\">" + coloredtext + "</span>" + postcolor;
-				
-				/*Logging.Write("BBCode::");
-				Logging.Write("\t" + precolor);
-				Logging.Write("\t" + colortouse);
-				Logging.Write("\t" + coloredtext);
-				Logging.Write("\t" + postcolor);*/
+
 			}
 			catch(Exception ex)
 			{
