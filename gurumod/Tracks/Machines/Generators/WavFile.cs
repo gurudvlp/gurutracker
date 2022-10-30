@@ -4,7 +4,7 @@
 //  Author:
 //       Brian Murphy <gurudvlp@gmail.com>
 // 
-//  Copyright (c) 2012 Brian Murphy
+//  Copyright (c) 2012-2022 Brian Murphy
 // 
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -26,22 +26,31 @@ using OpenTK.Audio;
 using OpenTK.Audio.OpenAL;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections;
 using System.Collections.Generic;
+
+using gurumod.Logging;
 
 namespace gurumod.Machines
 {
 	[Serializable()]
 	public class WavFile : gurumod.Machines.Generator
 	{
-		[XmlElement("Filename")] public string Filename = "";
-		//[XmlElement("SampleRate")] public int SampleRate = 44100;
-		[XmlElement("Channels")] public int Channels = 1;
-		[XmlElement("BitRate")] public int BitRate = 0;
+		[XmlElement("Filename")] [JsonInclude]
+		public string Filename = "";
+
+		[XmlElement("Channels")] [JsonInclude]
+		public int Channels = 1;
+
+		[XmlElement("BitRate")] [JsonInclude]
+		public int BitRate = 0;
 		
-		[XmlIgnore()] public short[] AudioData;
+		[XmlIgnore()] [JsonIgnore]
+		public short[] AudioData;
 		
 		public WavFile ()
 		{
@@ -150,23 +159,26 @@ namespace gurumod.Machines
 					try { toret[eafr] = AudioData[cframe]; }
 					catch(Exception blah)
 					{
-						Console.WriteLine("Exception in WavFile.GetData -- copying audiodata");
+						Log.lWarning("Exception copying audio data.", "WavFile", "GetData");
+						Log.lWarning(blah.Message);
+						/*Console.WriteLine("Exception in WavFile.GetData -- copying audiodata");
 						Console.WriteLine("eafr: {0}", eafr);
 						Console.WriteLine("cframe: {0}", cframe);
 						Console.WriteLine("AD Len: {0}", AudioData.Length);
-						Console.WriteLine("tr Len: {0}", toret.Length);
-						Environment.Exit(0);
+						Console.WriteLine("tr Len: {0}", toret.Length);*/
 					}
 
 					try { if(toret.Length > eafr + 1) { toret[eafr + 1] = AudioData[cframe]; } }
 					catch(Exception blah)
 					{
-						Console.WriteLine("Exception in WavFile.GetData -- copying audiodata (2)");
+						Log.lWarning("Exception copying audio data (2)", "WavFile", "GetData");
+						Log.lError(blah.Message, "WavFile", "GetData");
+						/*Console.WriteLine("Exception in WavFile.GetData -- copying audiodata (2)");
 						Console.WriteLine("eafr: {0}", eafr);
 						Console.WriteLine("cframe: {0}", cframe);
 						Console.WriteLine("AD Len: {0}", AudioData.Length);
 						Console.WriteLine("tr Len: {0}", toret.Length);
-						Environment.Exit(0);
+						*/
 					}
 					cframe++;
 
@@ -174,35 +186,18 @@ namespace gurumod.Machines
 			}
 			catch(Exception ex)
 			{
-				Console.WriteLine("Exception in WavFile.GetData.");
+				Log.lWarning("Exception in GetData", "WavFile", "GetData");
+				Log.lError(ex.Message, "WavFile", "GetData");
+				/*Console.WriteLine("Exception in WavFile.GetData.");
 				Console.WriteLine(ex.Message);
 				Console.WriteLine("--------------------------------------------");
 				Console.WriteLine("cframe: {0}", cframe);
 				Console.WriteLine("frames: {0}", frames);
-				Console.WriteLine("AudioDataLen: {0}", AudioData.Length);
-
-				Environment.Exit(0);
+				Console.WriteLine("AudioDataLen: {0}", AudioData.Length);*/
 			}
-			/*for(int eafr = 0; eafr < frames; eafr++)
-			{
-				toret[eafr] = AudioData[cframe];
-				cframe++;
-				if(cframe >= AudioData.Length) { cframe = 0; }
-			}*/
+
 			
 			base.FramesIntoSample = cframe;
-			//Console.WriteLine("Oscillator.GetData:  Frequency (OG/Fixed): {0} {1}", Frequency, frequency);
-			//double usefrequency = 0;
-			
-			/*if(WaveType == gurumod.Generator.TypeSine) { return SineWave(frames, frequency); }
-			else if(WaveType == gurumod.Generator.TypeSquare) { return SquareWave(frames, frequency); }
-			else if(WaveType == gurumod.Generator.TypeTriangle) { return TriangleWave(frames, frequency); }
-			else if(WaveType == gurumod.Generator.TypeSawtooth) { return SawtoothWave(frames, frequency); }
-			else
-			{
-				Console.WriteLine("Wave type {0} not recognized.", WaveType);
-				return null;
-			}*/
 			return toret;
 		}
 		
@@ -213,23 +208,8 @@ namespace gurumod.Machines
 			double freq = this.Frequency;
 
 			double nf = Engine.Configuration.NoteFreq[octave][note];
-
-
-
 			double nmul = this.Frequency / Engine.Configuration.NoteFreq[4][9];
-			
-			/*if(note < 0) { note = LastNote; } else { LastNote = note; }
-			if(octave < 0) { octave = LastOctave; } else { LastOctave = octave; }
-			
-			if(octave == 4) { freq = freq / 2; }
-			else if(octave == 6) { freq = freq * 2; }
-			
-			double noteoff = (double)((double)(freq / 7) * (double)note);*/
-			
-			//Console.WriteLine("Getting wave data: note {0} octave {1} freq {2} noteoff {3}", note, octave, freq, noteoff);
-			//freq = freq + noteoff;
-			
-			//return GetData(frames, freq + noteoff);
+
 			return GetData(frames, nf * nmul);
 		}
 
@@ -300,12 +280,9 @@ namespace gurumod.Machines
 				
 				try
 				{
-					
-					
 					while(keepon)
 					{
 						short tt = (short)0;
-						short ad = (short)0;
 						byte[] tin = new byte[2];
 						
 						for(int echan = 0; echan < num_channels; echan++)
@@ -328,7 +305,8 @@ namespace gurumod.Machines
 								
 							}
 							
-							if(tt == null) { keepon = false; }
+							//if(tt == null) { keepon = false; }
+							if(tt == -1) { keepon = false; }
 							else
 							{
 								AudioData[pos] = (short)tt;
@@ -342,12 +320,7 @@ namespace gurumod.Machines
 					Console.WriteLine("Exception while loading wave file.");
 					Console.WriteLine(ex.Message);
 				}
-				/*for(int efrm = 0; efrm < AudioData.Length; efrm++)
-				{
-					AudioData[efrm] = (short)reader.ReadInt16();
-				}*/
 
-                //return reader.ReadBytes((int)reader.BaseStream.Length);
 			}
 		}
 	}
